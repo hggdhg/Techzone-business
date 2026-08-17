@@ -361,14 +361,148 @@
         .submit-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; font-family: 'Inter', 'Cairo', sans-serif; font-size: 1rem; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; }
         .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(99, 102, 241, 0.35); }
 
-        /* ===== CHAT WIDGET ===== */
-        .chat-widget { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; align-items: center; gap: 0.7rem; cursor: pointer; }
-        .chat-pill { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem; background: rgba(10,10,15,0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 50px; font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.8); backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); white-space: nowrap; }
-        .chat-pill .dot { width: 8px; height: 8px; background: #25D366; border-radius: 50%; animation: dotPulse 1.5s ease-in-out infinite; }
+        /* ===== AI CHATBOT ===== */
+        .ai-chat-launcher {
+            position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+            display: flex; align-items: center; gap: 0.7rem; cursor: pointer;
+        }
+        .ai-chat-pill {
+            display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem;
+            background: rgba(10,10,15,0.9); border: 1px solid rgba(99,102,241,0.3); border-radius: 50px;
+            font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.8);
+            backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); white-space: nowrap;
+        }
+        .ai-chat-pill .ai-dot { width: 8px; height: 8px; background: #818cf8; border-radius: 50%; animation: dotPulse 1.5s ease-in-out infinite; }
         @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-        .chat-icon { width: 56px; height: 56px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.3); transition: all 0.3s ease; flex-shrink: 0; }
-        .chat-icon:hover { transform: scale(1.08); box-shadow: 0 6px 25px rgba(37,211,102,0.45); }
-        .chat-icon svg { width: 28px; height: 28px; fill: #ffffff; }
+        .ai-chat-btn {
+            width: 56px; height: 56px; background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 20px rgba(99,102,241,0.4); transition: all 0.3s ease; flex-shrink: 0;
+            position: relative;
+        }
+        .ai-chat-btn::after {
+            content: ''; position: absolute; width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            animation: aiRing 2s ease-out infinite; opacity: 0;
+        }
+        @keyframes aiRing { 0%{transform:scale(1);opacity:0.4} 100%{transform:scale(1.6);opacity:0} }
+        .ai-chat-btn:hover { transform: scale(1.08); box-shadow: 0 6px 25px rgba(99,102,241,0.55); }
+        .ai-chat-btn svg { width: 26px; height: 26px; fill: #ffffff; position: relative; z-index: 1; }
+
+        /* Chat Window */
+        .ai-chat-window {
+            position: fixed; bottom: 6rem; right: 2rem; z-index: 10000;
+            width: 380px; height: 520px; max-height: 80vh;
+            background: #0a0a1a; border: 1px solid rgba(99,102,241,0.2); border-radius: 20px;
+            display: none; flex-direction: column; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(99,102,241,0.1);
+            animation: chatSlideUp 0.3s ease-out;
+        }
+        .ai-chat-window.open { display: flex; }
+        @keyframes chatSlideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        body[dir="rtl"] .ai-chat-window { right: auto; left: 2rem; }
+        body[dir="rtl"] .ai-chat-launcher { right: auto; left: 2rem; }
+
+        .chat-header {
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 1rem 1.2rem;
+            background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.1));
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .chat-header-avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .chat-header-avatar svg { width: 20px; height: 20px; fill: #fff; }
+        .chat-header-info { flex: 1; }
+        .chat-header-name { font-size: 0.9rem; font-weight: 700; }
+        .chat-header-status { font-size: 0.72rem; color: #22c55e; display: flex; align-items: center; gap: 0.3rem; }
+        .chat-header-status .online-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; }
+        .chat-close {
+            width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08); color: #fff; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .chat-close:hover { background: rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.3); }
+
+        .chat-body {
+            flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem;
+        }
+        .chat-body::-webkit-scrollbar { width: 4px; }
+        .chat-body::-webkit-scrollbar-track { background: transparent; }
+        .chat-body::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 2px; }
+
+        .chat-msg {
+            max-width: 85%; padding: 0.7rem 1rem; border-radius: 14px;
+            font-size: 0.85rem; line-height: 1.55; animation: msgFade 0.3s ease-out;
+        }
+        @keyframes msgFade { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        .chat-msg.bot {
+            align-self: flex-start; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.15);
+            color: rgba(255,255,255,0.85); border-bottom-left-radius: 4px;
+        }
+        body[dir="rtl"] .chat-msg.bot { border-bottom-left-radius: 14px; border-bottom-right-radius: 4px; }
+        .chat-msg.user {
+            align-self: flex-end; background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: #fff; border-bottom-right-radius: 4px;
+        }
+        body[dir="rtl"] .chat-msg.user { border-bottom-right-radius: 14px; border-bottom-left-radius: 4px; }
+
+        .typing-indicator {
+            display: flex; gap: 4px; padding: 0.7rem 1rem; align-self: flex-start;
+            background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.15);
+            border-radius: 14px; border-bottom-left-radius: 4px;
+        }
+        .typing-indicator span {
+            width: 6px; height: 6px; background: #818cf8; border-radius: 50%;
+            animation: typingBounce 1.2s ease-in-out infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+        .chat-suggestions {
+            display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0 0.5rem 0.5rem;
+        }
+        .chat-sug-btn {
+            padding: 0.35rem 0.75rem; border-radius: 50px; font-size: 0.72rem; font-weight: 500;
+            background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2);
+            color: #a5b4fc; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;
+            font-family: 'Inter', 'Cairo', sans-serif;
+        }
+        .chat-sug-btn:hover { background: rgba(99,102,241,0.2); border-color: rgba(99,102,241,0.4); }
+
+        .chat-input-area {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.8rem 1rem; border-top: 1px solid rgba(255,255,255,0.06);
+            background: rgba(0,0,0,0.3);
+        }
+        .chat-input {
+            flex: 1; padding: 0.65rem 1rem; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+            color: #fff; font-family: 'Inter', 'Cairo', sans-serif; font-size: 0.85rem; outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .chat-input:focus { border-color: #6366f1; }
+        .chat-input::placeholder { color: rgba(255,255,255,0.25); }
+        .chat-send {
+            width: 38px; height: 38px; border-radius: 10px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease; flex-shrink: 0;
+        }
+        .chat-send:hover { transform: scale(1.05); }
+        .chat-send svg { width: 18px; height: 18px; fill: #fff; }
+
+        @media (max-width: 480px) {
+            .ai-chat-window { right: 0.5rem; bottom: 5.5rem; width: calc(100% - 1rem); height: 75vh; border-radius: 16px; }
+            body[dir="rtl"] .ai-chat-window { right: auto; left: 0.5rem; }
+            .ai-chat-launcher { bottom: 1.2rem; right: 1.2rem; }
+            body[dir="rtl"] .ai-chat-launcher { right: auto; left: 1.2rem; }
+            .ai-chat-pill { display: none; }
+        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1100px) {
@@ -569,10 +703,27 @@
         </div>
     </div>
 
-    <!-- CHAT -->
-    <div class="chat-widget" onclick="window.open('https://wa.me/252622146744', '_blank')">
-        <div class="chat-pill"><span class="dot"></span><span data-en="Chat with us" data-ar="تحدث معنا">Chat with us</span></div>
-        <div class="chat-icon"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>
+    <!-- AI CHATBOT -->
+    <div class="ai-chat-launcher" id="chatLauncher" onclick="toggleAiChat()">
+        <div class="ai-chat-pill"><span class="ai-dot"></span><span data-en="Ask AI Assistant" data-ar="اسأل المساعد الذكي">Ask AI Assistant</span></div>
+        <div class="ai-chat-btn"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
+    </div>
+
+    <div class="ai-chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="chat-header-avatar"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
+            <div class="chat-header-info">
+                <div class="chat-header-name" data-en="TechZone AI Assistant" data-ar="مساعد تك زون الذكي">TechZone AI Assistant</div>
+                <div class="chat-header-status"><span class="online-dot"></span> <span data-en="Online now" data-ar="متاح الآن">Online now</span></div>
+            </div>
+            <button class="chat-close" onclick="toggleAiChat()">&times;</button>
+        </div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-suggestions" id="chatSuggestions"></div>
+        <div class="chat-input-area">
+            <input class="chat-input" id="chatInput" data-placeholder-en="Ask me anything about TechZone..." data-placeholder-ar="اسألني أي شيء عن تك زون..." placeholder="Ask me anything about TechZone..." onkeydown="if(event.key==='Enter')sendAiMsg()">
+            <button class="chat-send" onclick="sendAiMsg()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+        </div>
     </div>
 
     <!-- OVERLAYS -->
@@ -761,6 +912,251 @@
         }
         window.addEventListener('scroll', function() { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50); });
         document.getElementById('navToggle').addEventListener('click', function() { document.getElementById('navLinks').classList.toggle('active'); });
+
+        // ===== AI CHATBOT =====
+        var chatOpen = false;
+        var chatInitialized = false;
+
+        function toggleAiChat() {
+            chatOpen = !chatOpen;
+            document.getElementById('chatWindow').classList.toggle('open', chatOpen);
+            if (chatOpen && !chatInitialized) {
+                chatInitialized = true;
+                initChat();
+            }
+            if (chatOpen) setTimeout(function(){ document.getElementById('chatInput').focus(); }, 300);
+        }
+
+        function initChat() {
+            var greeting = currentLang === 'ar'
+                ? 'مرحباً! 👋 أنا مساعد تك زون الذكي. كيف يمكنني مساعدتك اليوم؟ أسألني عن خدماتنا، منتجاتنا، الأسعار، أو أي شيء آخر!'
+                : 'Hello! 👋 I\'m TechZone AI Assistant. How can I help you today? Ask me about our services, products, pricing, or anything else!';
+            addBotMsg(greeting);
+            showSuggestions(currentLang === 'ar'
+                ? ['خدماتنا', 'المنتجات', 'التسعير', 'تواصل معنا', 'من نحن']
+                : ['Our Services', 'Products', 'Pricing', 'Contact Us', 'About Us']);
+        }
+
+        function addBotMsg(text) {
+            var body = document.getElementById('chatBody');
+            var div = document.createElement('div');
+            div.className = 'chat-msg bot';
+            div.textContent = text;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function addUserMsg(text) {
+            var body = document.getElementById('chatBody');
+            var div = document.createElement('div');
+            div.className = 'chat-msg user';
+            div.textContent = text;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function showTyping() {
+            var body = document.getElementById('chatBody');
+            var div = document.createElement('div');
+            div.className = 'typing-indicator';
+            div.id = 'typingIndicator';
+            div.innerHTML = '<span></span><span></span><span></span>';
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function hideTyping() {
+            var el = document.getElementById('typingIndicator');
+            if (el) el.remove();
+        }
+
+        function showSuggestions(suggestions) {
+            var container = document.getElementById('chatSuggestions');
+            container.innerHTML = '';
+            suggestions.forEach(function(s) {
+                var btn = document.createElement('button');
+                btn.className = 'chat-sug-btn';
+                btn.textContent = s;
+                btn.onclick = function() { handleUserInput(s); };
+                container.appendChild(btn);
+            });
+        }
+
+        function sendAiMsg() {
+            var input = document.getElementById('chatInput');
+            var text = input.value.trim();
+            if (!text) return;
+            input.value = '';
+            document.getElementById('chatSuggestions').innerHTML = '';
+            handleUserInput(text);
+        }
+
+        function handleUserInput(text) {
+            addUserMsg(text);
+            showTyping();
+            var delay = 600 + Math.random() * 800;
+            setTimeout(function() {
+                hideTyping();
+                var response = getAiResponse(text);
+                addBotMsg(response.text);
+                if (response.suggestions) showSuggestions(response.suggestions);
+            }, delay);
+        }
+
+        function getAiResponse(input) {
+            var q = input.toLowerCase();
+            var isAr = currentLang === 'ar';
+
+            // Services
+            if (q.match(/service|خدم|خ INT|عمل|ماذا تفعل|what do you|offer/)) {
+                return { text: isAr
+                    ? 'نقدم مجموعة شاملة من الخدمات:\n\n🌐 تطوير المواقع\n📱 تطبيقات الجوال\n☁️ الخدمات السحابية\n🤖 الذكاء الاصطناعي\n🔒 الأمن السيبراني\n📊 التسويق الرقمي\n💼 حلول المؤسسات\n🔍 تحسين محركات البحث (SEO)\n\nأي خدمة تريد معرفة المزيد عنها؟'
+                    : 'We offer a comprehensive range of services:\n\n🌐 Web Development\n📱 Mobile App Development\n☁️ Cloud Services\n🤖 AI & Automation\n🔒 Cyber Security\n📊 Digital Marketing\n💼 Enterprise Solutions\n🔍 Search Engine Optimization (SEO)\n\nWhich service would you like to know more about?',
+                    suggestions: isAr ? ['تطوير المواقع', 'تطبيقات الجوال', 'SEO', 'الأمن السيبراني', 'التسعير'] : ['Web Dev', 'Mobile Apps', 'SEO', 'Cybersecurity', 'Pricing'] };
+            }
+
+            // Web Development
+            if (q.match(/web|website|موقع|تطوير موقع|site/)) {
+                return { text: isAr
+                    ? '🌐 تطوير المواقع — نبني مواقع حديثة وسريعة:\n\n✅ مواقع متجاوبة (Responsive)\n✅ تطبيقات ويب (React, Next.js, Vue.js)\n✅ متاجر إلكترونية\n✅ بوابات مؤسسية\n✅ أنظمة إدارة المحتوى\n✅ تحسين الأداء والسرعة\n\nالأسعار تبدأ من $500 حسب المتطلبات.\nتريد عرض سعر مجاني؟'
+                    : '🌐 Web Development — We build modern, fast websites:\n\n✅ Responsive websites\n✅ Web apps (React, Next.js, Vue.js)\n✅ E-commerce stores\n✅ Enterprise portals\n✅ Content management systems\n✅ Performance optimization\n\nPricing starts from $500 depending on requirements.\nWould you like a free quote?',
+                    suggestions: isAr ? ['عرض سعر مجاني', 'تطبيقات الجوال', 'المنتجات'] : ['Free Quote', 'Mobile Apps', 'Products'] };
+            }
+
+            // Mobile Apps
+            if (q.match(/mobile|app|جوال|تطبيق|android|ios|flutter/)) {
+                return { text: isAr
+                    ? '📱 تطبيقات الجوال — نطور تطبيقات احترافية:\n\n✅ تطبيقات iOS و Android الأصلية\n✅ تطبيقات متعددة المنصات (Flutter, React Native)\n✅ تصميم UI/UX عصري\n✅ مزامنة مع أنظمة خلفية\n✅ إصدار على App Store و Google Play\n✅ صيانة ودعم مستمر\n\nالأسعار تبدأ من $1,000.'
+                    : '📱 Mobile Apps — We develop professional apps:\n\n✅ Native iOS & Android apps\n✅ Cross-platform (Flutter, React Native)\n✅ Modern UI/UX design\n✅ Backend integration\n✅ App Store & Google Play publishing\n✅ Ongoing maintenance & support\n\nPricing starts from $1,000.',
+                    suggestions: isAr ? ['عرض سعر', 'الخدمات', 'التسعير'] : ['Get Quote', 'Services', 'Pricing'] };
+            }
+
+            // SEO
+            if (q.match(/seo|محرك|بحث|search engine|google ranking|تحسين/)) {
+                return { text: isAr
+                    ? '🔍 تحسين محركات البحث (SEO) — بقيادة المهندس خالد مختار:\n\n✅ مراجعات SEO التقنية\n✅ تحسين الصفحة (On-Page)\n✅ بناء الروابط (Off-Page)\n✅ SEO المحلي\n✅ بحث الكلمات المفتاحية\n✅ تقارير شهرية\n\n📊 نتائج مضمونة: زيادة الزيارات حتى 300%!\n\nتواصل مع المهندس خالد لاستشارة مجانية.'
+                    : '🔍 SEO (Search Engine Optimization) — Led by Engineer Khalid Mukhtar:\n\n✅ Technical SEO audits\n✅ On-Page optimization\n✅ Link building (Off-Page)\n✅ Local SEO\n✅ Keyword research\n✅ Monthly reports\n\n📊 Guaranteed results: up to 300% traffic increase!\n\nContact Engineer Khalid for a free consultation.',
+                    suggestions: isAr ? ['ملاحظات المهندس خالد', 'التسعير', 'تواصل معنا'] : ['About Eng. Khalid', 'Pricing', 'Contact'] };
+            }
+
+            // Cybersecurity
+            if (q.match(/cyber|security|أمن|حماية|safety|hack|اختراق/)) {
+                return { text: isAr
+                    ? '🔒 الأمن السيبراني — حماية شاملة:\n\n✅ اختبار الاختراق\n✅ تقييم الثغرات\n✅ مراقبة 24/7\n✅ تدقيق الامتثال\n✅ تدريب الموظفين\n✅ استجابة للحوادث\n\nخطركم كبيرة — دعوها لنا!'
+                    : '🔒 Cyber Security — Complete protection:\n\n✅ Penetration testing\n✅ Vulnerability assessment\n✅ 24/7 monitoring\n✅ Compliance audits\n✅ Employee training\n✅ Incident response\n\nYour security is our priority!',
+                    suggestions: isAr ? ['خدماتنا', 'التسعير', 'تواصل'] : ['Our Services', 'Pricing', 'Contact'] };
+            }
+
+            // Cloud
+            if (q.match(/cloud|سحاب|aws|azure|hosting|استضافة|server|خادم/)) {
+                return { text: isAr
+                    ? '☁️ الخدمات السحابية — بنية تحتية موثوقة:\n\n✅ هجرة السحابة\n✅ AWS, Azure, GCP\n✅ Docker & Kubernetes\n✅ CI/CD Pipelines\n✅ مراقبة الأداء\n✅ نسخ احتياطي تلقائي\n\nنضمن uptime 99.9%!'
+                    : '☁️ Cloud Services — Reliable infrastructure:\n\n✅ Cloud migration\n✅ AWS, Azure, GCP\n✅ Docker & Kubernetes\n✅ CI/CD Pipelines\n✅ Performance monitoring\n✅ Automatic backups\n\nWe guarantee 99.9% uptime!',
+                    suggestions: isAr ? ['الخدمات', 'التسعير', 'تواصل معنا'] : ['Services', 'Pricing', 'Contact Us'] };
+            }
+
+            // AI & Automation
+            if (q.match(/ai|ذكاء اصطناعي|automation|أتمتة|machine learning|روبوت|bot/)) {
+                return { text: isAr
+                    ? '🤖 الذكاء الاصطناعي والأتمتة:\n\n✅ روبوتات المحادثة (Chatbots)\n✅ أتمتة العمليات\n✅ تحليل البيانات\n✅ معالجة اللغة الطبيعية\n✅ أنظمة التوصية\n✅ رؤية الكمبيوتر\n\nمثل هذا المساعد الذكي الذي تتحدث معه الآن! 😊'
+                    : '🤖 AI & Automation:\n\n✅ Chatbots\n✅ Process automation\n✅ Data analytics\n✅ Natural Language Processing\n✅ Recommendation systems\n✅ Computer Vision\n\nLike this AI assistant you\'re chatting with right now! 😊',
+                    suggestions: isAr ? ['الخدمات', 'المنتجات', 'تواصل'] : ['Services', 'Products', 'Contact'] };
+            }
+
+            // Products
+            if (q.match(/product|منتج|erp|crm|saaS|software|برمج/)) {
+                return { text: isAr
+                    ? '📦 منتجاتنا:\n\n🏢 TechZone ERP — نظام إدارة موارد شامل\n👥 TechZone CRM — إدارة علاقات العملاء\n🛒 TechZone Commerce — متجر إلكتروني\n📅 TechZone Scheduler — جدولة مواعيد\n📊 TechZone Analytics — تحليلات أعمال\n🛡️ TechZone Guard — أمن سيبراني\n\nجميع المنتجات SaaS سحابية!'
+                    : '📦 Our Products:\n\n🏢 TechZone ERP — Full-featured ERP system\n👥 TechZone CRM — Customer relationship management\n🛒 TechZone Commerce — E-commerce platform\n📅 TechZone Scheduler — Appointment scheduling\n📊 TechZone Analytics — Business intelligence\n🛡️ TechZone Guard — Cybersecurity monitoring\n\nAll products are cloud-based SaaS!',
+                    suggestions: isAr ? ['التسعير', 'ERP', 'CRM', 'تواصل معنا'] : ['Pricing', 'ERP', 'CRM', 'Contact Us'] };
+            }
+
+            // Pricing
+            if (q.match(/price|pricing|cost|ثمن|سعر|كم|تسعير|how much|affordable|رخيص/)) {
+                return { text: isAr
+                    ? '💰 تسعيرنا المرن:\n\n🌐 موقع ويب: يبدأ من $500\n📱 تطبيق جوال: يبدأ من $1,000\n🏢 نظام ERP: يبدأ من $2,000\n🔍 حملة SEO: يبدأ من $300/شهر\n☁️ استضافة سحابية: يبدأ من $50/شهر\n🤖 روبوت محادثة: يبدأ من $400\n\n✨ استشارة مجانية!\n📞 اتصل بنا: +252 62 2146744'
+                    : '💰 Flexible Pricing:\n\n🌐 Website: Starting from $500\n📱 Mobile App: Starting from $1,000\n🏢 ERP System: Starting from $2,000\n🔍 SEO Campaign: Starting from $300/month\n☁️ Cloud Hosting: Starting from $50/month\n🤖 Chatbot: Starting from $400\n\n✨ Free consultation!\n📞 Call us: +252 62 2146744',
+                    suggestions: isAr ? ['استشارة مجانية', 'خدماتنا', 'تواصل'] : ['Free Consultation', 'Services', 'Contact'] };
+            }
+
+            // Contact
+            if (q.match(/contact|تواصل|اتصل|phone|هاتف|email|بريد|whatsapp|wa\.me|location|عنوان|where/)) {
+                return { text: isAr
+                    ? '📞 تواصل معنا:\n\n📱 واتساب: +252 62 2146744\n📧 البريد: info@techzone.so\n🌐 الموقع: hggdhg.github.io/Techzone-business\n📍 المقر: مقديشو، الصومال\n\n⏰ نرد خلال 24 ساعة!'
+                    : '📞 Contact Us:\n\n📱 WhatsApp: +252 62 2146744\n📧 Email: info@techzone.so\n🌐 Website: hggdhg.github.io/Techzone-business\n📍 Location: Mogadishu, Somalia\n\n⏰ We respond within 24 hours!',
+                    suggestions: isAr ? [' WhatsApp', 'استشارة مجانية', 'خدماتنا'] : ['WhatsApp', 'Free Consultation', 'Services'] };
+            }
+
+            // About / Who are you
+            if (q.match(/about|who|من انتم|من نحن|team|فريق|company|شركة|info/)) {
+                return { text: isAr
+                    ? '🏢 تك زون بزنس سولوشنز:\n\n🎯 المهمة: تمكين الشركات بالتكنولوجيا\n📅 التأسيس: 2018\n👥 الفريق: 200+ مهندس ومصمم\n🌍 المكاتب: الصومال، الإمارات، بريطانيا، أمريكا، الهند\n🏆 العملاء: 90+ شركة عالمية\n📱 المشاريع: 100+ مشروع ناجح\n\n✨ قادة في التحول الرقمي!'
+                    : '🏢 TechZone Business Solutions:\n\n🎯 Mission: Empowering businesses with technology\n📅 Founded: 2018\n👥 Team: 200+ engineers & designers\n🌍 Offices: Somalia, UAE, UK, USA, India\n🏆 Clients: 90+ businesses worldwide\n📱 Projects: 100+ successful deliveries\n\n✨ Leaders in digital transformation!',
+                    suggestions: isAr ? ['خدماتنا', 'فريقنا', 'تواصل معنا'] : ['Our Services', 'Our Team', 'Contact Us'] };
+            }
+
+            // Thank you
+            if (q.match(/thank|شكر|thanks|ممنون| appreciated/)) {
+                return { text: isAr
+                    ? 'العفو! 😊 سعيد لمساعدتك. هل لديك أي سؤال آخر عن تك زون؟'
+                    : 'You\'re welcome! 😊 Happy to help. Do you have any other questions about TechZone?',
+                    suggestions: isAr ? ['خدماتنا', 'التسعير', 'تواصل معنا'] : ['Our Services', 'Pricing', 'Contact Us'] };
+            }
+
+            // Greeting
+            if (q.match(/hi|hello|hey|مرحبا|السلام|أهلا|morning|evening|howdy|salaam/)) {
+                return { text: isAr
+                    ? 'أهلاً وسهلاً! 👋 مرحباً بك في تك زون. كيف يمكنني مساعدتك اليوم؟'
+                    : 'Hello there! 👋 Welcome to TechZone. How can I help you today?',
+                    suggestions: isAr ? ['خدماتنا', 'المنتجات', 'التسعير', 'تواصل معنا'] : ['Our Services', 'Products', 'Pricing', 'Contact Us'] };
+            }
+
+            // Industries
+            if (q.match(/industr|sector|قطاع|Real Estate|عقلا|bank|بنك|health|صحة|edu|تعليم|retail|تجزئة|transport|نقل/)) {
+                return { text: isAr
+                    ? '🏭 القطاعات التي نخدمها:\n\n🏠 العقارات\n🏦 البنوك والمالية\n🏥 الرعاية الصحية\n🛍️ التجزئة والتجارة الإلكترونية\n🚚 النقل واللوجستيات\n🎓 التعليم\n\nلكل قطاع حلول مخصصة!'
+                    : '🏭 Industries We Serve:\n\n🏠 Real Estate\n🏦 Banking & Finance\n🏥 Healthcare\n🛍️ Retail & E-Commerce\n🚚 Transport & Logistics\n🎓 Education\n\nTailored solutions for each sector!',
+                    suggestions: isAr ? ['خدماتنا', 'تواصل معنا'] : ['Our Services', 'Contact Us'] };
+            }
+
+            // Case Studies
+            if (q.match(/case|study|دراسة|عمل|portfolio|أعمال|project|مشروع|somali property|paysom|mogadishu|fleet|edu/)) {
+                return { text: isAr
+                    ? '📊 دراسات الحالة:\n\n🏠 Somali Property Hub — 10,000+ عقار\n💰 PaySom Digital Banking — 500K+ مستخدم\n🏥 HealthConnect — صحة عن بُعد\n🛍️ Mogadishu Market — 500+ بائع\n🚚 FleetTrack — توفير 25% تكاليف\n🎓 EduPlatform — 20,000+ طالب\n\nمشاريع ناجحة مُثبتة!'
+                    : '📊 Our Case Studies:\n\n🏠 Somali Property Hub — 10,000+ listings\n💰 PaySom Digital Banking — 500K+ users\n🏥 HealthConnect — Telehealth platform\n🛍️ Mogadishu Market — 500+ vendors\n🚚 FleetTrack — 25% cost savings\n🎓 EduPlatform — 20,000+ students\n\nProven successful projects!',
+                    suggestions: isAr ? ['خدماتنا', 'تواصل معنا'] : ['Our Services', 'Contact Us'] };
+            }
+
+            // WhatsApp
+            if (q.match(/whatsapp|wa\.me|واتساب|chat now|تحدث/)) {
+                return { text: isAr
+                    ? '📱 رابط واتساب المباشر:\nhttps://wa.me/252622146744\n\nاضغط الرابط للتحدث مع فريقنا مباشرة!'
+                    : '📱 Direct WhatsApp link:\nhttps://wa.me/252622146744\n\nClick the link to chat with our team directly!',
+                    suggestions: isAr ? ['خدماتنا', 'التسعير'] : ['Services', 'Pricing'] };
+            }
+
+            // Engineer Khalid
+            if (q.match(/khalid|خالد|engineer|mohamed|mukhtar|seo expert|خبير/)) {
+                return { text: isAr
+                    ? '👨‍💻 المهندس خالد مختار:\n\n🎯 خبير SEO والتسويق الرقمي\n📊 خبرة 8+ سنوات\n🏆 50+ عميل في المرتبة الأولى\n📈 زيادة زيارات 300%\n\nمتخصص في:\n✅ مراجعات SEO التقنية\n✅ بحث الكلمات المفتاحية\n✅ بناء الروابط\n✅ تحليلات Google\n\n📞 تواصل معه: +252 62 2146744'
+                    : '👨‍💻 Engineer Khalid Mukhtar:\n\n🎯 SEO & Digital Marketing Expert\n📊 8+ years experience\n🏆 50+ clients ranked #1\n📈 300% traffic increase\n\nSpecializing in:\n✅ Technical SEO audits\n✅ Keyword research\n✅ Link building\n✅ Google analytics\n\n📞 Contact: +252 62 2146744',
+                    suggestions: isAr ? ['خدمات SEO', 'التسعير', 'تواصل'] : ['SEO Services', 'Pricing', 'Contact'] };
+            }
+
+            // Team
+            if (q.match(/team|فريق|staff|موظف|engineer|engineers|developer|مطور/)) {
+                return { text: isAr
+                    ? '👥 فريقنا:\n\n👨‍💻 100+ مهندس برمجيات\n🎨 50+ مصمم UI/UX\n📊 30+ خبير تسويق رقمي\n☁️ 20+ مهندس سحابة\n🔒 15+ خبير أمن سيبراني\n\nفريق متعدد الجنسيات في 5 مكاتب عالمية!'
+                    : '👥 Our Team:\n\n👨‍💻 100+ Software Engineers\n🎨 50+ UI/UX Designers\n📊 30+ Digital Marketing Experts\n☁️ 20+ Cloud Engineers\n🔒 15+ Cybersecurity Experts\n\nMultinational team across 5 global offices!',
+                    suggestions: isAr ? ['تواصل معنا', 'خدماتنا', 'عن الشركة'] : ['Contact', 'Services', 'About Us'] };
+            }
+
+            // Default
+            return { text: isAr
+                ? 'أنا آسف، لم أفهم سؤالك تماماً. جرّب أحد هذه المواضيع:\n\n🔹 خدماتنا\n🔹 منتجاتنا\n🔹 التسعير\n🔹 SEO\n🔹 التواصل معنا\n🔹 المهندس خالد\n\nأو اكتب سؤالك ببساطة!'
+                : 'I\'m sorry, I didn\'t quite understand. Try one of these topics:\n\n🔹 Our Services\n🔹 Products\n🔹 Pricing\n🔹 SEO\n🔹 Contact Us\n🔹 Engineer Khalid\n\nOr just type your question simply!',
+                suggestions: isAr ? ['خدماتنا', 'المنتجات', 'التسعير', 'تواصل معنا'] : ['Our Services', 'Products', 'Pricing', 'Contact Us'] };
+        }
     </script>
 </body>
 </html>
