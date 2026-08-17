@@ -4,16 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TECHZONE - Business Solutions</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             min-height: 100vh;
-            background: #ffffff;
+            background: #050510;
             font-family: 'Inter', sans-serif;
-            color: #1a1a2e;
+            color: #ffffff;
             overflow-x: hidden;
+        }
+
+        /* ===== ANIMATED BG ===== */
+        .bg-gradient {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.25), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 50%, rgba(168, 85, 247, 0.12), transparent),
+                radial-gradient(ellipse 60% 40% at 20% 80%, rgba(59, 130, 246, 0.1), transparent),
+                #050510;
+        }
+
+        .grid-pattern {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        /* floating orbs */
+        .orb {
+            position: fixed; border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none;
+            animation: float 20s ease-in-out infinite;
+        }
+        .orb-1 { width: 500px; height: 500px; background: rgba(99, 102, 241, 0.15); top: -10%; left: -5%; animation-delay: 0s; }
+        .orb-2 { width: 400px; height: 400px; background: rgba(168, 85, 247, 0.1); top: 50%; right: -10%; animation-delay: -7s; }
+        .orb-3 { width: 350px; height: 350px; background: rgba(59, 130, 246, 0.1); bottom: -5%; left: 30%; animation-delay: -14s; }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
         }
 
         /* ===== NAVBAR ===== */
@@ -21,78 +53,79 @@
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
             display: flex; align-items: center; justify-content: space-between;
             padding: 1rem 4rem;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid #e8e8ee;
+            background: rgba(5, 5, 16, 0.7);
+            backdrop-filter: blur(30px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             transition: all 0.3s ease;
         }
-        .navbar.scrolled { box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06); }
+        .navbar.scrolled { background: rgba(5, 5, 16, 0.9); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
 
         .nav-logo {
-            display: flex; align-items: center; gap: 0.6rem;
-            font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 800;
-            letter-spacing: -0.02rem;
-            color: #1a1a2e;
-            text-decoration: none; cursor: pointer;
+            display: flex; align-items: center; gap: 0.7rem;
+            font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700;
+            color: #ffffff; text-decoration: none; cursor: pointer;
         }
-        .nav-logo-icon { width: 36px; height: 36px; }
+        .nav-logo-icon { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #6366f1, #a855f7); display: flex; align-items: center; justify-content: center; }
+        .nav-logo-icon svg { width: 22px; height: 22px; fill: #fff; }
 
-        .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+        .nav-links { display: flex; align-items: center; gap: 1.8rem; list-style: none; }
         .nav-links a {
-            font-size: 0.85rem; font-weight: 500;
-            color: #64648c;
-            text-decoration: none; letter-spacing: 0.01rem;
+            font-size: 0.82rem; font-weight: 500;
+            color: rgba(255, 255, 255, 0.55);
+            text-decoration: none; letter-spacing: 0.02rem;
             transition: color 0.3s ease; cursor: pointer;
         }
-        .nav-links a:hover { color: #4f46e5; }
+        .nav-links a:hover { color: #ffffff; }
 
-        .nav-phone { font-size: 0.85rem; font-weight: 500; color: #64648c; }
-        .nav-phone span { color: #4f46e5; }
+        .nav-phone { font-size: 0.82rem; font-weight: 500; color: rgba(255,255,255,0.55); }
+        .nav-phone span { color: #818cf8; }
 
         .nav-cta {
-            padding: 0.6rem 1.5rem;
-            background: #4f46e5;
-            color: #ffffff; font-size: 0.82rem; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.05rem;
-            border: none; border-radius: 8px; cursor: pointer; text-decoration: none;
+            padding: 0.55rem 1.4rem;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: #ffffff; font-size: 0.8rem; font-weight: 600;
+            border: none; border-radius: 50px; cursor: pointer; text-decoration: none;
             transition: all 0.3s ease;
         }
-        .nav-cta:hover { background: #4338ca; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); }
+        .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4); }
 
         .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; }
-        .nav-toggle span { width: 24px; height: 2px; background: #1a1a2e; border-radius: 2px; transition: 0.3s; }
+        .nav-toggle span { width: 24px; height: 2px; background: #fff; border-radius: 2px; }
 
         /* ===== HERO ===== */
         .hero {
-            position: relative; min-height: 100vh;
+            position: relative; z-index: 1; min-height: 100vh;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; padding: 8rem 2rem 4rem;
-            background: linear-gradient(180deg, #f8f9ff 0%, #ffffff 50%, #f0f1f8 100%);
         }
 
         .hero-badge {
-            display: inline-flex; align-items: center; gap: 0.5rem;
+            display: inline-flex; align-items: center; gap: 0.6rem;
             padding: 0.5rem 1.2rem; border-radius: 50px;
-            background: rgba(79, 70, 229, 0.08);
-            border: 1px solid rgba(79, 70, 229, 0.15);
-            font-size: 0.8rem; font-weight: 600; color: #4f46e5;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            font-size: 0.82rem; font-weight: 500; color: #a5b4fc;
             margin-bottom: 2rem; animation: fadeInUp 0.8s ease-out both;
         }
+        .hero-badge .pulse { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); } 50% { box-shadow: 0 0 0 8px rgba(34,197,94,0); } }
 
         h1 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 5.5rem; font-weight: 800; letter-spacing: -0.04rem;
-            line-height: 1.05; color: #1a1a2e; margin-bottom: 1.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 5rem; font-weight: 700; letter-spacing: -0.03rem;
+            line-height: 1.08; margin-bottom: 1.5rem;
             animation: fadeInUp 0.8s ease-out 0.2s both;
         }
-        h1 span {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        h1 .gradient-text {
+            background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% auto; animation: shimmer 4s ease infinite;
         }
+        @keyframes shimmer { 0% { background-position: 0% center; } 50% { background-position: 100% center; } 100% { background-position: 0% center; } }
 
-        .subtitle {
-            font-size: 1.1rem; font-weight: 400; color: #64648c;
-            max-width: 600px; line-height: 1.7; margin-bottom: 3rem;
+        .hero-desc {
+            font-size: 1.1rem; font-weight: 400; color: rgba(255,255,255,0.5);
+            max-width: 580px; line-height: 1.8; margin-bottom: 3rem;
             animation: fadeInUp 0.8s ease-out 0.4s both;
         }
 
@@ -101,165 +134,188 @@
             animation: fadeInUp 0.8s ease-out 0.6s both;
         }
 
-        .btn-primary {
-            padding: 1rem 2rem; background: #4f46e5; color: #fff;
-            font-size: 0.95rem; font-weight: 600; border: none; border-radius: 10px;
+        .btn-glow {
+            padding: 0.9rem 2.2rem; background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: #fff; font-size: 0.95rem; font-weight: 600;
+            border: none; border-radius: 12px; cursor: pointer; text-decoration: none;
+            position: relative; overflow: hidden; transition: all 0.3s ease;
+        }
+        .btn-glow::before {
+            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(135deg, #6366f1, #a855f7, #f472b6, #6366f1);
+            border-radius: 14px; z-index: -1; filter: blur(15px); opacity: 0; transition: opacity 0.3s ease;
+        }
+        .btn-glow:hover::before { opacity: 0.6; }
+        .btn-glow:hover { transform: translateY(-2px); }
+
+        .btn-outline {
+            padding: 0.9rem 2.2rem; background: transparent;
+            color: rgba(255,255,255,0.8); font-size: 0.95rem; font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
             cursor: pointer; text-decoration: none; transition: all 0.3s ease;
         }
-        .btn-primary:hover { background: #4338ca; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3); }
+        .btn-outline:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.03); }
 
-        .btn-secondary {
-            padding: 1rem 2rem; background: transparent; color: #4f46e5;
-            font-size: 0.95rem; font-weight: 600; border: 2px solid #e0e0f0; border-radius: 10px;
-            cursor: pointer; text-decoration: none; transition: all 0.3s ease;
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hero-visual {
+            margin-top: 4rem; width: 100%; max-width: 900px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px; padding: 2rem; animation: fadeInUp 0.8s ease-out 0.8s both;
+            backdrop-filter: blur(10px);
         }
-        .btn-secondary:hover { border-color: #4f46e5; background: rgba(79, 70, 229, 0.04); }
-
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .code-window {
+            background: rgba(0,0,0,0.4); border-radius: 12px; padding: 1.5rem;
+            font-family: 'Fira Code', 'Courier New', monospace; font-size: 0.85rem;
+            line-height: 1.8; color: rgba(255,255,255,0.6); text-align: left; overflow: hidden;
+        }
+        .code-window .dots { display: flex; gap: 6px; margin-bottom: 1rem; }
+        .code-window .dots span { width: 12px; height: 12px; border-radius: 50%; }
+        .code-window .dots span:nth-child(1) { background: #ef4444; }
+        .code-window .dots span:nth-child(2) { background: #eab308; }
+        .code-window .dots span:nth-child(3) { background: #22c55e; }
+        .code-line { margin: 0.3rem 0; }
+        .code-line .keyword { color: #c084fc; }
+        .code-line .func { color: #818cf8; }
+        .code-line .string { color: #34d399; }
+        .code-line .comment { color: rgba(255,255,255,0.2); }
+        .code-line .bracket { color: rgba(255,255,255,0.3); }
+        .typing-cursor { display: inline-block; width: 2px; height: 1em; background: #818cf8; animation: blink 1s infinite; vertical-align: text-bottom; }
+        @keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
 
         /* ===== SERVICES ===== */
-        .services { padding: 6rem 2rem; background: #ffffff; }
+        .services { position: relative; z-index: 1; padding: 7rem 2rem; }
         .section-header { text-align: center; margin-bottom: 4rem; }
         .section-tag {
-            display: inline-block; font-size: 0.8rem; font-weight: 700;
-            color: #4f46e5; text-transform: uppercase; letter-spacing: 0.15rem;
-            margin-bottom: 1rem;
+            display: inline-block; font-size: 0.75rem; font-weight: 700;
+            color: #818cf8; text-transform: uppercase; letter-spacing: 0.2rem;
+            margin-bottom: 1rem; padding: 0.4rem 1rem; border-radius: 50px;
+            background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2);
         }
-        .section-header h2 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 2.8rem; font-weight: 800; color: #1a1a2e;
-            letter-spacing: -0.02rem;
-        }
-        .section-header p { font-size: 1.05rem; color: #64648c; max-width: 550px; margin: 1rem auto 0; line-height: 1.7; }
+        .section-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2.8rem; font-weight: 700; letter-spacing: -0.02rem; }
+        .section-header p { font-size: 1.05rem; color: rgba(255,255,255,0.45); max-width: 500px; margin: 1rem auto 0; line-height: 1.7; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.2rem; max-width: 1100px; margin: 0 auto; }
         .card {
-            background: #f8f9ff; border: 1px solid #e8e8ee; border-radius: 16px;
-            padding: 2.5rem; transition: all 0.3s ease; cursor: pointer;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 2rem; transition: all 0.4s ease;
+            position: relative; overflow: hidden; cursor: pointer;
         }
-        .card:hover { transform: translateY(-4px); border-color: #4f46e5; box-shadow: 0 12px 40px rgba(79, 70, 229, 0.1); }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #6366f1, #a855f7, transparent);
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        .card:hover::before { opacity: 1; }
+        .card:hover { border-color: rgba(99, 102, 241, 0.3); background: rgba(255,255,255,0.05); transform: translateY(-4px); }
         .card-icon {
-            width: 50px; height: 50px; border-radius: 12px;
-            background: rgba(79, 70, 229, 0.08); display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; margin-bottom: 1.5rem;
+            width: 48px; height: 48px; border-radius: 12px;
+            background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; margin-bottom: 1.2rem;
         }
-        .card h3 { font-size: 1.2rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.8rem; }
-        .card p { font-size: 0.95rem; color: #64648c; line-height: 1.7; }
+        .card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.6rem; }
+        .card p { font-size: 0.9rem; color: rgba(255,255,255,0.45); line-height: 1.7; }
 
         /* ===== STATS ===== */
-        .stats { padding: 5rem 2rem; background: #f8f9ff; }
-        .stats-grid { display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap; max-width: 1000px; margin: 0 auto; }
+        .stats { position: relative; z-index: 1; padding: 5rem 2rem; }
+        .stats-grid { display: flex; justify-content: center; gap: 5rem; flex-wrap: wrap; max-width: 1000px; margin: 0 auto; }
         .stat { text-align: center; }
-        .stat-number {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 3rem; font-weight: 800; color: #4f46e5;
-        }
-        .stat-label { font-size: 0.9rem; color: #64648c; margin-top: 0.3rem; }
+        .stat-number { font-family: 'Space Grotesk', sans-serif; font-size: 3.2rem; font-weight: 700; background: linear-gradient(135deg, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 0.9rem; color: rgba(255,255,255,0.4); margin-top: 0.3rem; }
 
-        /* ===== CTA SECTION ===== */
+        /* ===== CTA ===== */
         .cta-section {
-            padding: 6rem 2rem; text-align: center;
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            color: #ffffff;
+            position: relative; z-index: 1; padding: 6rem 2rem; text-align: center;
+            margin: 2rem auto; max-width: 900px;
+            background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 24px; overflow: hidden;
         }
-        .cta-section h2 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;
+        .cta-section::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.1), transparent 70%);
         }
-        .cta-section p { font-size: 1.1rem; opacity: 0.85; max-width: 500px; margin: 0 auto 2rem; line-height: 1.7; }
-        .btn-white {
-            padding: 1rem 2.5rem; background: #ffffff; color: #4f46e5;
-            font-size: 1rem; font-weight: 700; border: none; border-radius: 10px;
-            cursor: pointer; text-decoration: none; transition: all 0.3s ease;
-        }
-        .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); }
+        .cta-section h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2.4rem; font-weight: 700; margin-bottom: 1rem; position: relative; }
+        .cta-section p { font-size: 1.05rem; color: rgba(255,255,255,0.5); max-width: 450px; margin: 0 auto 2rem; line-height: 1.7; position: relative; }
+        .cta-section .btn-glow { position: relative; }
 
         /* ===== FOOTER ===== */
-        footer { padding: 3rem 2rem; text-align: center; background: #f8f9ff; border-top: 1px solid #e8e8ee; color: #64648c; font-size: 0.9rem; }
+        footer { position: relative; z-index: 1; padding: 3rem 2rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); font-size: 0.85rem; }
 
-        /* ===== OVERLAY PANELS ===== */
+        /* ===== OVERLAYS ===== */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000;
-            background: #ffffff; display: none; flex-direction: column;
+            background: #050510; display: none; flex-direction: column;
         }
         .overlay.active { display: flex; }
 
         .overlay-header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 4rem; border-bottom: 1px solid #e8e8ee; flex-shrink: 0;
+            padding: 1rem 4rem; border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0;
+            background: rgba(5, 5, 16, 0.8); backdrop-filter: blur(20px);
         }
-        .overlay-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.3rem; font-weight: 800; color: #1a1a2e; }
+        .overlay-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; }
         .overlay-back {
             display: flex; align-items: center; gap: 0.4rem;
             padding: 0.5rem 1rem; border-radius: 8px;
-            border: 1px solid #e8e8ee; background: #f8f9ff;
-            color: #4f46e5; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);
+            color: #a5b4fc; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500;
             cursor: pointer; transition: all 0.3s ease;
         }
-        .overlay-back:hover { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+        .overlay-back:hover { background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3); }
         .overlay-back svg { width: 14px; height: 14px; fill: currentColor; }
 
         .overlay-body { flex: 1; overflow-y: auto; padding: 3rem 4rem; }
-        .overlay-body::-webkit-scrollbar { width: 6px; }
-        .overlay-body::-webkit-scrollbar-track { background: #f8f9ff; }
-        .overlay-body::-webkit-scrollbar-thumb { background: #d0d0e0; border-radius: 3px; }
+        .overlay-body::-webkit-scrollbar { width: 5px; }
+        .overlay-body::-webkit-scrollbar-track { background: transparent; }
+        .overlay-body::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 3px; }
 
-        .overlay-intro { max-width: 700px; margin: 0 auto 3rem; text-align: center; }
-        .overlay-intro h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 800; color: #1a1a2e; margin-bottom: 1rem; }
-        .overlay-intro p { font-size: 1rem; color: #64648c; line-height: 1.8; }
+        .overlay-intro { max-width: 650px; margin: 0 auto 3rem; text-align: center; }
+        .overlay-intro h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 1rem; }
+        .overlay-intro p { font-size: 1rem; color: rgba(255,255,255,0.45); line-height: 1.8; }
 
-        .overlay-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+        .overlay-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; max-width: 1100px; margin: 0 auto; }
         .overlay-card {
-            background: #f8f9ff; border: 1px solid #e8e8ee; border-radius: 14px;
-            padding: 2rem; transition: all 0.3s ease; cursor: pointer;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; padding: 2rem; transition: all 0.3s ease; cursor: pointer;
         }
-        .overlay-card:hover { transform: translateY(-4px); border-color: #4f46e5; box-shadow: 0 12px 40px rgba(79, 70, 229, 0.1); }
+        .overlay-card:hover { border-color: rgba(99, 102, 241, 0.3); background: rgba(255,255,255,0.05); transform: translateY(-3px); }
         .overlay-card-icon { font-size: 2rem; margin-bottom: 1rem; }
-        .overlay-card h3 { font-size: 1.05rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.6rem; }
-        .overlay-card p { font-size: 0.9rem; color: #64648c; line-height: 1.6; }
-        .card-tag {
-            display: inline-block; margin-top: 1rem; padding: 0.25rem 0.7rem;
-            background: rgba(79, 70, 229, 0.08); border-radius: 20px;
-            font-size: 0.72rem; font-weight: 600; color: #4f46e5; text-transform: uppercase;
-        }
+        .overlay-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .overlay-card p { font-size: 0.88rem; color: rgba(255,255,255,0.4); line-height: 1.6; }
+        .card-tag { display: inline-block; margin-top: 1rem; padding: 0.25rem 0.7rem; background: rgba(99,102,241,0.1); border-radius: 20px; font-size: 0.7rem; font-weight: 600; color: #818cf8; text-transform: uppercase; }
 
         .consult-form { max-width: 550px; margin: 0 auto; }
         .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #1a1a2e; margin-bottom: 0.5rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; }
         .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 0.85rem 1rem; background: #f8f9ff; border: 1px solid #e0e0f0;
-            border-radius: 10px; color: #1a1a2e; font-family: 'Inter', sans-serif;
-            font-size: 0.95rem; transition: all 0.3s ease; outline: none;
+            width: 100%; padding: 0.85rem 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95rem;
+            transition: all 0.3s ease; outline: none;
         }
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
         }
         .form-group textarea { min-height: 110px; resize: vertical; }
-        .form-group select option { background: #fff; }
+        .form-group select option { background: #0a0a1a; }
         .submit-btn {
-            width: 100%; padding: 1rem; background: #4f46e5; color: #fff;
-            font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600;
+            width: 100%; padding: 1rem; background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: #fff; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600;
             border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;
         }
-        .submit-btn:hover { background: #4338ca; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3); }
+        .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(99, 102, 241, 0.35); }
 
         /* ===== CHAT WIDGET ===== */
         .chat-widget { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; align-items: center; gap: 0.7rem; cursor: pointer; }
         .chat-pill {
             display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem;
-            background: #ffffff; border: 1px solid #e8e8ee; border-radius: 50px;
-            font-size: 0.85rem; font-weight: 500; color: #1a1a2e;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            background: rgba(10,10,15,0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 50px;
+            font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.8);
+            backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         .chat-pill .dot { width: 8px; height: 8px; background: #25D366; border-radius: 50%; animation: dotPulse 1.5s ease-in-out infinite; }
         @keyframes dotPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .chat-icon {
-            width: 56px; height: 56px; background: #25D366; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
-            transition: all 0.3s ease;
-        }
-        .chat-icon:hover { transform: scale(1.08); box-shadow: 0 6px 25px rgba(37, 211, 102, 0.4); }
+        .chat-icon { width: 56px; height: 56px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.3); transition: all 0.3s ease; }
+        .chat-icon:hover { transform: scale(1.08); box-shadow: 0 6px 25px rgba(37,211,102,0.45); }
         .chat-icon svg { width: 28px; height: 28px; fill: #ffffff; }
 
         /* ===== RESPONSIVE ===== */
@@ -267,7 +323,7 @@
             .navbar { padding: 1rem 2rem; }
             .nav-links { display: none; }
             .nav-toggle { display: flex; }
-            .nav-links.active { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: #fff; padding: 2rem; gap: 1.5rem; border-bottom: 1px solid #e8e8ee; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+            .nav-links.active { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: rgba(5,5,16,0.98); padding: 2rem; gap: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(30px); }
             .overlay-header { padding: 1rem 2rem; }
             .overlay-body { padding: 2rem; }
         }
@@ -276,23 +332,30 @@
             .hero { padding: 7rem 1.5rem 3rem; }
             .hero-buttons { flex-direction: column; width: 100%; }
             .hero-buttons a, .hero-buttons button { width: 100%; text-align: center; }
+            .hero-visual { display: none; }
             .section-header h2 { font-size: 2rem; }
             .stats-grid { gap: 2rem; }
             .stat-number { font-size: 2.2rem; }
             .chat-pill { display: none; }
+            .cta-section { margin: 1rem; padding: 3rem 1.5rem; }
             .overlay-body { padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
+    <div class="bg-gradient"></div>
+    <div class="grid-pattern"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
     <!-- NAVBAR -->
     <nav class="navbar" id="navbar">
         <a href="#" class="nav-logo" onclick="closeAllOverlays(); return false;">
-            <svg class="nav-logo-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                <rect width="40" height="40" rx="10" fill="#4f46e5"/>
-                <text x="20" y="27" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="16" font-weight="800" fill="#ffffff">TZ</text>
-            </svg>
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>
+            </div>
             techzone
         </a>
         <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
@@ -309,54 +372,42 @@
     </nav>
 
     <!-- HERO -->
-    <section class="hero" id="home">
-        <div class="hero-badge">🚀 Trusted by 90+ Businesses Worldwide</div>
-        <h1>Digital Solutions<br>for <span>Modern Business</span></h1>
-        <p class="subtitle">Techzone Business Solutions is a leading technology company dedicated to delivering innovative digital solutions. We empower businesses with cutting-edge software, cloud services, and IT solutions to drive efficiency, growth, and transformation.</p>
+    <section class="hero">
+        <div class="hero-badge"><span class="pulse"></span> Available for new projects</div>
+        <h1>We Build<br><span class="gradient-text">Digital Futures</span></h1>
+        <p class="hero-desc">Techzone Business Solutions is a leading technology company dedicated to delivering innovative digital solutions. We empower businesses with cutting-edge software, cloud services, and IT solutions.</p>
         <div class="hero-buttons">
-            <a onclick="openOverlay('consult')" class="btn-primary" style="cursor:pointer">Consult Our Experts</a>
-            <a onclick="openOverlay('services')" class="btn-secondary" style="cursor:pointer">Explore Services</a>
+            <a onclick="openOverlay('consult')" class="btn-glow" style="cursor:pointer">Start a Project</a>
+            <a onclick="openOverlay('services')" class="btn-outline" style="cursor:pointer">View Services</a>
+        </div>
+        <div class="hero-visual">
+            <div class="code-window">
+                <div class="dots"><span></span><span></span><span></span></div>
+                <div class="code-line"><span class="comment">// TechZone Digital Solutions</span></div>
+                <div class="code-line"><span class="keyword">const</span> <span class="func">techzone</span> <span class="bracket">=</span> <span class="bracket">{</span></div>
+                <div class="code-line">&nbsp;&nbsp;mission: <span class="string">"Empower businesses with technology"</span>,</div>
+                <div class="code-line">&nbsp;&nbsp;services: [<span class="string">"Web"</span>, <span class="string">"Mobile"</span>, <span class="string">"Cloud"</span>, <span class="string">"AI"</span>],</div>
+                <div class="code-line">&nbsp;&nbsp;clients: <span class="string">"90+ worldwide"</span>,</div>
+                <div class="code-line">&nbsp;&nbsp;<span class="func">innovate</span>: () =&gt; <span class="string">"always"</span></div>
+                <div class="code-line"><span class="bracket">}</span>;<span class="typing-cursor"></span></div>
+            </div>
         </div>
     </section>
 
     <!-- SERVICES -->
-    <section class="services" id="services-section">
+    <section class="services">
         <div class="section-header">
             <div class="section-tag">What We Do</div>
             <h2>Our Services</h2>
-            <p>End-to-end technology solutions designed to accelerate your business growth and digital transformation.</p>
+            <p>End-to-end technology solutions designed to accelerate your business growth.</p>
         </div>
         <div class="grid">
-            <div class="card" onclick="openOverlay('services')">
-                <div class="card-icon">&#60;/&#62;</div>
-                <h3>Web Development</h3>
-                <p>Modern, responsive websites built with cutting-edge technologies for maximum performance and user engagement.</p>
-            </div>
-            <div class="card" onclick="openOverlay('services')">
-                <div class="card-icon">&#128241;</div>
-                <h3>Mobile Apps</h3>
-                <p>Native and cross-platform mobile applications that deliver exceptional user experiences on iOS and Android.</p>
-            </div>
-            <div class="card" onclick="openOverlay('services')">
-                <div class="card-icon">&#9881;</div>
-                <h3>Enterprise Solutions</h3>
-                <p>Scalable ERP, CRM, and custom software solutions designed to streamline your business operations.</p>
-            </div>
-            <div class="card" onclick="openOverlay('services')">
-                <div class="card-icon">&#129302;</div>
-                <h3>AI & Automation</h3>
-                <p>Intelligent AI integration and process automation to boost efficiency and drive digital transformation.</p>
-            </div>
-            <div class="card" onclick="openOverlay('services')">
-                <div class="card-icon">&#9729;</div>
-                <h3>Cloud Services</h3>
-                <p>Reliable cloud infrastructure and deployment solutions to ensure scalability and high availability.</p>
-            </div>
-            <div class="card" onclick="openOverlay('services')">
-                <div class="card-icon">&#128737;</div>
-                <h3>Cyber Security</h3>
-                <p>Industry-grade security practices to protect your digital assets and ensure data privacy compliance.</p>
-            </div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#60;/&#62;</div><h3>Web Development</h3><p>Modern, responsive websites built with cutting-edge technologies for maximum performance.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#128241;</div><h3>Mobile Apps</h3><p>Native and cross-platform mobile applications for iOS and Android.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#9881;</div><h3>Enterprise Solutions</h3><p>Scalable ERP, CRM, and custom software to streamline operations.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#129302;</div><h3>AI & Automation</h3><p>Intelligent AI integration and process automation for efficiency.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#9729;</div><h3>Cloud Services</h3><p>Reliable cloud infrastructure for scalability and high availability.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#128737;</div><h3>Cyber Security</h3><p>Industry-grade security to protect your digital assets.</p></div>
         </div>
     </section>
 
@@ -373,27 +424,22 @@
     <!-- CTA -->
     <section class="cta-section">
         <h2>Ready to Transform Your Business?</h2>
-        <p>Let's discuss how technology can drive your next phase of growth. Get a free consultation with our experts.</p>
-        <a onclick="openOverlay('consult')" class="btn-white" style="cursor:pointer">Get Started Today</a>
+        <p>Let's discuss how technology can drive your next phase of growth.</p>
+        <a onclick="openOverlay('consult')" class="btn-glow" style="cursor:pointer; position:relative">Get Free Consultation</a>
     </section>
 
     <!-- FOOTER -->
-    <footer>
-        <p>&copy; 2026 TechZone Business Solutions. All rights reserved.</p>
-    </footer>
+    <footer><p>&copy; 2026 TechZone Business Solutions. All rights reserved.</p></footer>
 
-    <!-- CHAT WIDGET -->
+    <!-- CHAT -->
     <div class="chat-widget" onclick="window.open('https://wa.me/252622146744', '_blank')">
         <div class="chat-pill"><span class="dot"></span>Chat with us</div>
-        <div class="chat-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>
+        <div class="chat-icon"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>
     </div>
 
     <!-- OVERLAYS -->
     <div class="overlay" id="overlay-services">
-        <div class="overlay-header">
-            <span class="overlay-title">Our Services</span>
-            <button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
-        </div>
+        <div class="overlay-header"><span class="overlay-title">Our Services</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
         <div class="overlay-body">
             <div class="overlay-intro"><h2>End-to-End Digital Solutions</h2><p>From concept to deployment, we deliver comprehensive technology services tailored to your business needs.</p></div>
             <div class="overlay-grid">
@@ -410,116 +456,93 @@
     </div>
 
     <div class="overlay" id="overlay-products">
-        <div class="overlay-header">
-            <span class="overlay-title">Products</span>
-            <button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
-        </div>
+        <div class="overlay-header"><span class="overlay-title">Products</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
         <div class="overlay-body">
             <div class="overlay-intro"><h2>Our Products</h2><p>We build SaaS platforms, mobile apps, and enterprise tools that power businesses across industries.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#128203;</div><h3>TechZone ERP</h3><p>Full-featured cloud ERP with modules for finance, inventory, HR, procurement, and reporting.</p><span class="card-tag">Enterprise</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128100;</div><h3>TechZone CRM</h3><p>Customer relationship management with sales pipeline, lead scoring, and analytics.</p><span class="card-tag">Sales</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128230;</div><h3>TechZone Commerce</h3><p>Multi-vendor e-commerce platform with payment gateway and order management.</p><span class="card-tag">E-Commerce</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128197;</div><h3>TechZone Scheduler</h3><p>Smart appointment and resource scheduling with calendar sync and reminders.</p><span class="card-tag">SaaS</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128202;</div><h3>TechZone Analytics</h3><p>Real-time business intelligence dashboard with custom reports and KPI tracking.</p><span class="card-tag">Analytics</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128274;</div><h3>TechZone Guard</h3><p>Cybersecurity monitoring with threat detection, incident response, and compliance.</p><span class="card-tag">Security</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128203;</div><h3>TechZone ERP</h3><p>Full-featured cloud ERP with finance, inventory, HR, procurement modules.</p><span class="card-tag">Enterprise</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128100;</div><h3>TechZone CRM</h3><p>Sales pipeline, lead scoring, automation, and analytics dashboard.</p><span class="card-tag">Sales</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128230;</div><h3>TechZone Commerce</h3><p>Multi-vendor e-commerce with payment gateway and order management.</p><span class="card-tag">E-Commerce</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128197;</div><h3>TechZone Scheduler</h3><p>Smart appointment scheduling with calendar sync and reminders.</p><span class="card-tag">SaaS</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128202;</div><h3>TechZone Analytics</h3><p>Real-time business intelligence with custom reports and KPI tracking.</p><span class="card-tag">Analytics</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128274;</div><h3>TechZone Guard</h3><p>Cybersecurity monitoring with threat detection and compliance.</p><span class="card-tag">Security</span></div>
             </div>
         </div>
     </div>
 
     <div class="overlay" id="overlay-industries">
-        <div class="overlay-header">
-            <span class="overlay-title">Industries</span>
-            <button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
-        </div>
+        <div class="overlay-header"><span class="overlay-title">Industries</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>Industries We Serve</h2><p>We have deep domain expertise across multiple sectors, delivering tailored solutions for unique challenges.</p></div>
+            <div class="overlay-intro"><h2>Industries We Serve</h2><p>Deep domain expertise across multiple sectors with tailored solutions.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#127968;</div><h3>Real Estate</h3><p>Property portals, listing platforms, CRM integration, and virtual tour solutions.</p><span class="card-tag">PropTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127973;</div><h3>Banking & Finance</h3><p>Secure fintech solutions, payment systems, loan management, and compliance platforms.</p><span class="card-tag">FinTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128138;</div><h3>Healthcare</h3><p>Telemedicine platforms, EHR systems, patient management, and medical IoT.</p><span class="card-tag">HealthTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127981;</div><h3>Retail & E-Commerce</h3><p>Online stores, POS systems, inventory management, and omnichannel retail.</p><span class="card-tag">RetailTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128666;</div><h3>Transport & Logistics</h3><p>Fleet management, route optimization, shipment tracking, and warehouse automation.</p><span class="card-tag">LogiTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127891;</div><h3>Education</h3><p>LMS platforms, virtual classrooms, student management, and e-learning delivery.</p><span class="card-tag">EduTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127968;</div><h3>Real Estate</h3><p>Property portals, listing platforms, CRM integration, virtual tours.</p><span class="card-tag">PropTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127973;</div><h3>Banking & Finance</h3><p>Fintech solutions, payment systems, loan management, compliance.</p><span class="card-tag">FinTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128138;</div><h3>Healthcare</h3><p>Telemedicine, EHR systems, patient management, medical IoT.</p><span class="card-tag">HealthTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127981;</div><h3>Retail & E-Commerce</h3><p>Online stores, POS, inventory management, omnichannel retail.</p><span class="card-tag">RetailTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128666;</div><h3>Transport & Logistics</h3><p>Fleet management, route optimization, shipment tracking.</p><span class="card-tag">LogiTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127891;</div><h3>Education</h3><p>LMS, virtual classrooms, student management, e-learning.</p><span class="card-tag">EduTech</span></div>
             </div>
         </div>
     </div>
 
     <div class="overlay" id="overlay-corporate">
-        <div class="overlay-header">
-            <span class="overlay-title">Corporate</span>
-            <button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
-        </div>
+        <div class="overlay-header"><span class="overlay-title">Corporate</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>About TechZone</h2><p>TechZone Business Solutions is a leading technology company dedicated to delivering innovative digital solutions.</p></div>
+            <div class="overlay-intro"><h2>About TechZone</h2><p>A leading technology company dedicated to delivering innovative digital solutions worldwide.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#127919;</div><h3>Our Mission</h3><p>To accelerate digital transformation for businesses worldwide through innovative technology.</p><span class="card-tag">Purpose</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128065;</div><h3>Our Vision</h3><p>To be the global leader in digital innovation, empowering every organization to thrive.</p><span class="card-tag">Future</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#129309;</div><h3>Our Values</h3><p>Innovation, integrity, excellence, collaboration, and customer-centricity.</p><span class="card-tag">Culture</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128101;</div><h3>Our Team</h3><p>200+ engineers, designers, and consultants working across 5 global offices.</p><span class="card-tag">People</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127942;</div><h3>Awards</h3><p>Winner of multiple industry awards for innovation and client satisfaction.</p><span class="card-tag">Achievements</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127919;</div><h3>Our Mission</h3><p>Accelerate digital transformation for businesses through innovative technology.</p><span class="card-tag">Purpose</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128065;</div><h3>Our Vision</h3><p>Global leader in digital innovation, empowering organizations to thrive.</p><span class="card-tag">Future</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#129309;</div><h3>Our Values</h3><p>Innovation, integrity, excellence, collaboration, customer-centricity.</p><span class="card-tag">Culture</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128101;</div><h3>Our Team</h3><p>200+ engineers, designers, and consultants across 5 global offices.</p><span class="card-tag">People</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127942;</div><h3>Awards</h3><p>Multiple industry awards for innovation and client satisfaction.</p><span class="card-tag">Achievements</span></div>
                 <div class="overlay-card"><div class="overlay-card-icon">&#128205;</div><h3>Global Presence</h3><p>Offices in Somalia, UAE, UK, USA, and India.</p><span class="card-tag">Locations</span></div>
             </div>
         </div>
     </div>
 
     <div class="overlay" id="overlay-casestudies">
-        <div class="overlay-header">
-            <span class="overlay-title">Case Studies</span>
-            <button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
-        </div>
+        <div class="overlay-header"><span class="overlay-title">Case Studies</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>Our Work</h2><p>Explore how we've helped businesses transform operations, grow revenue, and delight customers.</p></div>
+            <div class="overlay-intro"><h2>Our Work</h2><p>Explore how we've helped businesses transform and grow.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#127968;</div><h3>Somali Property Hub</h3><p>Real estate portal with 10,000+ listings, virtual tours, and integrated payments.</p><span class="card-tag">Real Estate</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127973;</div><h3>PaySom Digital Banking</h3><p>Mobile banking platform with real-time transfers and merchant services for 500K+ users.</p><span class="card-tag">FinTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128138;</div><h3>HealthConnect</h3><p>Telehealth platform connecting patients with doctors via video, chat, and e-prescriptions.</p><span class="card-tag">Healthcare</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127981;</div><h3>Mogadishu Market Online</h3><p>Multi-vendor e-commerce marketplace with 500+ sellers and same-day delivery.</p><span class="card-tag">E-Commerce</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128666;</div><h3>FleetTrack Logistics</h3><p>Fleet management with GPS tracking, route optimization, saving 25% in costs.</p><span class="card-tag">Logistics</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127891;</div><h3>EduPlatform Somalia</h3><p>LMS with 20,000+ students, live classes, and certification management.</p><span class="card-tag">Education</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127968;</div><h3>Somali Property Hub</h3><p>Real estate portal with 10,000+ listings and integrated payments.</p><span class="card-tag">Real Estate</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127973;</div><h3>PaySom Digital Banking</h3><p>Mobile banking with real-time transfers for 500K+ users.</p><span class="card-tag">FinTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128138;</div><h3>HealthConnect</h3><p>Telehealth platform with video, chat, and e-prescriptions.</p><span class="card-tag">Healthcare</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127981;</div><h3>Mogadishu Market Online</h3><p>Multi-vendor marketplace with 500+ sellers.</p><span class="card-tag">E-Commerce</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128666;</div><h3>FleetTrack Logistics</h3><p>Fleet management saving 25% in operational costs.</p><span class="card-tag">Logistics</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127891;</div><h3>EduPlatform Somalia</h3><p>LMS with 20,000+ students and live classes.</p><span class="card-tag">Education</span></div>
             </div>
         </div>
     </div>
 
     <div class="overlay" id="overlay-blog">
-        <div class="overlay-header">
-            <span class="overlay-title">Blog</span>
-            <button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
-        </div>
+        <div class="overlay-header"><span class="overlay-title">Blog</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>Latest Insights</h2><p>Stay updated with our latest articles, tech insights, industry trends, and company news.</p></div>
+            <div class="overlay-intro"><h2>Latest Insights</h2><p>Tech trends, industry insights, and company news.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#128187;</div><h3>Top 10 Tech Trends in 2026</h3><p>Technologies shaping the future — from AI agents to edge computing.</p><span class="card-tag">Trends</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#129302;</div><h3>AI in Business: Practical Guide</h3><p>How SMEs can leverage AI to automate operations and reduce costs.</p><span class="card-tag">AI</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#9729;</div><h3>Cloud Migration Checklist</h3><p>Step-by-step guide to migrating legacy systems to the cloud.</p><span class="card-tag">Cloud</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128737;</div><h3>Cybersecurity for Startups</h3><p>Essential security practices every startup should implement.</p><span class="card-tag">Security</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128200;</div><h3>Digital Marketing in East Africa</h3><p>Strategies driving growth in the East African digital marketplace.</p><span class="card-tag">Marketing</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128640;</div><h3>From Idea to MVP in 90 Days</h3><p>Our agile framework for taking your product to market-ready MVP.</p><span class="card-tag">Product</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128187;</div><h3>Top 10 Tech Trends 2026</h3><p>AI agents, edge computing, quantum cryptography.</p><span class="card-tag">Trends</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#129302;</div><h3>AI in Business Guide</h3><p>How SMEs leverage AI to automate and reduce costs.</p><span class="card-tag">AI</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#9729;</div><h3>Cloud Migration Checklist</h3><p>Zero-downtime migration to the cloud.</p><span class="card-tag">Cloud</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128737;</div><h3>Cybersecurity for Startups</h3><p>Essential practices from day one.</p><span class="card-tag">Security</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128200;</div><h3>Digital Marketing East Africa</h3><p>Strategies driving growth in the region.</p><span class="card-tag">Marketing</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128640;</div><h3>Idea to MVP in 90 Days</h3><p>Agile framework for market-ready products.</p><span class="card-tag">Product</span></div>
             </div>
         </div>
     </div>
 
     <div class="overlay" id="overlay-consult">
-        <div class="overlay-header">
-            <span class="overlay-title">Free Consultation</span>
-            <button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
-        </div>
+        <div class="overlay-header"><span class="overlay-title">Free Consultation</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>Consult Our Experts</h2><p>Tell us about your project and our team will get back to you within 24 hours.</p></div>
+            <div class="overlay-intro"><h2>Consult Our Experts</h2><p>Tell us about your project. We'll respond within 24 hours.</p></div>
             <div class="consult-form">
                 <div class="form-group"><label>Full Name</label><input type="text" placeholder="Enter your full name"></div>
                 <div class="form-group"><label>Email Address</label><input type="email" placeholder="Enter your email"></div>
                 <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+252 62 XXXXXXX"></div>
                 <div class="form-group"><label>Company Name</label><input type="text" placeholder="Your company name"></div>
                 <div class="form-group"><label>Service Needed</label>
-                    <select>
-                        <option value="">Select a service...</option>
-                        <option>Web Development</option><option>Mobile App Development</option><option>Enterprise Solutions (ERP/CRM)</option>
-                        <option>AI & Automation</option><option>Cloud & DevOps</option><option>Cyber Security</option>
-                        <option>Digital Marketing</option><option>IT Consulting</option>
-                    </select>
+                    <select><option value="">Select a service...</option><option>Web Development</option><option>Mobile App Development</option><option>Enterprise Solutions</option><option>AI & Automation</option><option>Cloud & DevOps</option><option>Cyber Security</option><option>Digital Marketing</option><option>IT Consulting</option></select>
                 </div>
-                <div class="form-group"><label>Project Description</label><textarea placeholder="Tell us about your project, goals, and timeline..."></textarea></div>
+                <div class="form-group"><label>Project Description</label><textarea placeholder="Tell us about your project..."></textarea></div>
                 <button class="submit-btn" onclick="submitConsult()">Send Message</button>
             </div>
         </div>
@@ -528,18 +551,18 @@
     <script>
         var currentOverlay = null;
         function openOverlay(id) {
-            if (currentOverlay) { document.getElementById('overlay-' + currentOverlay).classList.remove('active'); }
+            if (currentOverlay) document.getElementById('overlay-' + currentOverlay).classList.remove('active');
             document.getElementById('overlay-' + id).classList.add('active');
             currentOverlay = id;
             document.body.style.overflow = 'hidden';
         }
         function closeAllOverlays() {
-            document.querySelectorAll('.overlay.active').forEach(function(ov) { ov.classList.remove('active'); });
+            document.querySelectorAll('.overlay.active').forEach(function(o) { o.classList.remove('active'); });
             currentOverlay = null;
             document.body.style.overflow = '';
         }
         document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && currentOverlay) closeAllOverlays(); });
-        function submitConsult() { alert('Thank you! Your message has been received. Our team will contact you within 24 hours.'); closeAllOverlays(); }
+        function submitConsult() { alert('Thank you! Our team will contact you within 24 hours.'); closeAllOverlays(); }
         window.addEventListener('scroll', function() { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50); });
         document.getElementById('navToggle').addEventListener('click', function() { document.getElementById('navLinks').classList.toggle('active'); });
     </script>
