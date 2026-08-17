@@ -951,12 +951,12 @@
 
         function initChat() {
             var greeting = currentLang === 'ar'
-                ? 'مرحباً! 👋 أنا مساعد تك زون الذكي. كيف يمكنني مساعدتك اليوم؟ أسألني عن خدماتنا، منتجاتنا، الأسعار، أو أي شيء آخر!'
-                : 'Hello! 👋 I\'m TechZone AI Assistant. How can I help you today? Ask me about our services, products, pricing, or anything else!';
+                ? 'مرحباً! 👋 أنا مساعد تك زون الذكي. اسألني عن أي شيء关于我们.'
+                : 'Hello! 👋 I\'m TechZone AI Assistant. Ask me anything!';
             addBotMsg(greeting);
             showSuggestions(currentLang === 'ar'
-                ? ['خدماتنا', 'المنتجات', 'التسعير', 'تواصل معنا', 'من نحن']
-                : ['Our Services', 'Products', 'Pricing', 'Contact Us', 'About Us']);
+                ? ['خدماتنا', 'التسعير', 'SEO', 'تواصل معنا']
+                : ['Services', 'Pricing', 'SEO', 'Contact']);
         }
 
         function addBotMsg(text) {
@@ -1028,501 +1028,217 @@
         function getAiResponse(input) {
             var q = input.toLowerCase().replace(/[^\w\s\u0600-\u06FF]/g, ' ').trim();
             var isAr = currentLang === 'ar';
+            var end = isAr ? '\n\nMaxaan kaloo ka caawiyaa?' : '\n\nHow else can I help you?';
 
-            // Score-based matching system
-            var scores = {};
-            var topics = {
-                greeting: 0, services: 0, web: 0, mobile: 0, seo: 0, cyber: 0,
-                cloud: 0, ai: 0, products: 0, erp: 0, crm: 0, pricing: 0,
-                contact: 0, about: 0, team: 0, khalid: 0, industries: 0,
-                casestudies: 0, marketing: 0, consulting: 0, values: 0,
-                mission: 0, vision: 0, awards: 0, location: 0, whatsapp: 0,
-                education: 0, healthcare: 0, realestate: 0, banking: 0,
-                logistics: 0, retail: 0, design: 0, analytics: 0, erp_detail: 0,
-                crm_detail: 0, commerce: 0, scheduler: 0, guard: 0,
-                thank: 0, help: 0, who_are_you: 0, how_it_works: 0,
-                timeline: 0, payment: 0, support: 0, technology: 0,
-                react: 0, flutter: 0, python: 0, node: 0
-            };
-
-            // === GREETING ===
-            if (q.match(/\b(hi|hello|hey|salaam|assalam|marhaba|ahlan|good\s*(morning|afternoon|evening)|sup|yo|howdy|greetings|halo)\b/)) topics.greeting += 10;
-            if (q.match(/^(hi|hey|hello|salaam|ahlan|marhaba|yo|sup)$/)) topics.greeting += 5;
-
-            // === THANK YOU ===
-            if (q.match(/\b(thank|thanks|shukran|jazakallah|appreciate|grateful|tthanks)\b/)) topics.thank += 10;
-
-            // === HELP ===
-            if (q.match(/\b(help|can you|could you|tell me|i want to know|what is|what are|explain|describe|info|information|details)\b/)) topics.help += 3;
-
-            // === SERVICES (general) ===
-            if (q.match(/\b(service|services|what do you|what does|offer|provide|solutions|work|doing|do you)\b/)) topics.services += 8;
-            if (q.match(/\b(shuqul|shaqo|adeeg|khidmat|خدم|عمل|ماذا تفعل|ماذا تقدم|offerings)\b/)) topics.services += 8;
-
-            // === WEB DEVELOPMENT ===
-            if (q.match(/\b(web|website|websites|web\s*dev|web\s*app|landing\s*page|landing|portal|blog\s*site|html|css|frontend|front.end|react|next\.?js|vue|angular|wordpress|shopify|ecommerce\s*site)\b/)) topics.web += 8;
-            if (q.match(/\b(mawqi|site|موقع|تطوير موقع|مواقع|صفحة ويب|webpage|web\s*design)\b/)) topics.web += 8;
-            if (q.match(/(web|site)/) && q.match(/(dev|build|creat|design|mak|construct|cost|pric|how much)/)) topics.web += 5;
-
-            // === MOBILE APPS ===
-            if (q.match(/\b(mobile|app|apps|android|ios|iphone|ipad|flutter|react\s*native|cross.platform|native\s*app|application|play\s*store|app\s*store|swift|kotlin)\b/)) topics.mobile += 8;
-            if (q.match(/\b(tatbiq|jawwal|جوال|تطبيق|تطبيقات|هاتف|phone\s*app|tablet)\b/)) topics.mobile += 8;
-
-            // === SEO ===
-            if (q.match(/\b(seo|search\s*engine|google\s*(ranking|rank|search|optimization)|bing|serp|backlink|keyword|meta\s*tag|on.page|off.page|local\s*seo|technical\s*seo|organic|ranking|rank\s*track|search\s*console|analytics|webmaster)\b/)) topics.seo += 10;
-            if (q.match(/\b(khalid|mukhtar|خالد|mختار|seo\s*expert|خبير|محرك|بحث|تحسين|ترتيب|google|serp)\b/)) topics.seo += 6;
-            if (q.match(/(seo|search|google)/) && q.match(/(service|help|need|want|do|offer|price|cost|what)/)) topics.seo += 5;
-
-            // === CYBER SECURITY ===
-            if (q.match(/\b(cyber|security|secure|penetration|vulnerability|firewall|hack|hacking|breach|malware|virus|encryption|compliance|audit|soc|siem|phishing|ddos|protection|protect|attack|threat|antivirus|ransomware)\b/)) topics.cyber += 10;
-            if (q.match(/\b(amen|amn|حماية|أمن|اختراق|تشفير|threat|risk)\b/)) topics.cyber += 10;
-
-            // === CLOUD ===
-            if (q.match(/\b(cloud|aws|azure|gcp|google\s*cloud|hosting|host|server|servers|docker|kubernetes|k8s|ci\/cd|devops|deploy|deployment|vm|virtual|saas|paas|iaas|infrastructure|storage|cdn|lambda|serverless)\b/)) topics.cloud += 10;
-            if (q.match(/\b(sahab|سحاب|استضافة|خادم|خوادم|serwer)\b/)) topics.cloud += 10;
-
-            // === AI & AUTOMATION ===
-            if (q.match(/\b(ai|artificial\s*intelligence|machine\s*learning|ml|deep\s*learning|neural|nlp|natural\s*language|chatbot|bot|automation|automate|automated|robot|robotic|predictive|model|gpt|openai|gemini|llm|generative|computer\s*vision|recognition)\b/)) topics.ai += 8;
-            if (q.match(/\b(ذكاء|اصطناعي|أتمتة|روبوت|-automatic|智能)\b/)) topics.ai += 8;
-            // Don't let "ai" alone in words like "email", "waiting", "detail"
-            if (q.match(/\bemail\b/) && !q.match(/\bai\b/)) topics.ai -= 10;
-            if (q.match(/\bdetail\b/) && !q.match(/\bai\b/)) topics.ai -= 10;
-            if (q.match(/\bwait(ing|ed)?\b/) && !q.match(/\bai\b/)) topics.ai -= 10;
-
-            // === PRODUCTS ===
-            if (q.match(/\b(product|products|saas|platform|platforms|software|tool|tools|solution|app\s*name|built|built\s*by)\b/)) topics.products += 6;
-            if (q.match(/\b(منتج|منتجات|برمج|software|app\s*suite)\b/)) topics.products += 6;
-
-            // === ERP ===
-            if (q.match(/\b(erp|enterprise\s*resource|inventory|procurement|hr\s*module|finance\s*module|accounting|supply\s*chain|warehouse)\b/)) topics.erp += 10;
-            if (q.match(/\b(techzone\s*erp|erp\s*system|erp\s*software)\b/)) topics.erp += 5;
-
-            // === CRM ===
-            if (q.match(/\b(crm|customer\s*relationship|lead\s*scor|sales\s*pipeline|lead\s*management|contact\s*management|customer\s*data)\b/)) topics.crm += 10;
-
-            // === COMMERCE ===
-            if (q.match(/\b(commerce|e.commerce|ecommerce|online\s*store|shopping|cart|checkout|payment\s*gateway|multi.vendor|marketplace|store|shop)\b/)) topics.commerce += 8;
-
-            // === SCHEDULER ===
-            if (q.match(/\b(scheduler|appointment|booking|calendar|schedule|reminder|reservation|meeting|zoom)\b/)) topics.scheduler += 8;
-
-            // === ANALYTICS ===
-            if (q.match(/\b(analytics|data\s*analytics|business\s*intelligence|bi|report|dashboard|kpi|metric|tracking|insight|insights|data\s*driven|visualization)\b/)) topics.analytics += 8;
-
-            // === GUARD (Security product) ===
-            if (q.match(/\b(guard|techzone\s*guard|monitor|monitoring|threat\s*detect|security\s*monitor)\b/)) topics.guard += 8;
-
-            // === DIGITAL MARKETING ===
-            if (q.match(/\b(marketing|digital\s*marketing|seo.*market|social\s*media|content\s*strategy|campaign|advertis|ppc|sem|google\s*ads|facebook\s*ads|instagram|tiktok|youtube|email\s*marketing|influencer|brand|branding|growth)\b/)) topics.marketing += 8;
-            if (q.match(/\b(تسويق|إعلان|حملة|content|social)\b/)) topics.marketing += 6;
-
-            // === PRICING ===
-            if (q.match(/\b(price|pricing|cost|how\s*much|budget|affordable|cheap|expensive|rate|rates|quote|estimate|proposal|plan|plans|subscription|monthly|annual|fee|fees|charge|pay|payment|installment|融资|تسعير|ثمن|سعر|كم.* cost|cost.*how|much.*cost)\b/)) topics.pricing += 10;
-
-            // === CONTACT ===
-            if (q.match(/\b(contact|reach|call|phone|email|mail|whatsapp|wa\.me|message|send|inbox|reach\s*out|get\s*in|touch|line|telegram|viber|signal)\b/)) topics.contact += 8;
-            if (q.match(/\b(twasul|اتصل|هاتف|بريد|تواصل|wa\.me|联系)\b/)) topics.contact += 8;
-            if (q.match(/\b(phone|tel|mobile|number|call)\b/) && q.match(/\b(your|you|the|num|no\.?|techzone)\b/)) topics.contact += 5;
-
-            // === ABOUT / WHO ARE YOU ===
-            if (q.match(/\b(about|who\s*(are|is|do)|tell\s*me\s*about|what\s*is\s*talk|what\s*does\s*talk|company\s*info|overview|profile|introduction|introduce)\b/)) topics.about += 8;
-            if (q.match(/\b(من\s*انتم|من\s*نحن|من\s*أنت| عن\s* الشركة|company|talk.*zone|techzone.*who|who.*techzone)\b/)) topics.about += 8;
-
-            // === TEAM ===
-            if (q.match(/\b(team|staff|employee|worker|people|member|crew|colleague|developer|designer|engineer|architect|manager|cto|ceo|founder|employee)\b/)) topics.team += 7;
-            if (q.match(/\b(fariq|فريق|موظف|طاقم)\b/)) topics.team += 7;
-
-            // === KHALID ===
-            if (q.match(/\b(khalid|خالد|mukhtar|mokhtar|mختار|khalid\s*mukhtar|engineer\s*khalid|eng\.?\s*khalid|خالد\s*mختار|seo\s*guy|the\s*seo\s*person|seo\s*engineer|seo\s*lead|seo\s*expert|who.*seo|seo.*who|who.*does.*seo|who.*handles.*seo)\b/)) topics.khalid += 15;
-            if (q.match(/\b(khalid)/) || q.match(/خالد/)) topics.khalid += 5;
-
-            // === INDUSTRIES ===
-            if (q.match(/\b(industr|sector|field|domain|vertical|niche|market\s*seg|business\s*type)\b/)) topics.industries += 7;
-            if (q.match(/\b(قطاع|مجال|sector)\b/)) topics.industries += 7;
-
-            // === CASE STUDIES / PORTFOLIO ===
-            if (q.match(/\b(case\s*study|case\s*studies|portfolio|work|works|project|projects|client|clients|success\s*story|success\s*stories|past|previous|example|examples)\b/)) topics.casestudies += 7;
-            if (q.match(/\b(somali\s*property|paysom|mogadishu\s*market|fleettrack|eduplatform|health\s*connect|healthconnect|somali\s*prop|fleet\s*track|edu\s*platform)\b/)) topics.casestudies += 10;
-            if (q.match(/\b(دراسة|دراسات|أعمال|مشاريع|عمل|نماذج|عملاء.*نجاح)\b/)) topics.casestudies += 7;
-
-            // === VALUES / MISSION / VISION ===
-            if (q.match(/\b(value|values|principle|principles|mission|vision|goal|objective|culture|belief|beliefs|purpose)\b/)) topics.values += 7;
-            if (q.match(/\b(قيمنا|قيمة|رسالتنا|رؤيتنا|هدف|ثقافة)\b/)) topics.values += 7;
-            if (q.match(/\b(mission|goal|purpose|aim|target|objective)\b/) && !q.match(/\b(techzone|tz)\b/)) topics.mission += 5;
-            if (q.match(/\b(vision|future|dream|ambition)\b/)) topics.vision += 5;
-
-            // === AWARDS ===
-            if (q.match(/\b(award|awards|recognition|prize|trophy|achievement|milestone|certificate|accredit|certified|iso|compliance\s*award)\b/)) topics.awards += 8;
-
-            // === LOCATION ===
-            if (q.match(/\b(location|locate|where|address|office|offices|headquarters|hq|branch|branches|city|country|situated|based|situated)\b/)) topics.location += 8;
-            if (q.match(/\b(mogadishu|muqdisho|somalia|soomaliya| مقديشو|الصومال|somali)\b/)) topics.location += 5;
-
-            // === WHATSAPP ===
-            if (q.match(/\b(whatsapp|wa\.me|wattsapp|watsapp|watsap|واتساب)\b/)) topics.whatsapp += 10;
-
-            // === INDUSTRY-SPECIFIC ===
-            if (q.match(/\b(real\s*estate|property|properties|house|home|apartment|rent|lease|mortgage|realestate|proptech)\b/)) topics.realestate += 8;
-            if (q.match(/\b(bank|banking|finance|financial|loan|credit|debit|fintech|payment|transaction|wallet|microfinance)\b/)) topics.banking += 8;
-            if (q.match(/\b(health|healthcare|medical|hospital|clinic|patient|doctor|telemedicine|telehealth|pharmacy|ehr|health\s*tech)\b/)) topics.healthcare += 8;
-            if (q.match(/\b(education|edu|school|university|college|student|lms|e.learning|class|course|teacher|training|learn|learn)\b/)) topics.education += 8;
-            if (q.match(/\b(logistics|transport|fleet|shipping|delivery|supply\s*chain|route|warehouse|tracking|cargo)\b/)) topics.logistics += 8;
-            if (q.match(/\b(retail|shop|store|commerce|merchant|vendor|pos|point.of.sale|inventory|omnichannel)\b/) && !q.match(/\b(e.?commerce|ecommerce|online)/)) topics.retail += 6;
-
-            // === TECHNOLOGY / STACK ===
-            if (q.match(/\b(technology|tech\s*stack|stack|framework|frameworks|language|programming|coding|code|developer|dev\s*tools)\b/)) topics.technology += 5;
-            if (q.match(/\b(react|next\.?js|vue|angular|node\.?js|python|django|flask|laravel|php|java|swift|kotlin|flutter|ruby|golang|rust|typescript)\b/)) topics.technology += 6;
-
-            // === DESIGN ===
-            if (q.match(/\b(design|ui|ux|user\s*interface|user\s*experience|figma|sketch|adobe|prototype|wireframe|mockup|mock.up|graphic|logo|branding)\b/)) topics.design += 6;
-
-            // === CONSULTING ===
-            if (q.match(/\b(consult|consulting|consultation|advisory|strategy|strategic|advisor|recommen|suggest|guidance|roadmap|assessment)\b/)) topics.consulting += 7;
-
-            // === HOW IT WORKS / PROCESS ===
-            if (q.match(/\b(how\s*(does|do|it|work|process|works|long|much\s*time|timeline|step|steps|start|begin|workflow|pipeline)\b)/)) topics.how_it_works += 7;
-
-            // === TIMELINE ===
-            if (q.match(/\b(time|timeline|deadline|duration|how\s*long|when|deliver|turnaround|eta|estimate|schedule|milestone|week|month|day)\b/)) topics.timeline += 6;
-
-            // === PAYMENT ===
-            if (q.match(/\b(pay|payment|invoice|bill|billing|installment|depos|advance|cash|card|visa|mastercard|paypal|stripe|bank\s*transfer)\b/)) topics.payment += 6;
-
-            // === SUPPORT ===
-            if (q.match(/\b(support|help|assist|after|maintenance|maintenance|warranty|guarantee|sla|uptime|avail|reliab|24\/7|always)\b/)) topics.support += 5;
-
-            // === FIND TOP SCORING TOPIC ===
-            var sorted = Object.keys(topics).sort(function(a, b) { return topics[b] - topics[a]; });
-            var topTopic = sorted[0];
-            var topScore = topics[topTopic];
-
-            // Threshold: need at least 5 to respond meaningfully
-            if (topScore < 5) {
-                return { text: isAr
-                    ? 'أنا آسف، لم أفهم سؤالك تماماً. 😅 جرّب أن تسأل عن:\n\n🔹 خدماتنا (تطوير مواقع، تطبيقات جوال...)\n🔹 منتجاتنا (ERP, CRM, Commerce)\n🔹 التسعير والأسعار\n🔹 SEO المهندس خالد مختار\n🔹 التواصل معنا\n🔹 عن الشركة\n\nأو اكتب سؤالك بكلمات بسيطة!'
-                    : 'I didn\'t quite understand that. 😅 Try asking about:\n\n🔹 Our Services (web dev, mobile apps...)\n🔹 Products (ERP, CRM, Commerce)\n🔹 Pricing & costs\n🔹 SEO with Engineer Khalid Mukhtar\n🔹 Contact information\n🔹 About our company\n\nOr ask in simple words!',
-                    suggestions: isAr ? ['خدماتنا', 'المنتجات', 'التسعير', 'تواصل', 'SEO'] : ['Services', 'Products', 'Pricing', 'Contact', 'SEO'] };
+            // Greeting
+            if (q.match(/\b(hi|hello|hey|salaam|assalam|marhaba|ahlan|morning|afternoon|evening|sup|yo|howdy|greetings)\b/) || /^(hi|hey|yo|sup|hello|salaam|ahlan)$/i.test(q)) {
+                return { text: isAr ? 'أهلاً! 👋 كيف أساعدك؟' + end : 'Hello! 👋 How can I help you?' + end,
+                    suggestions: isAr ? ['خدماتنا', 'التسعير', 'تواصل'] : ['Services', 'Pricing', 'Contact'] };
             }
-
-            // === RESPONSES BY TOPIC ===
-
-            // GREETING
-            if (topTopic === 'greeting') {
-                return { text: isAr
-                    ? 'أهلاً وسهلاً! 👋 مرحباً بك في تك زون. أنا هنا لمساعدتك!\n\nيمكنني إخبارك عن:\n🔹 خدماتنا ومنتجاتنا\n🔹 الأسعار والتسعير\n🔹 SEO والتسويق الرقمي\n🔹 التواصل مع فريقنا\n\nما الذي تهمك معرفته؟'
-                    : 'Hello there! 👋 Welcome to TechZone. I\'m here to help you!\n\nI can tell you about:\n🔹 Our services & products\n🔹 Pricing & costs\n🔹 SEO & digital marketing\n🔹 How to reach our team\n\nWhat interests you?',
-                    suggestions: isAr ? ['خدماتنا', 'المنتجات', 'التسعير', 'تواصل معنا'] : ['Our Services', 'Products', 'Pricing', 'Contact Us'] };
-            }
-
-            // THANK YOU
-            if (topTopic === 'thank') {
-                return { text: isAr
-                    ? 'العفو! 😊 سعيد لمساعدتك في أي وقت.\n\nهل لديك أي سؤال آخر عن تك زون؟ أنا هنا لمساعدتك!'
-                    : 'You\'re welcome! 😊 Happy to help anytime.\n\nDo you have any other questions about TechZone? I\'m here for you!',
-                    suggestions: isAr ? ['خدماتنا', 'المنتجات', 'التسعير'] : ['Our Services', 'Products', 'Pricing'] };
-            }
-
-            // SERVICES
-            if (topTopic === 'services') {
-                return { text: isAr
-                    ? 'نقدم مجموعة شاملة من الخدمات التقنية:\n\n🌐 تطوير المواقع — ابتداءً من $500\n📱 تطبيقات الجوال — ابتداءً من $1,000\n🤖 الذكاء الاصطناعي والأتمتة\n☁️ الخدمات السحابية و DevOps\n🔒 الأمن السيبراني\n📊 التسويق الرقمي والـ SEO\n💼 حلول المؤسسات (ERP, CRM)\n💡 الاستشارات التقنية\n\nأي خدمة تريد معرفة التفاصيل عنها؟'
-                    : 'We offer a comprehensive range of tech services:\n\n🌐 Web Development — from $500\n📱 Mobile App Development — from $1,000\n🤖 AI & Automation\n☁️ Cloud Services & DevOps\n🔒 Cyber Security\n📊 Digital Marketing & SEO\n💼 Enterprise Solutions (ERP, CRM)\n💡 IT Consulting\n\nWhich service would you like details on?',
-                    suggestions: isAr ? ['تطوير المواقع', 'تطبيقات الجوال', 'SEO', 'الأمن السيبراني', 'التسعير'] : ['Web Development', 'Mobile Apps', 'SEO', 'Cybersecurity', 'Pricing'] };
-            }
-
-            // WEB DEVELOPMENT
-            if (topTopic === 'web') {
-                return { text: isAr
-                    ? '🌐 تطوير المواقع — نبني مواقع احترافية وسريعة:\n\n✅ مواقع متجاوبة (Responsive Design)\n✅ تطبيقات ويب تفاعلية (React, Next.js, Vue.js)\n✅ متاجر إلكترونية متكاملة\n✅ بوابات ومواقع مؤسسية\n✅ أنظمة إدارة المحتوى (CMS)\n✅ تحسين الأداء والسرعة (Core Web Vitals)\n✅ SEO technical مدمج\n\n💰 الأسعار:\n• موقع بسيط: يبدأ من $500\n• موقع متوسط: $1,000 - $3,000\n• موقع متقدم: $3,000 - $10,000\n• متجر إلكتروني: $2,000 - $8,000\n\n⏰ المدة: 2-8 أسابيع حسب التعقيد\n\nتريد عرض سعر مجاني؟'
-                    : '🌐 Web Development — We build professional, fast websites:\n\n✅ Responsive design\n✅ Interactive web apps (React, Next.js, Vue.js)\n✅ Full e-commerce stores\n✅ Enterprise portals\n✅ Content management systems (CMS)\n✅ Performance optimization (Core Web Vitals)\n✅ Built-in technical SEO\n\n💰 Pricing:\n• Simple site: from $500\n• Medium site: $1,000 - $3,000\n• Advanced site: $3,000 - $10,000\n• E-commerce: $2,000 - $8,000\n\n⏰ Timeline: 2-8 weeks depending on complexity\n\nWould you like a free quote?',
-                    suggestions: isAr ? ['عرض سعر مجاني', 'تطبيقات الجوال', 'SEO', 'المنتجات'] : ['Free Quote', 'Mobile Apps', 'SEO', 'Products'] };
-            }
-
-            // MOBILE APPS
-            if (topTopic === 'mobile') {
-                return { text: isAr
-                    ? '📱 تطبيقات الجوال — نطور تطبيقات احترافية:\n\n✅ تطبيقات أصلية iOS (Swift)\n✅ تطبيقات أصلية Android (Kotlin)\n✅ تطبيقات متعددة المنصات (Flutter, React Native)\n✅ تصميم UI/UX عصري وجذاب\n✅ مزامنة مع APIs وأنظمة خلفية\n✅ إصدار على App Store و Google Play\n✅ صيانة وتحديثات مستمرة\n\n💰 الأسعار:\n• تطبيق بسيط: $1,000 - $3,000\n• تطبيق متوسط: $3,000 - $8,000\n• تطبيق متقدم: $8,000 - $25,000\n• تطبيق صناعي: $25,000+\n\n⏰ المدة: 4-16 أسابيع\n\nما نوع التطبيق الذي تريده؟'
-                    : '📱 Mobile Apps — We develop professional apps:\n\n✅ Native iOS (Swift)\n✅ Native Android (Kotlin)\n✅ Cross-platform (Flutter, React Native)\n✅ Modern UI/UX design\n✅ API & backend integration\n✅ App Store & Google Play publishing\n✅ Ongoing maintenance & updates\n\n💰 Pricing:\n• Simple app: $1,000 - $3,000\n• Medium app: $3,000 - $8,000\n• Advanced app: $8,000 - $25,000\n• Enterprise app: $25,000+\n\n⏰ Timeline: 4-16 weeks\n\nWhat type of app are you looking for?',
-                    suggestions: isAr ? ['عرض سعر', 'React Native', 'Flutter', 'الخدمات'] : ['Get Quote', 'React Native', 'Flutter', 'Services'] };
-            }
-
-            // SEO
-            if (topTopic === 'seo') {
-                return { text: isAr
-                    ? '🔍 تحسين محركات البحث (SEO) — بقيادة المهندس خالد مختار:\n\n👨‍💻 المهندس خالد مختار:\n• خبير SEO والتسويق الرقمي\n• خبرة 8+ سنوات في这个行业\n• 50+ عميل حقق المرتبة الأولى\n• زيادة الزيارات العضوية حتى 300%\n\n🔧 خدمات SEO المتوفرة:\n✅ مراجعات SEO التقنية الشاملة\n✅ تحسين On-Page (meta, content, structure)\n✅ بناء الروابط Off-Page عالية الجودة\n✅ SEO المحلي (Google Maps, My Business)\n✅ بحث الكلمات المفتاحية المتقدم\n✅ تحليل المنافسين\n✅ تقارير أداء شهرية مفصلة\n✅ تحسين Core Web Vitals\n\n💰 الأسعار:\n• حملة أساسية: $300/شهر\n• حملة متقدمة: $600/شهر\n• حملة شاملة: $1,000/شهر\n\n📞 تواصل مع المهندس خالد: +252 62 2146744'
-                    : '🔍 SEO (Search Engine Optimization) — Led by Engineer Khalid Mukhtar:\n\n👨‍💻 Engineer Khalid Mukhtar:\n• SEO & Digital Marketing Expert\n• 8+ years experience in the field\n• 50+ clients ranked #1 on Google\n• Up to 300% organic traffic increase\n\n🔧 SEO Services:\n✅ Comprehensive technical SEO audits\n✅ On-Page optimization (meta, content, structure)\n✅ High-quality off-page link building\n✅ Local SEO (Google Maps, My Business)\n✅ Advanced keyword research\n✅ Competitor analysis\n✅ Detailed monthly performance reports\n✅ Core Web Vitals optimization\n\n💰 Pricing:\n• Basic campaign: $300/month\n• Advanced campaign: $600/month\n• Comprehensive: $1,000/month\n\n📞 Contact Eng. Khalid: +252 62 2146744',
-                    suggestions: isAr ? ['عن المهندس خالد', 'التسعير', 'تواصل معنا', 'التسويق الرقمي'] : ['About Eng. Khalid', 'Pricing', 'Contact Us', 'Digital Marketing'] };
-            }
-
-            // CYBER SECURITY
-            if (topTopic === 'cyber') {
-                return { text: isAr
-                    ? '🔒 الأمن السيبراني — حماية شاملة لأعمالك:\n\n🛡️ خدماتنا:\n✅ اختبار الاختراق (Penetration Testing)\n✅ تقييم الثغرات الأمنية\n✅ مراقبة الأمن 24/7 (SOC)\n✅ تدقيق الامتثال (ISO 27001, GDPR)\n✅ تدريب الموظفين على الأمن\n✅ استجابة للحوادث الأمنية\n✅ تشفير البيانات\n✅ حماية من DDoS والهجمات\n\n💰 الأسعار:\n• مراجعة أمنية: تبدأ من $500\n• مراقبة شهرية: تبدأ من $200/شهر\n• استشارة أمنية: مجانية\n\n⚠️ أمنك أولويتنا — لا تنتظر الاختراق!'
-                    : '🔒 Cyber Security — Complete protection for your business:\n\n🛡️ Our Services:\n✅ Penetration testing\n✅ Vulnerability assessment\n✅ 24/7 security monitoring (SOC)\n✅ Compliance audits (ISO 27001, GDPR)\n✅ Employee security training\n✅ Incident response\n✅ Data encryption\n✅ DDoS & attack protection\n\n💰 Pricing:\n• Security audit: from $500\n• Monthly monitoring: from $200/month\n• Security consultation: free\n\n⚠️ Your security is our priority — don\'t wait for a breach!',
-                    suggestions: isAr ? ['خدماتنا', 'التسعير', 'تواصل معنا'] : ['Services', 'Pricing', 'Contact Us'] };
-            }
-
-            // CLOUD
-            if (topTopic === 'cloud') {
-                return { text: isAr
-                    ? '☁️ الخدمات السحابية — بنية تحتية قوية:\n\n🔧 خدماتنا:\n✅ هجرة السحابة (Cloud Migration)\n✅ AWS, Azure, Google Cloud Platform\n✅ Docker & Kubernetes\n✅ CI/CD Pipelines (DevOps)\n✅ مراقبة الأداء والصيانة\n✅ نسخ احتياطي تلقائي\n✅ تكاليف محسّنة (Cost Optimization)\n✅ Serverless Architecture\n\n💰 الأسعار:\n• استضافة بسيطة: $50/شهر\n• استضافة متوسطة: $150/شهر\n• بنية مؤسسية: $500+/شهر\n\n⏱️ نضمن uptime 99.9%!'
-                    : '☁️ Cloud Services — Strong infrastructure:\n\n🔧 Our Services:\n✅ Cloud migration\n✅ AWS, Azure, Google Cloud Platform\n✅ Docker & Kubernetes\n✅ CI/CD Pipelines (DevOps)\n✅ Performance monitoring & maintenance\n✅ Automatic backups\n✅ Cost optimization\n✅ Serverless Architecture\n\n💰 Pricing:\n• Basic hosting: $50/month\n• Medium hosting: $150/month\n• Enterprise infrastructure: $500+/month\n\n⏱️ We guarantee 99.9% uptime!',
-                    suggestions: isAr ? ['الخدمات', 'التسعير', 'تواصل معنا'] : ['Services', 'Pricing', 'Contact Us'] };
-            }
-
-            // AI
-            if (topTopic === 'ai') {
-                return { text: isAr
-                    ? '🤖 الذكاء الاصطناعي والأتمتة:\n\n🧠 خدماتنا:\n✅ روبوتات المحادثة الذكية (مثل هذا المساعد!)\n✅ أتمتة العمليات والأ_workflow\n✅ تحليل البيانات التنبؤي\n✅ معالجة اللغة الطبيعية (NLP)\n✅ أنظمة التوصية الذكية\n✅ رؤية الكمبيوتر وتحليل الصور\n✅ Custom AI Model Integration\n✅ تدريب النماذج على بياناتك\n\nمثل هذا المساعد الذكي الذي تتحدث معه الآن! 😊\n\n💰 تكلفة بناء روبوت: يبدأ من $400\nتريد روبوت ذكي لموقعك؟'
-                    : '🤖 AI & Automation:\n\n🧠 Our Services:\n✅ Smart chatbots (like this assistant!)\n✅ Process & workflow automation\n✅ Predictive data analytics\n✅ Natural Language Processing (NLP)\n✅ Smart recommendation systems\n✅ Computer vision & image analysis\n✅ Custom AI Model Integration\n✅ Model training on your data\n\nLike this AI assistant you\'re chatting with right now! 😊\n\n💰 Chatbot development: from $400\nWant a smart bot for your site?',
-                    suggestions: isAr ? ['روبوت محادثة', 'خدماتنا', 'التسعير', 'تواصل معنا'] : ['Chatbot', 'Services', 'Pricing', 'Contact'] };
-            }
-
-            // PRODUCTS
-            if (topTopic === 'products') {
-                return { text: isAr
-                    ? '📦 منتجاتنا SaaS السحابية:\n\n🏢 TechZone ERP — نظام إدارة موارد متكامل\n   📊 المالية، المخزون، الموارد البشرية، المشتريات\n   💰 يبدأ من $2,000\n\n👥 TechZone CRM — إدارة علاقات العملاء\n   📊 قنوات المبيعات، الأتمتة، التحليلات\n   💰 يبدأ من $500\n\n🛒 TechZone Commerce — متجر إلكتروني\n   📊 بوابة الدفع، إدارة الطلبات، الموردين\n   💰 يبدأ من $1,500\n\n📅 TechZone Scheduler — جدولة المواعيد\n   📊 مزامنة التقويم، التذكيرات\n   💰 يبدأ من $300\n\n📊 TechZone Analytics — ذكاء الأعمال\n   📊 تقارير مخصصة، KPI tracking\n   💰 يبدأ من $400\n\n🛡️ TechZone Guard — أمن سيبراني\n   📊 مراقبة، كشف التهديدات\n   💰 يبدأ من $200/شهر'
-                    : '📦 Our Cloud SaaS Products:\n\n🏢 TechZone ERP — Full ERP System\n   📊 Finance, Inventory, HR, Procurement\n   💰 From $2,000\n\n👥 TechZone CRM — Customer Relationship\n   📊 Sales pipeline, automation, analytics\n   💰 From $500\n\n🛒 TechZone Commerce — E-commerce Platform\n   📊 Payment gateway, orders, vendors\n   💰 From $1,500\n\n📅 TechZone Scheduler — Appointment Booking\n   📊 Calendar sync, reminders\n   💰 From $300\n\n📊 TechZone Analytics — Business Intelligence\n   📊 Custom reports, KPI tracking\n   💰 From $400\n\n🛡️ TechZone Guard — Cybersecurity\n   📊 Monitoring, threat detection\n   💰 From $200/month',
-                    suggestions: isAr ? ['ERP', 'CRM', 'التسعير', 'تواصل معنا'] : ['ERP', 'CRM', 'Pricing', 'Contact Us'] };
-            }
-
-            // ERP
-            if (topTopic === 'erp') {
-                return { text: isAr
-                    ? '🏢 TechZone ERP — نظام إدارة موارد شامل:\n\n📊 الوحدات:\n✅ المحاسبة والمالي\n✅ إدارة المخزون\n✅ الموارد البشرية (HRMS)\n✅ المشتريات والموردين\n✅ إدارة المبيعات\n✅ تقارير وإحصائيات\n✅ Multi-branch support\n✅ Mobile app للإدارة\n\n💰 يبدأ من $2,000 (شامل التثبيت والتدريب)\n\n⏰ المدة: 4-12 أسابيع للتطبيق\n📞 اتصل بنا لعرض سعر مجاني!'
-                    : '🏢 TechZone ERP — Comprehensive ERP System:\n\n📊 Modules:\n✅ Accounting & Finance\n✅ Inventory Management\n✅ HRMS (Human Resources)\n✅ Procurement & Suppliers\n✅ Sales Management\n✅ Reports & Analytics\n✅ Multi-branch support\n✅ Mobile management app\n\n💰 Starting from $2,000 (including installation & training)\n\n⏰ Timeline: 4-12 weeks to implement\n📞 Call us for a free quote!',
-                    suggestions: isAr ? ['CRM', 'المنتجات', 'التسعير'] : ['CRM', 'Products', 'Pricing'] };
-            }
-
-            // CRM
-            if (topTopic === 'crm') {
-                return { text: isAr
-                    ? '👥 TechZone CRM — إدارة علاقات العملاء:\n\n📊 الميزات:\n✅ قنوات المبيعات (Sales Pipeline)\n✅ تصنيف العملاء المحتملين (Lead Scoring)\n✅ أتمتة التسويق البريدي\n✅ تذكيرات المتابعة\n✅ تقارير المبيعات والتحليلات\n✅ تطبيق جوال للمبيعات\n✅ تكامل مع WhatsApp و Email\n✅ Custom Fields & Workflows\n\n💰 يبدأ من $500\n\n⏰ المدة: 2-4 أسابيع\n\nهل تريد عرض سعر مجاني؟'
-                    : '👥 TechZone CRM — Customer Relationship Management:\n\n📊 Features:\n✅ Sales Pipeline\n✅ Lead Scoring\n✅ Email marketing automation\n✅ Follow-up reminders\n✅ Sales reports & analytics\n✅ Mobile sales app\n✅ WhatsApp & Email integration\n✅ Custom Fields & Workflows\n\n💰 Starting from $500\n\n⏰ Timeline: 2-4 weeks\n\nWould you like a free quote?',
-                    suggestions: isAr ? ['ERP', 'المنتجات', 'التسعير'] : ['ERP', 'Products', 'Pricing'] };
-            }
-
-            // COMMERCE
-            if (topTopic === 'commerce') {
-                return { text: isAr
-                    ? '🛒 TechZone Commerce — منصة تجارة إلكترونية:\n\n📊 الميزات:\n✅ تصميم متجر جذاب واحترافي\n✅ بوابة دفع متعددة (PayPal, Stripe, local)\n✅ إدارة المنتجات والمخزون\n✅ إدارة الطلبات والشحن\n✅ لوحة تحكم للموردين (Multi-vendor)\n✅ تطبيق جوال للمتجر\n✅ تكامل مع الشحن والبريد\n✅ كوبونات وعروض ترويجية\n\n💰 يبدأ من $1,500\n⏰ المدة: 4-8 أسابيع\n\nتريد متجرك الخاص؟'
-                    : '🛒 TechZone Commerce — E-commerce Platform:\n\n📊 Features:\n✅ Attractive & professional store design\n✅ Multi-payment gateway (PayPal, Stripe, local)\n✅ Product & inventory management\n✅ Order & shipping management\n✅ Vendor dashboard (Multi-vendor)\n✅ Mobile store app\n✅ Shipping & email integration\n✅ Coupons & promotions\n\n💰 Starting from $1,500\n⏰ Timeline: 4-8 weeks\n\nWant your own store?',
-                    suggestions: isAr ? ['المنتجات', 'التسعير', 'تواصل معنا'] : ['Products', 'Pricing', 'Contact Us'] };
-            }
-
-            // SCHEDULER
-            if (topTopic === 'scheduler') {
-                return { text: isAr
-                    ? '📅 TechZone Scheduler — جدولة المواعيد الذكية:\n\n📊 الميزات:\n✅ حجز مواعيد إلكتروني\n✅ مزامنة مع Google Calendar\n✅ تذكيرات SMS و Email\n✅ لوحة تحكم للموظفين\n✅ تقارير الحضور والمواعيد\n✅ تطبيق جوال للمرضى/العملاء\n✅ Multi-doctor/Multi-location support\n\n💰 يبدأ من $300\n⏰ المدة: 2-4 أسابيع\n\nمثالي للعيادات والمكاتب والخدمات!'
-                    : '📅 TechZone Scheduler — Smart Appointment Booking:\n\n📊 Features:\n✅ Online appointment booking\n✅ Google Calendar sync\n✅ SMS & Email reminders\n✅ Staff management dashboard\n✅ Attendance & appointment reports\n✅ Mobile app for patients/clients\n✅ Multi-doctor/Multi-location support\n\n💰 Starting from $300\n⏰ Timeline: 2-4 weeks\n\nPerfect for clinics, offices & services!',
-                    suggestions: isAr ? ['المنتجات', 'التسعير', 'تواصل معنا'] : ['Products', 'Pricing', 'Contact'] };
-            }
-
-            // ANALYTICS
-            if (topTopic === 'analytics') {
-                return { text: isAr
-                    ? '📊 TechZone Analytics — ذكاء الأعمال:\n\n📊 الميزات:\n✅ لوحات تحكم تفاعلية (Dashboards)\n✅ تقارير مخصصة حسب الطلب\n✅ تتبع KPIs والأهداف\n✅ تحليل سلوك العملاء\n✅ رؤية بيانية (Data Visualization)\n✅ تصدير التقارير (PDF, Excel)\n✅ Real-time data updates\n\n💰 يبدأ من $400\n⏰ المدة: 2-4 أسابيع\n\nحوّل بياناتك لقرارات ذكية!'
-                    : '📊 TechZone Analytics — Business Intelligence:\n\n📊 Features:\n✅ Interactive dashboards\n✅ Custom reports on demand\n✅ KPI & goal tracking\n✅ Customer behavior analysis\n✅ Data visualization\n✅ Report export (PDF, Excel)\n✅ Real-time data updates\n\n💰 Starting from $400\n⏰ Timeline: 2-4 weeks\n\nTurn your data into smart decisions!',
-                    suggestions: isAr ? ['ERP', 'CRM', 'التسعير'] : ['ERP', 'CRM', 'Pricing'] };
-            }
-
-            // GUARD
-            if (topTopic === 'guard') {
-                return { text: isAr
-                    ? '🛡️ TechZone Guard — أمن سيبراني:\n\n📊 الميزات:\n✅ مراقبة أمنية 24/7\n✅ كشف التهديدات في الوقت الحقيقي\n✅ تحليل السجلات (Log Analysis)\n✅ إنذارات أمنية فورية\n✅ تقارير أمنية شهرية\n✅ استجابة للحوادث\n✅ حماية من الهجمات\n\n💰 يبدأ من $200/شهر\n\n🔒 حماية متكاملة لأعمالك!'
-                    : '🛡️ TechZone Guard — Cybersecurity:\n\n📊 Features:\n✅ 24/7 security monitoring\n✅ Real-time threat detection\n✅ Log analysis\n✅ Instant security alerts\n✅ Monthly security reports\n✅ Incident response\n✅ Attack protection\n\n💰 Starting from $200/month\n\n🔒 Complete protection for your business!',
-                    suggestions: isAr ? ['الأمن السيبراني', 'التسعير', 'تواصل'] : ['Cybersecurity', 'Pricing', 'Contact'] };
-            }
-
-            // PRICING
-            if (topTopic === 'pricing') {
-                return { text: isAr
-                    ? '💰 دليل الأسعار الشامل:\n\n🌐 تطوير مواقع: يبدأ من $500\n📱 تطبيقات جوال: يبدأ من $1,000\n🏢 نظام ERP: يبدأ من $2,000\n👥 نظام CRM: يبدأ من $500\n🛒 متجر إلكتروني: يبدأ من $1,500\n🔍 حملة SEO: يبدأ من $300/شهر\n☁️ استضافة سحابية: يبدأ من $50/شهر\n🤖 روبوت محادثة AI: يبدأ من $400\n🛡️ أمن سيبراني: يبدأ من $200/شهر\n📊 تحليلات: يبدأ من $400\n\n✨ استشارة مجانية للجميع!\n📞 اتصل بنا: +252 62 2146744\n\n⏰ السعر النهائي يعتمد على المتطلبات — احصل على عرض سعر مجاني!'
-                    : '💰 Complete Pricing Guide:\n\n🌐 Web Development: from $500\n📱 Mobile Apps: from $1,000\n🏢 ERP System: from $2,000\n👥 CRM System: from $500\n🛒 E-commerce: from $1,500\n🔍 SEO Campaign: from $300/month\n☁️ Cloud Hosting: from $50/month\n🤖 AI Chatbot: from $400\n🛡️ Cybersecurity: from $200/month\n📊 Analytics: from $400\n\n✨ Free consultation for everyone!\n📞 Call us: +252 62 2146744\n\n⏰ Final price depends on requirements — get a free quote!',
-                    suggestions: isAr ? ['استشارة مجانية', 'خدماتنا', 'تواصل معنا', 'عرض سعر'] : ['Free Consultation', 'Services', 'Contact Us', 'Get Quote'] };
-            }
-
-            // CONTACT
-            if (topTopic === 'contact') {
-                return { text: isAr
-                    ? '📞 تواصل معنا:\n\n📱 واتساب: +252 62 2146744\n📧 البريد الإلكتروني: info@techzone.so\n🌐 الموقع: hggdhg.github.io/Techzone-business\n📍 المقر: مقديشو، الصومال\n\n⏰ أوقات العمل: السبت - الخميس\n💬 نرد خلال 24 ساعة\n\n🔗 رابط واتساب المباشر:\nwa.me/252622146744'
-                    : '📞 Contact Us:\n\n📱 WhatsApp: +252 62 2146744\n📧 Email: info@techzone.so\n🌐 Website: hggdhg.github.io/Techzone-business\n📍 Location: Mogadishu, Somalia\n\n⏰ Working hours: Saturday - Thursday\n💬 We respond within 24 hours\n\n🔗 Direct WhatsApp link:\nwa.me/252622146744',
-                    suggestions: isAr ? ['واتساب', 'استشارة مجانية', 'خدماتنا'] : ['WhatsApp', 'Free Consultation', 'Services'] };
-            }
-
-            // WHATSAPP
-            if (topTopic === 'whatsapp') {
-                return { text: isAr
-                    ? '📱 رابط واتساب المباشر:\n\n👉 wa.me/252622146744\n\n📞 أو اتصل: +252 62 2146744\n\nاضغط الرابط للتحدث مع فريقنا مباشرة! نرد بسرعة.'
-                    : '📱 Direct WhatsApp link:\n\n👉 wa.me/252622146744\n\n📞 Or call: +252 62 2146744\n\nClick the link to chat with our team directly! We respond quickly.',
+            // Thank you
+            if (q.match(/\b(thank|thanks|shukran|jazakallah|appreciate|grateful)\b/)) {
+                return { text: isAr ? 'العفو! 😊' + end : 'You\'re welcome! 😊' + end,
                     suggestions: isAr ? ['خدماتنا', 'التسعير'] : ['Services', 'Pricing'] };
             }
-
-            // ABOUT
-            if (topTopic === 'about') {
-                return { text: isAr
-                    ? '🏢 تك زون بزنس سولوشنز — من نحن:\n\n🎯 المهمة: تمكين الشركات بالتكنولوجيا المبتكرة\n📅 التأسيس: 2018\n👥 الفريق: 200+ مهندس ومصمم ومستشار\n🌍 المكاتب: الصومال 🇸🇴 | الإمارات 🇦🇪 | بريطانيا 🇬🇧 | أمريكا 🇺🇸 | الهند 🇮🇳\n🏆 العملاء: 90+ شركة عالمية\n📱 المشاريع: 100+ مشروع ناجح\n⭐ معدل رضا العملاء: 98%\n\n✨ قادة في التحول الرقمي في شرق أفريقيا والعالم!'
-                    : '🏢 TechZone Business Solutions — About Us:\n\n🎯 Mission: Empowering businesses with innovative technology\n📅 Founded: 2018\n👥 Team: 200+ engineers, designers & consultants\n🌍 Offices: Somalia 🇸🇴 | UAE 🇦🇪 | UK 🇬🇧 | USA 🇺🇸 | India 🇮🇳\n🏆 Clients: 90+ businesses worldwide\n📱 Projects: 100+ successful deliveries\n⭐ Client satisfaction: 98%\n\n✨ Leaders in digital transformation in East Africa & beyond!',
-                    suggestions: isAr ? ['خدماتنا', 'فريقنا', 'الجوائز', 'تواصل معنا'] : ['Our Services', 'Our Team', 'Awards', 'Contact Us'] };
+            // Services
+            if (q.match(/\b(service|services|what do you|offer|provide|work|doing|do you)\b/) || q.match(/\b(خدم|عمل|ماذا تفعل|ماذا تقدم|adeeg|khidmat)\b/)) {
+                return { text: isAr ? 'نقدم: تطوير مواقع، تطبيقات جوال، سحابة، AI، أمن سيبراني، SEO، تسويق رقمي، وحلول مؤسسات.' + end : 'We offer: Web dev, mobile apps, cloud, AI, cybersecurity, SEO, digital marketing, and enterprise solutions.' + end,
+                    suggestions: isAr ? ['تطوير مواقع', 'تطبيقات جوال', 'SEO', 'التسعير'] : ['Web Dev', 'Mobile Apps', 'SEO', 'Pricing'] };
             }
-
-            // TEAM
-            if (topTopic === 'team') {
-                return { text: isAr
-                    ? '👥 فريقنا — 200+ متخصص:\n\n👨‍💻 100+ مهندس برمجيات\n🎨 50+ مصمم UI/UX\n📊 30+ خبير تسويق رقمي و SEO\n☁️ 20+ مهندس سحابة و DevOps\n🔒 15+ خبير أمن سيبراني\n📋 10+ مدير مشاريع\n\n🌍 فريق متعدد الجنسيات\n📍 5 مكاتب عالمية\n⭐ خبرة مجمّعة: 500+ سنة!'
-                    : '👥 Our Team — 200+ specialists:\n\n👨‍💻 100+ Software Engineers\n🎨 50+ UI/UX Designers\n📊 30+ Digital Marketing & SEO Experts\n☁️ 20+ Cloud & DevOps Engineers\n🔒 15+ Cybersecurity Experts\n📋 10+ Project Managers\n\n🌍 Multinational team\n📍 5 global offices\n⭐ Combined experience: 500+ years!',
-                    suggestions: isAr ? ['الكود خالد', 'خدماتنا', 'تواصل معنا'] : ['Eng. Khalid', 'Services', 'Contact Us'] };
+            // Web Dev
+            if (q.match(/\b(web|website|websites|web\s*dev|site|landing|portal|html|wordpress|shopify)\b/) || q.match(/\b(موقع|مواقع|تطوير موقع|mawqi|webpage)\b/)) {
+                return { text: isAr ? '🌐 تطوير مواقع: React, Next.js, Vue.js. يبدأ من $500. المدة 2-8 أسابيع.' + end : '🌐 Web Dev: React, Next.js, Vue.js. Starting from $500. Timeline: 2-8 weeks.' + end,
+                    suggestions: isAr ? ['عرض سعر', 'تطبيقات جوال', 'التسعير'] : ['Free Quote', 'Mobile Apps', 'Pricing'] };
             }
-
-            // KHALID
-            if (topTopic === 'khalid') {
-                return { text: isAr
-                    ? '👨‍💻 المهندس خالد مختار — خبير SEO والتسويق الرقمي:\n\n📊 الخبرة: 8+ سنوات في SEO والتسويق الرقمي\n🏆 النتائج: 50+ عميل حقق المرتبة الأولى\n📈 الأداء: زيادة الزيارات العضوية حتى 300%\n\n🔧 التخصصات:\n✅ مراجعات SEO التقنية الشاملة\n✅ تحسين On-Page و Off-Page SEO\n✅ بحث الكلمات المفتاحية المتقدم\n✅ بناء الروابط عالية الجودة\n✅ SEO المحلي (Google Maps)\n✅ تحليل المنافسين\n✅ تقارير شهرية مفصلة\n✅ Google Analytics & Search Console\n\n📞 التواصل: +252 62 2146744\n💬 متاح لاستشارة مجانية!'
-                    : '👨‍💻 Engineer Khalid Mukhtar — SEO & Digital Marketing Expert:\n\n📊 Experience: 8+ years in SEO & digital marketing\n🏆 Results: 50+ clients ranked #1 on Google\n📈 Performance: Up to 300% organic traffic increase\n\n🔧 Specializations:\n✅ Comprehensive technical SEO audits\n✅ On-Page & Off-Page SEO optimization\n✅ Advanced keyword research\n✅ High-quality link building\n✅ Local SEO (Google Maps)\n✅ Competitor analysis\n✅ Detailed monthly reports\n✅ Google Analytics & Search Console\n\n📞 Contact: +252 62 2146744\n💬 Available for free consultation!',
-                    suggestions: isAr ? ['خدمات SEO', 'التسويق الرقمي', 'التسعير', 'تواصل معه'] : ['SEO Services', 'Digital Marketing', 'Pricing', 'Contact Him'] };
+            // Mobile Apps
+            if (q.match(/\b(mobile|app|apps|android|ios|iphone|flutter|react\s*native|play\s*store|app\s*store|swift|kotlin)\b/) || q.match(/\b(جوال|تطبيق|تطبيقات|tatbiq|jawwal)\b/)) {
+                return { text: isAr ? '📱 تطبيقات جوال: iOS/Android أصلية و Flutter. يبدأ من $1,000. المدة 4-16 أسابيع.' + end : '📱 Mobile Apps: Native iOS/Android & Flutter. Starting from $1,000. Timeline: 4-16 weeks.' + end,
+                    suggestions: isAr ? ['عرض سعر', 'خدماتنا', 'التسعير'] : ['Get Quote', 'Services', 'Pricing'] };
             }
-
-            // INDUSTRIES
-            if (topTopic === 'industries') {
-                return { text: isAr
-                    ? '🏭 القطاعات التي نخدمها:\n\n🏠 العقارات — بوابات عقارية، أنظمة CRM\n🏦 البنوك والمالية — حلول FinTech, أنظمة دفع\n🏥 الرعاية الصحية — Telemedicine, EHR, إدارة المرضى\n🛍️ التجزئة — متاجر إلكترونية, POS, إدارة المخزون\n🚚 النقل واللوجستيات — إدارة الأساطيل, تتبع الشحنات\n🎓 التعليم — LMS, صفوف افتراضية, إدارة الطلاب\n\nلكل قطاع حلول مخصصة ومصممة خصيصاً!'
-                    : '🏭 Industries We Serve:\n\n🏠 Real Estate — Property portals, CRM systems\n🏦 Banking & Finance — FinTech solutions, payment systems\n🏥 Healthcare — Telemedicine, EHR, patient management\n🛍️ Retail — E-commerce, POS, inventory management\n🚚 Transport & Logistics — Fleet management, shipment tracking\n🎓 Education — LMS, virtual classrooms, student management\n\nTailored solutions designed specifically for each sector!',
-                    suggestions: isAr ? ['خدماتنا', 'دراسات الحالة', 'تواصل معنا'] : ['Services', 'Case Studies', 'Contact Us'] };
+            // SEO
+            if (q.match(/\b(seo|search\s*engine|google\s*(rank|optimization|search|console)|serp|backlink|keyword|on.page|off.page|local\s*seo|organic|ranking)\b/) || q.match(/\b(محرك|بحث|تحسين|ترتيب|خالd|mukhtar)\b/)) {
+                return { text: isAr ? '🔍 SEO بقيادة المهندس خالد مختار: 8+ سنوات خبرة، 50+ عميل، زيادة زيارات 300%. يبدأ من $300/شهر. تواصل: +252 62 2146744' + end : '🔍 SEO led by Eng. Khalid Mukhtar: 8+ years, 50+ clients ranked #1, 300% traffic boost. From $300/mo. Contact: +252 62 2146744' + end,
+                    suggestions: isAr ? ['عن خالد', 'التسويق', 'التسعير'] : ['About Khalid', 'Marketing', 'Pricing'] };
             }
-
-            // CASE STUDIES
-            if (topTopic === 'casestudies') {
-                return { text: isAr
-                    ? '📊 دراسات الحالة — مشاريع ناجحة مُثبتة:\n\n🏠 Somali Property Hub\n   بوابة عقارية بـ 10,000+ إعلان مع مدفوعات متكاملة\n\n💰 PaySom Digital Banking\n   مصرفية جوالية لأكثر من 500 ألف مستخدم\n\n🏥 HealthConnect\n   منصة صحة عن بُعد مع فيديو ووصفات إلكترونية\n\n🛍️ Mogadishu Market Online\n   سوق إلكتروني متعدد الموردين بـ 500+ بائع\n\n🚚 FleetTrack Logistics\n   إدارة أسطول توفر 25% من تكاليف التشغيل\n\n🎓 EduPlatform Somalia\n   نظام إدارة تعلم بأكثر من 20,000 طالب\n\nمشاريع حقيقية بنتائج حقيقية!'
-                    : '📊 Case Studies — Proven successful projects:\n\n🏠 Somali Property Hub\n   Real estate portal with 10,000+ listings & integrated payments\n\n💰 PaySom Digital Banking\n   Mobile banking for 500K+ users with real-time transfers\n\n🏥 HealthConnect\n   Telehealth platform with video & e-prescriptions\n\n🛍️ Mogadishu Market Online\n   Multi-vendor marketplace with 500+ sellers\n\n🚚 FleetTrack Logistics\n   Fleet management saving 25% operational costs\n\n🎓 EduPlatform Somalia\n   LMS with 20,000+ students & live classes\n\nReal projects with real results!',
-                    suggestions: isAr ? ['خدماتنا', 'تواصل معنا', 'التسعير'] : ['Services', 'Contact Us', 'Pricing'] };
+            // Cybersecurity
+            if (q.match(/\b(cyber|security|secure|penetration|vulnerability|firewall|hack|malware|encryption|compliance|audit|soc|phishing|ddos|protection|attack|threat)\b/) || q.match(/\b(أمن|حماية|اختراق|تشفير|amen|amn)\b/)) {
+                return { text: isAr ? '🔒 أمن سيبراني: اختبار اختراق، تقييم ثغرات، مراقبة 24/7، تدقيق امتثال. يبدأ من $500.' + end : '🔒 Cybersecurity: Pen testing, vulnerability assessment, 24/7 monitoring, compliance audits. From $500.' + end,
+                    suggestions: isAr ? ['خدماتنا', 'التسعير', 'تواصل'] : ['Services', 'Pricing', 'Contact'] };
             }
-
-            // MARKETING
-            if (topTopic === 'marketing') {
-                return { text: isAr
-                    ? '📊 التسويق الرقمي — نمو أعمالك:\n\n🔧 خدماتنا:\n✅ تحسين محركات البحث (SEO)\n✅ إدارة وسائل التواصل الاجتماعي\n✅ التسويق عبر البريد الإلكتروني\n✅ حملات Google Ads و Facebook Ads\n✅ استراتيجية المحتوى\n✅ التسويق عبر المؤثرين\n✅ تحليلات الحملات\n\n💰 حملة SEO: تبدأ من $300/شهر\n💰 حملة سوشيال ميديا: تبدأ من $400/شهر\n💰 حملة متكاملة: تبدأ من $800/شهر\n\n📈 نضمن نتائج قابلة للقياس!'
-                    : '📊 Digital Marketing — Grow your business:\n\n🔧 Our Services:\n✅ Search Engine Optimization (SEO)\n✅ Social media management\n✅ Email marketing\n✅ Google Ads & Facebook Ads campaigns\n✅ Content strategy\n✅ Influencer marketing\n✅ Campaign analytics\n\n💰 SEO campaign: from $300/month\n💰 Social media: from $400/month\n💰 Full package: from $800/month\n\n📈 We guarantee measurable results!',
-                    suggestions: isAr ? ['SEO', 'المحتوى', 'التسعير', 'تواصل'] : ['SEO', 'Content', 'Pricing', 'Contact'] };
+            // Cloud
+            if (q.match(/\b(cloud|aws|azure|gcp|hosting|server|docker|kubernetes|ci\/cd|devops|deploy|vm|saas|serverless|storage|cdn)\b/) || q.match(/\b(سحاب|استضافة|خادم|سahab|serwer)\b/)) {
+                return { text: isAr ? '☁️ سحابة: AWS, Azure, GCP, Docker, Kubernetes. uptime 99.9%. يبدأ من $50/شهر.' + end : '☁️ Cloud: AWS, Azure, GCP, Docker, K8s. 99.9% uptime. From $50/month.' + end,
+                    suggestions: isAr ? ['خدماتنا', 'التسعير', 'تواصل'] : ['Services', 'Pricing', 'Contact'] };
             }
-
-            // CONSULTING
-            if (topTopic === 'consulting') {
-                return { text: isAr
-                    ? '💡 الاستشارات التقنية:\n\n📋 خدماتنا:\n✅ خاريط طريق التكنولوجيا الاستراتيجية\n✅ استشارات التحول الرقمي\n✅ مراجعة العمليات التقنية\n✅ توصيات البنية التحتية\n✅ تخطيط المشاريع\n✅ تقييم التقنيات\n\n💰 استشارة أولية: مجانية!\n💰 استشارة معمّقة: تبدأ من $500\n\n📞 احصل على استشارة مجانية: +252 62 2146744'
-                    : '💡 IT Consulting:\n\n📋 Our Services:\n✅ Strategic technology roadmaps\n✅ Digital transformation advisory\n✅ Technical architecture review\n✅ Infrastructure recommendations\n✅ Project planning\n✅ Technology evaluation\n\n💰 Initial consultation: FREE!\n💰 Deep consultation: from $500\n\n📞 Get a free consultation: +252 62 2146744',
-                    suggestions: isAr ? ['خدماتنا', 'التسعير', 'تواصل معنا'] : ['Services', 'Pricing', 'Contact Us'] };
+            // AI
+            if (q.match(/\b(ai|artificial\s*intelligence|machine\s*learning|ml|chatbot|bot|automation|automate|robot|nlp|predictive|llm|gpt|openai)\b/) || q.match(/\b(ذكاء|اصطناعي|أتمتة|روبوت)\b/)) {
+                if (q.match(/\b(email|waiting|detail|email|said|paid|raid)\b/) && !q.match(/\b(ai|chatbot|bot|automation)\b/)) { /* skip false matches */ }
+                else {
+                    return { text: isAr ? '🤖 ذكاء اصطناعي: روبوتات محادثة، أتمتة عمليات، تحليل بيانات، NLP. مثل هذا المساعد! يبدأ من $400.' + end : '🤖 AI: Chatbots, process automation, data analytics, NLP. Like this assistant! From $400.' + end,
+                        suggestions: isAr ? ['روبوت محادثة', 'خدماتنا', 'التسعير'] : ['Chatbot', 'Services', 'Pricing'] };
+                }
             }
-
-            // VALUES / MISSION / VISION
-            if (topTopic === 'values') {
-                return { text: isAr
-                    ? '✨ قيمنا ورؤيتنا:\n\n🎯 المهمة:\nتسريع التحول الرقمي للشركات من خلال التكنولوجيا المبتكرة والحلول المخصصة.\n\n👁️ الرؤية:\nالقائد العالمي في الابتكار الرقمي، نمكّن المؤسسات من الازدهار في العصر الرقمي.\n\n💎 القيم:\n• الابتكار — نبحث دائماً عن حلول إبداعية\n• النزاهة — شفافية وصراحة مع كل عميل\n• التميز — جودة عالية في كل ما نفعله\n• التعاون — شراكة حقيقية مع عملائنا\n• تركيز العميل — نجاحكم هو نجاحنا'
-                    : '✨ Our Values & Vision:\n\n🎯 Mission:\nAccelerate digital transformation for businesses through innovative technology and tailored solutions.\n\n👁️ Vision:\nGlobal leader in digital innovation, empowering organizations to thrive in the digital age.\n\n💎 Values:\n• Innovation — Always seeking creative solutions\n• Integrity — Transparency with every client\n• Excellence — High quality in everything we do\n• Collaboration — True partnership with our clients\n• Customer-centric — Your success is our success',
-                    suggestions: isAr ? ['فريقنا', 'خدماتنا', 'تواصل معنا'] : ['Our Team', 'Services', 'Contact Us'] };
+            // Products
+            if (q.match(/\b(product|products|saas|platform|software|tool|tools)\b/) || q.match(/\b(منتج|منتجات|برمج)\b/)) {
+                return { text: isAr ? '📦 منتجاتنا: ERP ($2,000+), CRM ($500+), Commerce ($1,500+), Scheduler ($300+), Analytics ($400+), Guard ($200/شهر).' + end : '📦 Products: ERP ($2,000+), CRM ($500+), Commerce ($1,500+), Scheduler ($300+), Analytics ($400+), Guard ($200/mo).' + end,
+                    suggestions: isAr ? ['ERP', 'CRM', 'التسعير'] : ['ERP', 'CRM', 'Pricing'] };
             }
-
-            // AWARDS
-            if (topTopic === 'awards') {
-                return { text: isAr
-                    ? '🏆 الجوائز والإنجازات:\n\n🥇 جائزة أفضل شركة تقنية في شرق أفريقيا 2024\n🥇 جائزة الابتكار الرقمي 2023\n🥇 شريك Google Cloud المعتمد\n🥇 شريك Microsoft Gold\n🥇 شريك AWS Advanced\n🥇 ISO 27001 — إدارة الأمان\n🥇 أفضل خدمة عملاء 2025\n\n⭐ 98% معدل رضا العملاء!'
-                    : '🏆 Awards & Achievements:\n\n🥇 Best Tech Company in East Africa 2024\n🥇 Digital Innovation Award 2023\n🥇 Google Cloud Certified Partner\n🥇 Microsoft Gold Partner\n🥇 AWS Advanced Partner\n🥇 ISO 27001 — Security Management\n🥇 Best Customer Service 2025\n\n⭐ 98% client satisfaction rate!',
-                    suggestions: isAr ? ['فريقنا', 'عملاؤنا', 'تواصل معنا'] : ['Our Team', 'Clients', 'Contact Us'] };
+            // ERP
+            if (q.match(/\b(erp|enterprise\s*resource|inventory|procurement|hr\s*module|accounting|supply\s*chain)\b/)) {
+                return { text: isAr ? '🏢 ERP: محاسبة، مخزون، موارد بشرية، مشتريات. يبدأ من $2,000 شامل التثبيت والتدريب.' + end : '🏢 ERP: Finance, inventory, HR, procurement. From $2,000 including setup & training.' + end,
+                    suggestions: isAr ? ['CRM', 'المنتجات', 'التسعير'] : ['CRM', 'Products', 'Pricing'] };
             }
-
-            // LOCATION
-            if (topTopic === 'location') {
-                return { text: isAr
-                    ? '📍 مكاتبنا حول العالم:\n\n🇸🇴 مقديشو، الصومال (المقر الرئيسي)\n🇦🇪 دبي، الإمارات\n🇬🇧 لندن، بريطانيا\n🇺🇸 نيويورك، أمريكا\n🇮🇳 بنغالور، الهند\n\n📞 واتساب: +252 62 2146744\n📧 info@techzone.so\n\n🌐 نخدم عملاءنا في جميع أنحاء العالم!'
-                    : '📍 Our Offices Worldwide:\n\n🇸🇴 Mogadishu, Somalia (Headquarters)\n🇦🇪 Dubai, UAE\n🇬🇧 London, UK\n🇺🇸 New York, USA\n🇮🇳 Bangalore, India\n\n📞 WhatsApp: +252 62 2146744\n📧 info@techzone.so\n\n🌐 We serve clients around the world!',
-                    suggestions: isAr ? ['تواصل معنا', 'فريقنا', 'عن الشركة'] : ['Contact Us', 'Our Team', 'About Us'] };
+            // CRM
+            if (q.match(/\b(crm|customer\s*relationship|lead|sales\s*pipeline|lead\s*scoring)\b/)) {
+                return { text: isAr ? '👥 CRM: قنوات مبيعات، تصنيف عملاء، أتمتة، تكامل واتساب. يبدأ من $500.' + end : '👥 CRM: Sales pipeline, lead scoring, automation, WhatsApp integration. From $500.' + end,
+                    suggestions: isAr ? ['ERP', 'المنتجات', 'التسعير'] : ['ERP', 'Products', 'Pricing'] };
             }
-
-            // REAL ESTATE
-            if (topTopic === 'realestate') {
-                return { text: isAr
-                    ? '🏠 حلولنا للعقارات:\n\n✅ بوابات عقارية (مثل Somali Property Hub)\n✅ أنظمة إدارة الممتلكات\n✅ CRM خاص بالعقارات\n✅ جولات افتراضية (Virtual Tours)\n✅ تطبيق جوال للعقارات\n✅ تكامل مع بوابات الدفع\n✅ نظام حجز ومواعيد\n\n💰 يبدأ من $2,000\n📞 اتصل بنا: +252 62 2146744'
-                    : '🏠 Real Estate Solutions:\n\n✅ Property portals (like Somali Property Hub)\n✅ Property management systems\n✅ Real estate CRM\n✅ Virtual tours\n✅ Mobile property apps\n✅ Payment gateway integration\n✅ Booking & scheduling systems\n\n💰 Starting from $2,000\n📞 Call us: +252 62 2146744',
-                    suggestions: isAr ? ['درسان الحالة', 'الخدمات', 'التسعير'] : ['Case Studies', 'Services', 'Pricing'] };
+            // Commerce
+            if (q.match(/\b(commerce|e.commerce|ecommerce|online\s*store|shopping|cart|checkout|marketplace|store|shop|multi.vendor)\b/)) {
+                return { text: isAr ? '🛒 Commerce: متجر إلكتروني، بوابة دفع، إدارة طلبات، multi-vendor. يبدأ من $1,500.' + end : '🛒 Commerce: Online store, payment gateway, order management, multi-vendor. From $1,500.' + end,
+                    suggestions: isAr ? ['ERP', 'CRM', 'التسعير'] : ['ERP', 'CRM', 'Pricing'] };
             }
-
-            // BANKING
-            if (topTopic === 'banking') {
-                return { text: isAr
-                    ? '🏦 حلولنا للبنوك والمالية:\n\n✅ تطبيقات المصرفية الجوالية (مثل PaySom)\n✅ أنظمة الدفع الإلكتروني\n✅ إدارة القروض\n✅ محافظ رقمية\n✅ KYC و AML compliance\n✅ أنظمة تحويل الأموال\n✅ تكامل مع البنوك المحلية\n\n💰 حلول FinTech مخصصة — اتصل بنا!'
-                    : '🏦 Banking & Finance Solutions:\n\n✅ Mobile banking apps (like PaySom)\n✅ Electronic payment systems\n✅ Loan management\n✅ Digital wallets\n✅ KYC & AML compliance\n✅ Money transfer systems\n✅ Local bank integration\n\n💰 Custom FinTech solutions — Contact us!',
+            // Scheduler
+            if (q.match(/\b(scheduler|appointment|booking|calendar|schedule|reminder|reservation)\b/)) {
+                return { text: isAr ? '📅 Scheduler: حجز مواعيد، مزامنة تقويم، تذكيرات. يبدأ من $300.' + end : '📅 Scheduler: Appointment booking, calendar sync, reminders. From $300.' + end,
+                    suggestions: isAr ? ['المنتجات', 'التسعير'] : ['Products', 'Pricing'] };
+            }
+            // Analytics
+            if (q.match(/\b(analytics|business\s*intelligence|bi|dashboard|kpi|metric|tracking|report|insight|visualization)\b/)) {
+                return { text: isAr ? '📊 Analytics: لوحات تحكم، تقارير مخصصة، KPI tracking. يبدأ من $400.' + end : '📊 Analytics: Dashboards, custom reports, KPI tracking. From $400.' + end,
+                    suggestions: isAr ? ['ERP', 'CRM', 'التسعير'] : ['ERP', 'CRM', 'Pricing'] };
+            }
+            // Guard
+            if (q.match(/\b(guard|techzone\s*guard|threat\s*detect|security\s*monitor)\b/)) {
+                return { text: isAr ? '🛡️ Guard: مراقبة أمنية 24/7، كشف تهديدات، تقارير شهرية. يبدأ من $200/شهر.' + end : '🛡️ Guard: 24/7 security monitoring, threat detection, monthly reports. From $200/month.' + end,
+                    suggestions: isAr ? ['أمن سيبراني', 'التسعير'] : ['Cybersecurity', 'Pricing'] };
+            }
+            // Marketing
+            if (q.match(/\b(marketing|digital\s*marketing|social\s*media|content\s*strategy|campaign|advertis|ppc|sem|google\s*ads|facebook|brand|branding|growth)\b/) || q.match(/\b(تسويق|إعلان|حملة)\b/)) {
+                return { text: isAr ? '📊 تسويق رقمي: SEO، سوشيال ميديا، حملات إعلانية، استراتيجية محتوى. يبدأ من $300/شهر.' + end : '📊 Digital Marketing: SEO, social media, ad campaigns, content strategy. From $300/month.' + end,
+                    suggestions: isAr ? ['SEO', 'الخدمات', 'التسعير'] : ['SEO', 'Services', 'Pricing'] };
+            }
+            // Pricing
+            if (q.match(/\b(price|pricing|cost|how\s*much|budget|affordable|cheap|expensive|rate|quote|estimate|plan|plans|fee|charge|pay|payment)\b/) || q.match(/\b(ثمن|سعر|كم|تسعير|cost.*how|much.*cost)\b/)) {
+                return { text: isAr ? '💰 الأسعار: مواقع $500+ | تطبيقات $1,000+ | ERP $2,000+ | SEO $300/شهر | سحابة $50/شهر | روبوت $400. استشارة مجانية!' + end : '💰 Pricing: Web $500+ | Apps $1,000+ | ERP $2,000+ | SEO $300/mo | Cloud $50/mo | Chatbot $400. Free consultation!' + end,
+                    suggestions: isAr ? ['استشارة مجانية', 'خدماتنا', 'تواصل'] : ['Free Consultation', 'Services', 'Contact'] };
+            }
+            // Contact
+            if (q.match(/\b(contact|reach|call|phone|email|mail|message|inbox|get\s*in\s*touch)\b/) || q.match(/\b(تواصل|اتصل|هاتف|بريد|twasul)\b/)) {
+                return { text: isAr ? '📞 واتساب: +252 62 2146744 | بريد: info@techzone.so | موقع: hggdhg.github.io/Techzone-business | مقديشو، الصومال' + end : '📞 WhatsApp: +252 62 2146744 | Email: info@techzone.so | Web: hggdhg.github.io/Techzone-business | Mogadishu, Somalia' + end,
+                    suggestions: isAr ? ['واتساب', 'استشارة مجانية'] : ['WhatsApp', 'Free Consultation'] };
+            }
+            // WhatsApp
+            if (q.match(/\b(whatsapp|wa\.me|wattsapp|watsapp)\b/) || q.match(/واتساب/)) {
+                return { text: isAr ? '📱 واتساب المباشر: wa.me/252622146744' + end : '📱 Direct WhatsApp: wa.me/252622146744' + end,
+                    suggestions: isAr ? ['خدماتنا', 'التسعير'] : ['Services', 'Pricing'] };
+            }
+            // About
+            if (q.match(/\b(about|who\s*(are|is|do)|tell.*about|company|overview|introduce)\b/) || q.match(/\b(من\s*انتم|من\s*نحن|عن\s*الشركة|company.*who)\b/)) {
+                return { text: isAr ? '🏢 TechZone: تأسست 2018، 200+ موظف، 90+ عميل، 100+ مشروع. مكاتب: الصومال، الإمارات، بريطانيا، أمريكا، الهند.' + end : '🏢 TechZone: Founded 2018, 200+ team, 90+ clients, 100+ projects. Offices: Somalia, UAE, UK, USA, India.' + end,
+                    suggestions: isAr ? ['فريقنا', 'خدماتنا', 'تواصل'] : ['Our Team', 'Services', 'Contact'] };
+            }
+            // Team
+            if (q.match(/\b(team|staff|employee|people|member|developer|designer|engineer|architect|cto|ceo|founder)\b/) || q.match(/\b(فريق|موظف|طاقم)\b/)) {
+                return { text: isAr ? '👥 200+ متخصص: مهندسون، مصممون، خبراء SEO، مهندسو سحابة، خبراء أمن. في 5 مكاتب عالمية.' + end : '👥 200+ specialists: engineers, designers, SEO experts, cloud engineers, security experts. Across 5 global offices.' + end,
+                    suggestions: isAr ? ['خالد', 'خدماتنا', 'تواصل'] : ['Khalid', 'Services', 'Contact'] };
+            }
+            // Khalid
+            if (q.match(/\b(khalid|mukhtar|خالد|mختار|seo\s*expert|seo\s*person|seo\s*lead|who.*seo|seo.*who|who.*does.*seo)\b/)) {
+                return { text: isAr ? '👨‍💻 المهندس خالد مختار: خبير SEO، 8+ سنوات، 50+ عميل، زيادة زيارات 300%. متخصص في مراجعات SEO和技术 والكلمات المفتاحية. تواصل: +252 62 2146744' + end : '👨‍💻 Eng. Khalid Mukhtar: SEO expert, 8+ years, 50+ clients, 300% traffic boost. Specializes in technical SEO audits & keyword research. Contact: +252 62 2146744' + end,
+                    suggestions: isAr ['خدمات SEO', 'التسويق', 'تواصل معه'] : ['SEO Services', 'Marketing', 'Contact Him'] };
+            }
+            // Industries
+            if (q.match(/\b(industr|sector|field|domain|vertical|niche)\b/) || q.match(/\b(قطاع|مجال)\b/)) {
+                return { text: isAr ? '🏭 نخدم: العقارات، البنوك، الصحة، التجزئة، النقل، التعليم. حلول مخصصة لكل قطاع.' + end : '🏭 Industries: Real estate, banking, healthcare, retail, transport, education. Tailored solutions for each.' + end,
+                    suggestions: isAr ? ['خدماتنا', 'دراسات الحالة', 'تواصل'] : ['Services', 'Case Studies', 'Contact'] };
+            }
+            // Real Estate
+            if (q.match(/\b(real\s*estate|property|properties|house|apartment|rent|realestate|proptech)\b/)) {
+                return { text: isAr ? '🏠 عقارات: بوابات عقارية، CRM عقاري، جولات افتراضية. مثل Somali Property Hub. يبدأ من $2,000.' + end : '🏠 Real Estate: Property portals, CRM, virtual tours. Like Somali Property Hub. From $2,000.' + end,
+                    suggestions: isAr ? ['.case studies', 'الخدمات', 'التسعير'] : ['Case Studies', 'Services', 'Pricing'] };
+            }
+            // Banking
+            if (q.match(/\b(bank|banking|finance|financial|loan|credit|fintech|payment|transaction|wallet|microfinance)\b/)) {
+                return { text: isAr ? '🏦 بنوك: تطبيقات مصرفية، أنظمة دفع، محافظ رقمية. مثل PaySom (500K+ مستخدم).' + end : '🏦 Banking: Mobile banking apps, payment systems, digital wallets. Like PaySom (500K+ users).' + end,
                     suggestions: isAr ? ['PaySom', 'الخدمات', 'التسعير'] : ['PaySom', 'Services', 'Pricing'] };
             }
-
-            // HEALTHCARE
-            if (topTopic === 'healthcare') {
-                return { text: isAr
-                    ? '🏥 حلولنا للرعاية الصحية:\n\n✅ تطبيقات الطب عن بُعد (مثل HealthConnect)\n✅ أنظمة السجلات الإلكترونية (EHR)\n✅ إدارة المرضى\n✅ حجز المواعيد الطبية\n✅ إنترنت الأشياء الطبي (Medical IoT)\n✅ تطبيق صحي للمرضى\n✅ تكامل مع المختبرات\n\n💰 حلول صحية مخصصة — اتصل بنا!'
-                    : '🏥 Healthcare Solutions:\n\n✅ Telemedicine apps (like HealthConnect)\n✅ Electronic Health Records (EHR)\n✅ Patient management\n✅ Medical appointment booking\n✅ Medical IoT\n✅ Patient mobile apps\n✅ Lab integration\n\n💰 Custom health solutions — Contact us!',
-                    suggestions: isAr ? ['HealthConnect', 'الخدمات', 'التسعير'] : ['HealthConnect', 'Services', 'Pricing'] };
+            // Healthcare
+            if (q.match(/\b(health|healthcare|medical|hospital|clinic|patient|doctor|telemedicine|telehealth|pharmacy|ehr)\b/)) {
+                return { text: isAr ? '🏥 صحة: طب عن بُعد، سجلات إلكترونية، إدارة مرضى. مثل HealthConnect.' + end : '🏥 Healthcare: Telemedicine, EHR, patient management. Like HealthConnect.' + end,
+                    suggestions: isAr ? ['HealthConnect', 'الخدمات'] : ['HealthConnect', 'Services'] };
+            }
+            // Education
+            if (q.match(/\b(education|edu|school|university|college|student|lms|e.learning|class|course|teacher|training|learn)\b/)) {
+                return { text: isAr ? '🎓 تعليم: LMS، صفوف افتراضية، إدارة طلاب. مثل EduPlatform (20K+ طالب). يبدأ من $1,000.' + end : '🎓 Education: LMS, virtual classrooms, student mgmt. Like EduPlatform (20K+ students). From $1,000.' + end,
+                    suggestions: isAr ? ['EduPlatform', 'الخدمات'] : ['EduPlatform', 'Services'] };
+            }
+            // Logistics
+            if (q.match(/\b(logistics|transport|fleet|shipping|delivery|supply\s*chain|route|warehouse|tracking|cargo)\b/)) {
+                return { text: isAr ? '🚚 لوجستيات: إدارة أساطيل، تحسين مسارات، تتبع شحنات. مثل FleetTrack ( توفير 25%). يبدأ من $1,500.' + end : '🚚 Logistics: Fleet management, route optimization, shipment tracking. Like FleetTrack (25% savings). From $1,500.' + end,
+                    suggestions: isAr ? ['FleetTrack', 'الخدمات'] : ['FleetTrack', 'Services'] };
+            }
+            // Case Studies
+            if (q.match(/\b(case\s*study|case\s*studies|portfolio|project|projects|client|success\s*story|example|somali\s*property|paysom|mogadishu|fleettrack|eduplatform|healthconnect)\b/) || q.match(/\b(دراسة|دراسات|مشاريع|عمل|نماذج)\b/)) {
+                return { text: isAr ? '📊 أعمالنا: Somali Property Hub (10K+ عقار)، PaySom (500K+ مستخدم)، HealthConnect، Mogadishu Market (500+ بائع)، FleetTrack، EduPlatform (20K+ طالب).' + end : '📊 Our Work: Somali Property Hub (10K+ listings), PaySom (500K+ users), HealthConnect, Mogadishu Market (500+ vendors), FleetTrack, EduPlatform (20K+ students).' + end,
+                    suggestions: isAr ? ['خدماتنا', 'تواصل'] : ['Services', 'Contact'] };
+            }
+            // Values
+            if (q.match(/\b(value|values|mission|vision|purpose|culture|goal|principle)\b/) || q.match(/\b(قيمنا|رسالتنا|رؤيتنا|هدف|ثقافة)\b/)) {
+                return { text: isAr ? '✨ مهمتنا: تمكين الشركات بالتكنولوجيا. رؤيتنا: قائد عالمي في الابتكار الرقمي. قيمنا: ابتكار، نزاهة، تميز، تعاون.' + end : '✨ Mission: Empower businesses with tech. Vision: Global leader in digital innovation. Values: Innovation, integrity, excellence, collaboration.' + end,
+                    suggestions: isAr ? ['فريقنا', 'خدماتنا'] : ['Our Team', 'Services'] };
+            }
+            // Awards
+            if (q.match(/\b(award|awards|recognition|achievement|milestone|certificate|accredit|certified|iso)\b/)) {
+                return { text: isAr ? '🏆 جوائز: أفضل شركة تقنية في شرق أفريقيا 2024، شريك Google Cloud و Microsoft و AWS المعتمد. 98% رضا عملاء.' + end : '🏆 Awards: Best Tech Company East Africa 2024, Google Cloud/Microsoft/AWS certified partner. 98% client satisfaction.' + end,
+                    suggestions: isAr ? ['فريقنا', 'تواصل'] : ['Our Team', 'Contact'] };
+            }
+            // Location
+            if (q.match(/\b(location|where|address|office|offices|headquarters|hq|branch|city|country|based|mogadishu|somalia)\b/) || q.match(/\b(مقديشو|الصومال|somali)\b/)) {
+                return { text: isAr ? '📍 مقديشو (HQ) 🇸🇴 | دبي 🇦🇪 | لندن 🇬🇧 | نيويورك 🇺🇸 | بنغالور 🇮🇳' + end : '📍 Mogadishu (HQ) 🇸🇴 | Dubai 🇦🇪 | London 🇬🇧 | New York 🇺🇸 | Bangalore 🇮🇳' + end,
+                    suggestions: isAr ? ['تواصل معنا', 'فريقنا'] : ['Contact Us', 'Our Team'] };
+            }
+            // Technology
+            if (q.match(/\b(technology|tech\s*stack|stack|framework|programming|coding|code|react|next\.?js|vue|angular|node\.?js|python|django|laravel|php|java|swift|kotlin|typescript)\b/)) {
+                return { text: isAr ? '⚡ نستخدم: React, Next.js, Vue.js, Flutter, Node.js, Python, Django, Laravel, AWS, Azure, Docker, Kubernetes.' + end : '⚡ We use: React, Next.js, Vue.js, Flutter, Node.js, Python, Django, Laravel, AWS, Azure, Docker, K8s.' + end,
+                    suggestions: isAr ? ['خدماتنا', 'المنتجات'] : ['Services', 'Products'] };
+            }
+            // Design
+            if (q.match(/\b(design|ui|ux|user\s*interface|user\s*experience|figma|prototype|wireframe|mockup|graphic|logo|branding)\b/)) {
+                return { text: isAr ? '🎨 تصميم: UI/UX، هوية بصرية، wireframes، prototypes. أدوات: Figma, Adobe XD. تصميم واجهة: $300+.' + end : '🎨 Design: UI/UX, brand identity, wireframes, prototypes. Tools: Figma, Adobe XD. Interface design: $300+.' + end,
+                    suggestions: isAr ['تطوير مواقع', 'تطبيقات جوال'] : ['Web Dev', 'Mobile Apps'] };
+            }
+            // Consulting
+            if (q.match(/\b(consult|consulting|consultation|advisory|strategy|strategic|advisor|recommen|roadmap|assessment)\b/)) {
+                return { text: isAr ? '💡 استشارات: خاريط طريق تقنية، تحول رقمي، مراجعة عمليات. استشارة أولية مجانية!' + end : '💡 Consulting: Tech roadmaps, digital transformation, process review. First consultation FREE!' + end,
+                    suggestions: isAr ? ['خدماتنا', 'التسعير'] : ['Services', 'Pricing'] };
+            }
+            // How it works
+            if (q.match(/\b(how\s*(does|do|it|work|process|works|long|start|begin|workflow|step|steps)\b)/)) {
+                return { text: isAr ? '📋 خطواتنا: 1️⃣ استشارة مجانية → 2️⃣ عرض سعر → 3️⃣ تصميم → 4️⃣ تطوير → 5️⃣ اختبار → 6️⃣ إطلاق → 7️⃣ دعم مستمر.' + end : '📋 Our process: 1️⃣ Free consult → 2️⃣ Quote → 3️⃣ Design → 4️⃣ Dev → 5️⃣ Test → 6️⃣ Launch → 7️⃣ Support.' + end,
+                    suggestions: isAr ? ['عرض سعر مجاني', 'التسعير'] : ['Free Quote', 'Pricing'] };
+            }
+            // Timeline
+            if (q.match(/\b(time|timeline|deadline|duration|how\s*long|when|deliver|turnaround|eta|week|month|day)\b/)) {
+                return { text: isAr ? '⏰ المدة: مواقع 2-8 أسابيع | تطبيقات 4-16 أسابيع | ERP 4-12 أسبوع | SEO: نتائج خلال 3-6 أشهر.' + end : '⏰ Timeline: Web 2-8 weeks | Apps 4-16 weeks | ERP 4-12 weeks | SEO results in 3-6 months.' + end,
+                    suggestions: isAr ? ['خدماتنا', 'التسعير'] : ['Services', 'Pricing'] };
+            }
+            // Payment
+            if (q.match(/\b(pay|payment|invoice|bill|billing|installment|depos|advance|cash|card|visa|paypal|stripe|bank\s*transfer)\b/)) {
+                return { text: isAr ? '💳 الدفع: تحويل بنكي، PayPal، Stripe، واتساب Pay. 50% مقدم + 50% عند التسليم. أقساط متاحة.' + end : '💳 Payment: Bank transfer, PayPal, Stripe, WhatsApp Pay. 50% upfront + 50% on delivery. Installments available.' + end,
+                    suggestions: isAr ? ['التسعير', 'تواصل'] : ['Pricing', 'Contact'] };
+            }
+            // Support
+            if (q.match(/\b(support|help|assist|maintenance|warranty|guarantee|sla|uptime|avail|24\/7)\b/)) {
+                return { text: isAr ? '🔧 الدعم: 24/7 عبر واتساب، صيانة شهرية، نسخ احتياطي، تدريب فريق. SLA مع ضمان uptime.' + end : '🔧 Support: 24/7 via WhatsApp, monthly maintenance, backups, team training. SLA with uptime guarantee.' + end,
+                    suggestions: isAr ? ['خدماتنا', 'تواصل'] : ['Services', 'Contact'] };
             }
 
-            // EDUCATION
-            if (topTopic === 'education') {
-                return { text: isAr
-                    ? '🎓 حلولنا للتعليم:\n\n✅ أنظمة إدارة التعلم (LMS)\n✅ صفوف تعليمية افتراضية\n✅ إدارة الطلاب وال enrollment\n✅ نظام الامتحانات الإلكترونية\n✅ تطبيق تعليمي للطلاب\n✅ تكامل مع Zoom/Teams\n✅ تتبع التقدم الأكاديمي\n\n💰 يبدأ من $1,000\n📞 اتصل بنا: +252 62 2146744'
-                    : '🎓 Education Solutions:\n\n✅ Learning Management Systems (LMS)\n✅ Virtual classrooms\n✅ Student management & enrollment\n✅ Online examination systems\n✅ Student mobile apps\n✅ Zoom/Teams integration\n✅ Academic progress tracking\n\n💰 Starting from $1,000\n📞 Call us: +252 62 2146744',
-                    suggestions: isAr ? ['EduPlatform', 'الخدمات', 'التسعير'] : ['EduPlatform', 'Services', 'Pricing'] };
-            }
-
-            // LOGISTICS
-            if (topTopic === 'logistics') {
-                return { text: isAr
-                    ? '🚚 حلولنا للنقل واللوجستيات:\n\n✅ إدارة الأساطيل (مثل FleetTrack)\n✅ تحسين المسارات\n✅ تتبع الشحنات في الوقت الحقيقي\n✅ إدارة المستودعات\n✅ تطبيق سائق لل_delivery\n✅ تكامل مع أنظمة التخليص\n✅ تقارير التكلفة والكفاءة\n\n💰 وفر 25% من تكاليف التشغيل!'
-                    : '🚚 Transport & Logistics Solutions:\n\n✅ Fleet management (like FleetTrack)\n✅ Route optimization\n✅ Real-time shipment tracking\n✅ Warehouse management\n✅ Driver delivery apps\n✅ Customs system integration\n✅ Cost & efficiency reports\n\n💰 Save 25% on operational costs!',
-                    suggestions: isAr ? ['FleetTrack', 'الخدمات', 'التسعير'] : ['FleetTrack', 'Services', 'Pricing'] };
-            }
-
-            // TECHNOLOGY / STACK
-            if (topTopic === 'technology') {
-                return { text: isAr
-                    ? '⚡ التقنيات التي نستخدمها:\n\n🎨 الواجهة الأمامية:\nReact, Next.js, Vue.js, Angular, Flutter\n\n⚙️ الخلفية:\nNode.js, Python, Django, Laravel, PHP, Java\n\n☁️ السحابة:\nAWS, Azure, GCP, Docker, Kubernetes\n\n📱 الجوال:\nFlutter, React Native, Swift, Kotlin\n\n🤖 AI/ML:\nTensorFlow, PyTorch, OpenAI, Custom Models\n\n🔒 الأمان:\nOAuth, JWT, SSL/TLS, Encryption\n\nنختار التقنية المناسبة لمشروعك!'
-                    : '⚡ Technologies We Use:\n\n🎨 Frontend:\nReact, Next.js, Vue.js, Angular, Flutter\n\n⚙️ Backend:\nNode.js, Python, Django, Laravel, PHP, Java\n\n☁️ Cloud:\nAWS, Azure, GCP, Docker, Kubernetes\n\n📱 Mobile:\nFlutter, React Native, Swift, Kotlin\n\n🤖 AI/ML:\nTensorFlow, PyTorch, OpenAI, Custom Models\n\n🔒 Security:\nOAuth, JWT, SSL/TLS, Encryption\n\nWe choose the right tech for your project!',
-                    suggestions: isAr ? ['خدماتنا', 'المنتجات', 'تواصل معنا'] : ['Services', 'Products', 'Contact'] };
-            }
-
-            // DESIGN
-            if (topTopic === 'design') {
-                return { text: isAr
-                    ? '🎨 خدمات التصميم:\n\n✅ تصميم UI/UX احترافي\n✅ تصميم الهوية البصرية (Logo, Branding)\n✅ Wireframing و Prototyping\n✅ تصميم تطبيقات جوال\n✅ تصميم مواقع ويب\n✅ Ad banners و مواد تسويقية\n\n🔧 الأدوات: Figma, Adobe XD, Sketch\n\n💰 تصميم واجهة موقع: يبدأ من $300\n💰 تصميم هوية بصرية: يبدأ من $500'
-                    : '🎨 Design Services:\n\n✅ Professional UI/UX design\n✅ Brand identity (Logo, Branding)\n✅ Wireframing & Prototyping\n✅ Mobile app design\n✅ Web design\n✅ Ad banners & marketing materials\n\n🔧 Tools: Figma, Adobe XD, Sketch\n\n💰 Website design: from $300\n💰 Brand identity: from $500',
-                    suggestions: isAr ? ['تطوير المواقع', 'تطبيقات الجوال', 'التسعير'] : ['Web Dev', 'Mobile Apps', 'Pricing'] };
-            }
-
-            // HOW IT WORKS
-            if (topTopic === 'how_it_works') {
-                return { text: isAr
-                    ? '📋 كيف نعمل — خطوات بسيطة:\n\n1️⃣ استشارة مجانية — نفهم احتياجاتك\n2️⃣ عرض سعر — نقدم 제안 مفصّل\n3️⃣ التصميم — نصمم واجهة تفاعلية\n4️⃣ التطوير — نبني الحل بتقنيات حديثة\n5️⃣ الاختبار — نتحقق من الجودة\n6️⃣ الإطلاق — ننشر المشروع\n7️⃣ الدعم — نقدم صيانة مستمرة\n\n⏰ المدة: 2-16 أسابيع حسب التعقيد\n📞 ابدأ الآن: +252 62 2146744'
-                    : '📋 How We Work — Simple steps:\n\n1️⃣ Free consultation — We understand your needs\n2️⃣ Quote — We present a detailed proposal\n3️⃣ Design — We create interactive mockups\n4️⃣ Development — We build with modern tech\n5️⃣ Testing — We verify quality\n6️⃣ Launch — We deploy the project\n7️⃣ Support — We provide ongoing maintenance\n\n⏰ Timeline: 2-16 weeks depending on complexity\n📞 Start now: +252 62 2146744',
-                    suggestions: isAr ? ['عرض سعر مجاني', 'التسعير', 'تواصل معنا'] : ['Free Quote', 'Pricing', 'Contact Us'] };
-            }
-
-            // PAYMENT
-            if (topTopic === 'payment') {
-                return { text: isAr
-                    ? '💳 خيارات الدفع:\n\n✅ تحويل بنكي\n✅ PayPal\n✅ Stripe\n✅ واتساب Pay\n✅ أقساط شهرية للمشاريع الكبيرة\n✅ دفع مقدم 50% + 50% عند التسليم\n\n📝 فاتورة رسمية مع كل مشروع\n💰 استشارة مجانية!'
-                    : '💳 Payment Options:\n\n✅ Bank transfer\n✅ PayPal\n✅ Stripe\n✅ WhatsApp Pay\n✅ Monthly installments for large projects\n✅ 50% upfront + 50% on delivery\n\n📝 Official invoice with every project\n💰 Free consultation!',
-                    suggestions: isAr ? ['التسعير', 'تواصل معنا'] : ['Pricing', 'Contact Us'] };
-            }
-
-            // SUPPORT
-            if (topTopic === 'support') {
-                return { text: isAr
-                    ? '🔧 الدعم والصيانة:\n\n✅ دعم فني 24/7 عبر واتساب\n✅ صيانة وتحديثات شهرية\n✅ مراقبة الأداء\n✅ نسخ احتياطي منتظم\n✅ SLA مع ضمان uptime\n✅ تدريب الفريق\n\n📞 واتساب: +252 62 2146744\n💬 نرد خلال ساعة!'
-                    : '🔧 Support & Maintenance:\n\n✅ 24/7 technical support via WhatsApp\n✅ Monthly maintenance & updates\n✅ Performance monitoring\n✅ Regular backups\n✅ SLA with uptime guarantee\n✅ Team training\n\n📞 WhatsApp: +252 62 2146744\n💬 Response within 1 hour!',
-                    suggestions: isAr ? ['خدماتنا', 'تواصل معنا'] : ['Services', 'Contact Us'] };
-            }
-
-            // DEFAULT fallback
+            // Default — concise
             return { text: isAr
-                ? 'أنا آسف، لم أفهم سؤالك تماماً. 😅\n\nيمكنني مساعدتك في:\n🔹 خدماتنا (مواقع، تطبيقات، سحابة...)\n🔹 منتجاتنا (ERP, CRM, Commerce)\n🔹 التسعير والأسعار\n🔹 SEO — المهندس خالد مختار\n🔹 التواصل معنا\n🔹 عن الشركة وفريقنا\n🔹 دراسات الحالة\n🔹 القطاعات التي نخدمها\n\nاكتب سؤالك بكلمات بسيطة!'
-                : 'I didn\'t quite understand that. 😅\n\nI can help you with:\n🔹 Our Services (web, apps, cloud...)\n🔹 Products (ERP, CRM, Commerce)\n🔹 Pricing & costs\n🔹 SEO with Engineer Khalid Mukhtar\n🔹 Contact information\n🔹 About us & our team\n🔹 Case studies\n🔹 Industries we serve\n\nTry asking in simple words!',
-                suggestions: isAr ? ['خدماتنا', 'المنتجات', 'التسعير', 'SEO', 'تواصل معنا'] : ['Services', 'Products', 'Pricing', 'SEO', 'Contact Us'] };
+                ? 'لم أفهم تماماً. جرّب أن تسأل عن: خدماتنا، التسعير، SEO، التواصل معنا، أو عن الشركة.' + end
+                : 'I didn\'t quite understand. Try asking about: our services, pricing, SEO, contact info, or about us.' + end,
+                suggestions: isAr ? ['خدماتنا', 'التسعير', 'SEO', 'تواصل'] : ['Services', 'Pricing', 'SEO', 'Contact'] };
         }
     </script>
 </body>
