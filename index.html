@@ -363,7 +363,7 @@
 
         /* ===== AI CHATBOT ===== */
         .ai-chat-launcher {
-            position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+            position: fixed; bottom: 20px; right: 20px; z-index: 99999;
             display: flex; align-items: center; gap: 0.8rem; cursor: pointer;
         }
         .ai-chat-pill {
@@ -395,7 +395,7 @@
 
         /* Chat Window */
         .ai-chat-window {
-            position: fixed; bottom: 6rem; right: 2rem; z-index: 10000;
+            position: fixed; bottom: 100px; right: 20px; z-index: 99999;
             width: 380px; height: 520px; max-height: 80vh;
             background: #0a0a1a; border: 1px solid rgba(99,102,241,0.2); border-radius: 20px;
             display: none; flex-direction: column; overflow: hidden;
@@ -501,10 +501,10 @@
         .chat-send svg { width: 18px; height: 18px; fill: #fff; }
 
         @media (max-width: 480px) {
-            .ai-chat-window { right: 0.5rem; bottom: 6rem; width: calc(100% - 1rem); height: 70vh; border-radius: 16px; }
-            body[dir="rtl"] .ai-chat-window { right: auto; left: 0.5rem; }
-            .ai-chat-launcher { bottom: 1.2rem; right: 1rem; }
-            body[dir="rtl"] .ai-chat-launcher { right: auto; left: 1rem; }
+            .ai-chat-window { right: 10px; bottom: 100px; width: calc(100% - 20px); height: 70vh; border-radius: 16px; }
+            body[dir="rtl"] .ai-chat-window { right: auto; left: 10px; }
+            .ai-chat-launcher { bottom: 20px; right: 20px; }
+            body[dir="rtl"] .ai-chat-launcher { right: auto; left: 20px; }
             .ai-chat-pill { display: none; }
             .ai-chat-btn { width: 58px; height: 58px; }
             .ai-chat-btn svg { width: 26px; height: 26px; }
