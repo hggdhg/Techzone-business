@@ -364,30 +364,34 @@
         /* ===== AI CHATBOT ===== */
         .ai-chat-launcher {
             position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
-            display: flex; align-items: center; gap: 0.7rem; cursor: pointer;
+            display: flex; align-items: center; gap: 0.8rem; cursor: pointer;
         }
         .ai-chat-pill {
-            display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem;
-            background: rgba(10,10,15,0.9); border: 1px solid rgba(99,102,241,0.3); border-radius: 50px;
-            font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.8);
-            backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); white-space: nowrap;
+            display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1.4rem;
+            background: rgba(10,10,15,0.95); border: 1px solid rgba(99,102,241,0.4); border-radius: 50px;
+            font-size: 0.9rem; font-weight: 600; color: #ffffff;
+            backdrop-filter: blur(20px); box-shadow: 0 4px 25px rgba(99,102,241,0.3); white-space: nowrap;
+            animation: pillPulse 3s ease-in-out infinite;
         }
-        .ai-chat-pill .ai-dot { width: 8px; height: 8px; background: #818cf8; border-radius: 50%; animation: dotPulse 1.5s ease-in-out infinite; }
-        @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        @keyframes pillPulse { 0%,100%{box-shadow:0 4px 25px rgba(99,102,241,0.3)} 50%{box-shadow:0 4px 35px rgba(99,102,241,0.5)} }
+        .ai-chat-pill .ai-dot { width: 10px; height: 10px; background: #22c55e; border-radius: 50%; animation: dotPulse 1.5s ease-in-out infinite; box-shadow: 0 0 8px rgba(34,197,94,0.5); }
+        @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
         .ai-chat-btn {
-            width: 56px; height: 56px; background: linear-gradient(135deg, #6366f1, #a855f7);
+            width: 64px; height: 64px; background: linear-gradient(135deg, #6366f1, #a855f7);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 20px rgba(99,102,241,0.4); transition: all 0.3s ease; flex-shrink: 0;
-            position: relative;
+            box-shadow: 0 6px 30px rgba(99,102,241,0.5); transition: all 0.3s ease; flex-shrink: 0;
+            position: relative; border: 2px solid rgba(255,255,255,0.15);
+            animation: btnBounce 2s ease-in-out infinite;
         }
+        @keyframes btnBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
         .ai-chat-btn::after {
-            content: ''; position: absolute; width: 56px; height: 56px; border-radius: 50%;
+            content: ''; position: absolute; width: 64px; height: 64px; border-radius: 50%;
             background: linear-gradient(135deg, #6366f1, #a855f7);
             animation: aiRing 2s ease-out infinite; opacity: 0;
         }
-        @keyframes aiRing { 0%{transform:scale(1);opacity:0.4} 100%{transform:scale(1.6);opacity:0} }
-        .ai-chat-btn:hover { transform: scale(1.08); box-shadow: 0 6px 25px rgba(99,102,241,0.55); }
-        .ai-chat-btn svg { width: 26px; height: 26px; fill: #ffffff; position: relative; z-index: 1; }
+        @keyframes aiRing { 0%{transform:scale(1);opacity:0.4} 100%{transform:scale(1.8);opacity:0} }
+        .ai-chat-btn:hover { transform: scale(1.12); box-shadow: 0 8px 35px rgba(99,102,241,0.6); }
+        .ai-chat-btn svg { width: 30px; height: 30px; fill: #ffffff; position: relative; z-index: 1; }
 
         /* Chat Window */
         .ai-chat-window {
@@ -497,11 +501,13 @@
         .chat-send svg { width: 18px; height: 18px; fill: #fff; }
 
         @media (max-width: 480px) {
-            .ai-chat-window { right: 0.5rem; bottom: 5.5rem; width: calc(100% - 1rem); height: 75vh; border-radius: 16px; }
+            .ai-chat-window { right: 0.5rem; bottom: 6rem; width: calc(100% - 1rem); height: 70vh; border-radius: 16px; }
             body[dir="rtl"] .ai-chat-window { right: auto; left: 0.5rem; }
-            .ai-chat-launcher { bottom: 1.2rem; right: 1.2rem; }
-            body[dir="rtl"] .ai-chat-launcher { right: auto; left: 1.2rem; }
+            .ai-chat-launcher { bottom: 1.2rem; right: 1rem; }
+            body[dir="rtl"] .ai-chat-launcher { right: auto; left: 1rem; }
             .ai-chat-pill { display: none; }
+            .ai-chat-btn { width: 58px; height: 58px; }
+            .ai-chat-btn svg { width: 26px; height: 26px; }
         }
 
         /* ===== RESPONSIVE ===== */
