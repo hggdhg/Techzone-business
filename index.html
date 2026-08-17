@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHZONE - Business Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600&family=Fira+Code:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            background: #0a0a0f;
+            font-family: 'Rajdhani', sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.8rem 3rem;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.08);
+            transition: background 0.3s ease;
+        }
+        .navbar.scrolled { background: rgba(10, 10, 15, 0.97); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+
+        .nav-logo {
+            display: flex; align-items: center; gap: 0.6rem;
+            font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 900;
+            letter-spacing: 0.15rem; text-transform: lowercase;
+            background: linear-gradient(90deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-decoration: none; cursor: pointer;
+        }
+        .nav-logo-icon { width: 36px; height: 36px; filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.6)); }
+
+        .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+        .nav-links a {
+            font-size: 0.82rem; font-weight: 500;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none; text-transform: uppercase; letter-spacing: 0.12rem;
+            transition: color 0.3s ease, text-shadow 0.3s ease; cursor: pointer;
+        }
+        .nav-links a:hover { color: #00ff88; text-shadow: 0 0 12px rgba(0, 255, 136, 0.5); }
+
+        .nav-phone { font-size: 0.82rem; font-weight: 500; color: rgba(255, 255, 255, 0.65); letter-spacing: 0.05rem; }
+        .nav-phone span { color: #00ff88; }
+
+        .nav-cta {
+            padding: 0.55rem 1.4rem;
+            background: linear-gradient(135deg, #6a11cb, #8a2be2);
+            color: #ffffff; font-size: 0.78rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.1rem;
+            border: none; border-radius: 50px; cursor: pointer; text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(138, 43, 226, 0.4); }
+
+        .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; }
+        .nav-toggle span { width: 26px; height: 2px; background: #00ff88; border-radius: 2px; transition: 0.3s; }
+
+        /* ===== CODE BACKGROUND ===== */
+        .code-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.15; font-family: 'Fira Code', monospace; font-size: 14px; color: #00ff88; overflow: hidden; pointer-events: none; }
+        .code-column { position: absolute; top: -100%; animation: fall linear infinite; white-space: nowrap; writing-mode: vertical-rl; }
+        @keyframes fall { 0% { top: -100%; } 100% { top: 100%; } }
+
+        /* ===== MESH OVERLAY ===== */
+        .mesh-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+            background: radial-gradient(circle at 20% 30%, rgba(106,17,203,0.06) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(0,212,255,0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(0,255,136,0.04) 0%, transparent 60%);
+        }
+        .mesh-overlay::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(0,255,136,0.15) 1px, transparent 1px);
+            background-size: 40px 40px; opacity: 0.3;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative; z-index: 1; min-height: 100vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 8rem 2rem 4rem;
+            background: radial-gradient(ellipse at center, rgba(0,255,136,0.08) 0%, transparent 60%);
+        }
+        .glow-ring { position: absolute; width: 600px; height: 600px; border-radius: 50%; border: 1px solid rgba(0,255,136,0.1); animation: pulse 4s ease-in-out infinite; }
+        .glow-ring:nth-child(2) { width: 500px; height: 500px; animation-delay: 0.5s; border-color: rgba(0,200,255,0.1); }
+        .glow-ring:nth-child(3) { width: 400px; height: 400px; animation-delay: 1s; border-color: rgba(138,43,226,0.1); }
+        @keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif; font-size: 7rem; font-weight: 900; letter-spacing: 1rem; text-transform: uppercase;
+            background: linear-gradient(90deg, #00ff88, #00d4ff, #8a2be2, #00ff88);
+            background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: gradient-shift 4s linear infinite, glow-text 2s ease-in-out infinite alternate;
+            margin-bottom: 1rem; text-shadow: 0 0 80px rgba(0,255,136,0.5); position: relative;
+        }
+        @keyframes gradient-shift { 0% { background-position: 0% center; } 100% { background-position: 300% center; } }
+        @keyframes glow-text { 0% { filter: drop-shadow(0 0 20px rgba(0,255,136,0.8)); } 100% { filter: drop-shadow(0 0 40px rgba(0,212,255,1)); } }
+
+        .subtitle { font-size: 1.8rem; font-weight: 300; letter-spacing: 1.2rem; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 2rem; animation: fadeInUp 1s ease-out 0.5s both; }
+        .description { font-size: 1.2rem; font-weight: 400; color: rgba(255,255,255,0.85); max-width: 720px; line-height: 1.9; margin-bottom: 2.5rem; animation: fadeInUp 1s ease-out 0.8s both; }
+        .tagline { font-size: 1rem; font-weight: 400; color: rgba(0,255,136,0.6); letter-spacing: 0.3rem; text-transform: uppercase; animation: fadeInUp 1s ease-out 1.2s both; }
+
+        .hero-cta {
+            display: inline-block; padding: 0.9rem 2.5rem;
+            background: linear-gradient(135deg, #6a11cb, #8a2be2);
+            color: #ffffff; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.15rem; border: none; border-radius: 50px;
+            cursor: pointer; text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 1s ease-out 1s both; margin-bottom: 1.5rem;
+        }
+        .hero-cta:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(138,43,226,0.5); }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== SERVICES ===== */
+        .services { position: relative; z-index: 1; padding: 6rem 2rem; background: linear-gradient(180deg, transparent 0%, rgba(0,255,136,0.03) 50%, transparent 100%); }
+        .services h2 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; text-align: center; margin-bottom: 4rem; color: #00ff88; text-shadow: 0 0 30px rgba(0,255,136,0.5); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(0,255,136,0.2); border-radius: 15px; padding: 2.5rem; transition: all 0.4s ease; position: relative; overflow: hidden; animation: fadeInUp 0.8s ease-out both; }
+        .card:nth-child(1) { animation-delay: 0.2s; } .card:nth-child(2) { animation-delay: 0.4s; } .card:nth-child(3) { animation-delay: 0.6s; }
+        .card:nth-child(4) { animation-delay: 0.8s; } .card:nth-child(5) { animation-delay: 1s; } .card:nth-child(6) { animation-delay: 1.2s; }
+        .card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(0,255,136,0.1), transparent); transition: left 0.5s ease; }
+        .card:hover::before { left: 100%; }
+        .card:hover { transform: translateY(-10px); border-color: #00ff88; box-shadow: 0 20px 60px rgba(0,255,136,0.2); }
+        .card-icon { font-size: 2.5rem; margin-bottom: 1rem; filter: drop-shadow(0 0 10px rgba(0,255,136,0.8)); }
+        .card h3 { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; margin-bottom: 1rem; color: #00ff88; }
+        .card p { font-size: 1rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+        /* ===== STATS ===== */
+        .stats { position: relative; z-index: 1; padding: 4rem 2rem; display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap; background: rgba(0,0,0,0.5); }
+        .stat { text-align: center; animation: fadeInUp 0.8s ease-out both; }
+        .stat:nth-child(1) { animation-delay: 0.2s; } .stat:nth-child(2) { animation-delay: 0.4s; } .stat:nth-child(3) { animation-delay: 0.6s; } .stat:nth-child(4) { animation-delay: 0.8s; }
+        .stat-number { font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 900; color: #00ff88; text-shadow: 0 0 30px rgba(0,255,136,0.8); animation: count-glow 2s ease-in-out infinite alternate; }
+        @keyframes count-glow { 0% { text-shadow: 0 0 20px rgba(0,255,136,0.5); } 100% { text-shadow: 0 0 50px rgba(0,255,136,1); } }
+        .stat-label { font-size: 1rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.2rem; margin-top: 0.5rem; }
+
+        /* ===== FOOTER ===== */
+        footer { position: relative; z-index: 1; text-align: center; padding: 3rem 2rem; border-top: 1px solid rgba(0,255,136,0.2); color: rgba(255,255,255,0.5); }
+
+        /* ===== OVERLAY PANELS ===== */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2000;
+            background: rgba(10, 10, 15, 0.97);
+            backdrop-filter: blur(30px);
+            display: none; flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+        .overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .overlay-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.2rem 3rem;
+            border-bottom: 1px solid rgba(0,255,136,0.1);
+            flex-shrink: 0;
+        }
+        .overlay-title {
+            font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700;
+            background: linear-gradient(90deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .overlay-back {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1.2rem; border-radius: 50px;
+            border: 1px solid rgba(0,255,136,0.3); background: rgba(0,255,136,0.05);
+            color: #00ff88; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.08rem;
+        }
+        .overlay-back:hover { background: rgba(0,255,136,0.15); border-color: #00ff88; }
+        .overlay-back svg { width: 16px; height: 16px; fill: #00ff88; }
+
+        .overlay-body {
+            flex: 1; overflow-y: auto; padding: 3rem;
+        }
+        .overlay-body::-webkit-scrollbar { width: 6px; }
+        .overlay-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .overlay-body::-webkit-scrollbar-thumb { background: rgba(0,255,136,0.3); border-radius: 3px; }
+
+        .overlay-intro {
+            max-width: 800px; margin: 0 auto 3rem; text-align: center;
+        }
+        .overlay-intro h2 {
+            font-family: 'Orbitron', sans-serif; font-size: 2.2rem; margin-bottom: 1rem;
+            color: #00ff88; text-shadow: 0 0 30px rgba(0,255,136,0.5);
+        }
+        .overlay-intro p { font-size: 1.1rem; color: rgba(255,255,255,0.65); line-height: 1.8; }
+
+        .overlay-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem; max-width: 1200px; margin: 0 auto;
+        }
+
+        .overlay-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(0,255,136,0.15);
+            border-radius: 14px; padding: 2rem; transition: all 0.4s ease;
+            position: relative; overflow: hidden; cursor: pointer;
+        }
+        .overlay-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,136,0.08), transparent);
+            transition: left 0.5s ease;
+        }
+        .overlay-card:hover::before { left: 100%; }
+        .overlay-card:hover { transform: translateY(-6px); border-color: #00ff88; box-shadow: 0 15px 50px rgba(0,255,136,0.15); }
+
+        .overlay-card-icon { font-size: 2.2rem; margin-bottom: 1rem; filter: drop-shadow(0 0 8px rgba(0,255,136,0.6)); }
+        .overlay-card h3 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; margin-bottom: 0.8rem; color: #00ff88; }
+        .overlay-card p { font-size: 0.95rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
+        .overlay-card .card-tag {
+            display: inline-block; margin-top: 1rem; padding: 0.3rem 0.8rem;
+            background: rgba(138,43,226,0.15); border: 1px solid rgba(138,43,226,0.3);
+            border-radius: 20px; font-size: 0.75rem; color: #b388ff; text-transform: uppercase; letter-spacing: 0.05rem;
+        }
+
+        .consult-form { max-width: 600px; margin: 0 auto; }
+        .consult-form .form-group { margin-bottom: 1.5rem; }
+        .consult-form label { display: block; font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.1rem; margin-bottom: 0.5rem; }
+        .consult-form input, .consult-form textarea, .consult-form select {
+            width: 100%; padding: 0.9rem 1.2rem;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(0,255,136,0.2);
+            border-radius: 10px; color: #ffffff; font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem; transition: border-color 0.3s ease, box-shadow 0.3s ease; outline: none;
+        }
+        .consult-form input:focus, .consult-form textarea:focus, .consult-form select:focus {
+            border-color: #00ff88; box-shadow: 0 0 20px rgba(0,255,136,0.15);
+        }
+        .consult-form textarea { min-height: 120px; resize: vertical; }
+        .consult-form select option { background: #0a0a0f; color: #fff; }
+        .consult-form .submit-btn {
+            width: 100%; padding: 1rem;
+            background: linear-gradient(135deg, #6a11cb, #8a2be2);
+            color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.15rem;
+            border: none; border-radius: 50px; cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .consult-form .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(138,43,226,0.5); }
+
+        /* ===== CHAT WIDGET ===== */
+        .chat-widget { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; align-items: center; gap: 0.7rem; cursor: pointer; animation: chatBounce 2s ease-in-out infinite; }
+        .chat-pill { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem; background: rgba(10,10,15,0.9); border: 1px solid rgba(0,255,136,0.3); border-radius: 50px; font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.9); white-space: nowrap; backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .chat-pill .dot { width: 8px; height: 8px; background: #25D366; border-radius: 50%; animation: dotPulse 1.5s ease-in-out infinite; }
+        @keyframes dotPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.4); } }
+        .chat-icon { width: 56px; height: 56px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 25px rgba(37,211,102,0.4); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .chat-icon:hover { transform: scale(1.1); box-shadow: 0 6px 35px rgba(37,211,102,0.6); }
+        .chat-icon svg { width: 28px; height: 28px; fill: #ffffff; }
+        @keyframes chatBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1100px) {
+            .nav-links { display: none; }
+            .nav-toggle { display: flex; }
+            .nav-links.active { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: rgba(10,10,15,0.97); padding: 2rem; gap: 1.5rem; border-bottom: 1px solid rgba(0,255,136,0.1); backdrop-filter: blur(20px); }
+        }
+        @media (max-width: 768px) {
+            .navbar { padding: 0.8rem 1.5rem; }
+            h1 { font-size: 3rem; letter-spacing: 0.3rem; }
+            .subtitle { font-size: 1.2rem; letter-spacing: 0.5rem; }
+            .description { font-size: 1rem; padding: 0 1rem; }
+            .stats { gap: 2rem; }
+            .stat-number { font-size: 2rem; }
+            .chat-pill { display: none; }
+            .overlay-body { padding: 1.5rem; }
+            .overlay-intro h2 { font-size: 1.5rem; }
+            .overlay-header { padding: 1rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-logo" onclick="closeAllOverlays(); return false;">
+            <svg class="nav-logo-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00ff88"/><stop offset="100%" style="stop-color:#00d4ff"/></linearGradient></defs>
+                <rect x="2" y="2" width="36" height="36" rx="8" fill="none" stroke="url(#logoGrad)" stroke-width="2.5"/>
+                <text x="20" y="27" text-anchor="middle" font-family="Orbitron, sans-serif" font-size="16" font-weight="900" fill="url(#logoGrad)">TZ</text>
+            </svg>
+            techzone
+        </a>
+        <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+        <ul class="nav-links" id="navLinks">
+            <li><a onclick="openOverlay('services')">Services</a></li>
+            <li><a onclick="openOverlay('products')">Products</a></li>
+            <li><a onclick="openOverlay('industries')">Industries</a></li>
+            <li><a onclick="openOverlay('corporate')">Corporate</a></li>
+            <li><a onclick="openOverlay('casestudies')">Case Studies</a></li>
+            <li><a onclick="openOverlay('blog')">Blog</a></li>
+            <li class="nav-phone"><span>&#9742;</span> +252 61 2146744</li>
+            <li><a onclick="openOverlay('consult')" class="nav-cta">Free Consultation</a></li>
+        </ul>
+    </nav>
+
+    <!-- BACKGROUND EFFECTS -->
+    <div class="code-bg" id="codeBg"></div>
+    <div class="mesh-overlay"></div>
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+        <div class="glow-ring"></div>
+        <div class="glow-ring"></div>
+        <div class="glow-ring"></div>
+        <h1>TECHZONE</h1>
+        <p class="subtitle">Welcome to TECHZONE</p>
+        <p class="description">Techzone Business Solutions is a leading technology company dedicated to delivering innovative digital solutions. We empower businesses with cutting-edge software, cloud services, and IT solutions to drive efficiency, growth, and transformation.</p>
+        <a onclick="openOverlay('consult')" class="hero-cta" style="cursor:pointer">Consult Our Experts</a>
+        <p class="tagline">// Business Solutions & Digital Innovation</p>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services" id="services">
+        <h2>Our Services</h2>
+        <div class="grid">
+            <div class="card"><div class="card-icon">&#60;/&#62;</div><h3>Web Development</h3><p>Modern, responsive websites built with cutting-edge technologies for maximum performance and user engagement.</p></div>
+            <div class="card"><div class="card-icon">&#128241;</div><h3>Mobile Apps</h3><p>Native and cross-platform mobile applications that deliver exceptional user experiences on iOS and Android.</p></div>
+            <div class="card"><div class="card-icon">&#9881;</div><h3>Enterprise Solutions</h3><p>Scalable ERP, CRM, and custom software solutions designed to streamline your business operations.</p></div>
+            <div class="card"><div class="card-icon">&#129302;</div><h3>AI & Automation</h3><p>Intelligent AI integration and process automation to boost efficiency and drive digital transformation.</p></div>
+            <div class="card"><div class="card-icon">&#9729;</div><h3>Cloud Services</h3><p>Reliable cloud infrastructure and deployment solutions to ensure scalability and high availability.</p></div>
+            <div class="card"><div class="card-icon">&#128737;</div><h3>Cyber Security</h3><p>Industry-grade security practices to protect your digital assets and ensure data privacy compliance.</p></div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+        <div class="stat"><div class="stat-number">100+</div><div class="stat-label">Projects Delivered</div></div>
+        <div class="stat"><div class="stat-number">90+</div><div class="stat-label">Happy Clients</div></div>
+        <div class="stat"><div class="stat-number">8+</div><div class="stat-label">Years Experience</div></div>
+        <div class="stat"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer><p>&copy; 2026 TECHZONE Business Solutions. All rights reserved.</p></footer>
+
+    <!-- CHAT WIDGET -->
+    <div class="chat-widget" onclick="window.open('https://wa.me/252612146744', '_blank')">
+        <div class="chat-pill"><span class="dot"></span>Chat with us</div>
+        <div class="chat-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>
+    </div>
+
+    <!-- ===== OVERLAY: SERVICES ===== -->
+    <div class="overlay" id="overlay-services">
+        <div class="overlay-header">
+            <span class="overlay-title">Our Services</span>
+            <button class="overlay-back" onclick="closeAllOverlays()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Back
+            </button>
+        </div>
+        <div class="overlay-body">
+            <div class="overlay-intro">
+                <h2>End-to-End Digital Solutions</h2>
+                <p>From concept to deployment, we deliver comprehensive technology services tailored to your business needs.</p>
+            </div>
+            <div class="overlay-grid">
+                <div class="overlay-card"><div class="overlay-card-icon">&#60;/&#62;</div><h3>Web Development</h3><p>Custom websites, web apps, and portals built with React, Next.js, Node.js, and modern stacks.</p><span class="card-tag">Frontend & Backend</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128241;</div><h3>Mobile App Development</h3><p>Native iOS/Android and cross-platform apps using Flutter and React Native.</p><span class="card-tag">iOS & Android</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#9881;</div><h3>Enterprise Solutions</h3><p>Custom ERP, CRM, HRMS, and billing systems for large-scale business automation.</p><span class="card-tag">ERP & CRM</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#129302;</div><h3>AI & Machine Learning</h3><p>Intelligent automation, predictive analytics, NLP, and custom AI model integration.</p><span class="card-tag">Machine Learning</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#9729;</div><h3>Cloud & DevOps</h3><p>AWS, Azure, GCP cloud architecture, CI/CD pipelines, Docker, Kubernetes.</p><span class="card-tag">AWS & Azure</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128737;</div><h3>Cyber Security</h3><p>Penetration testing, vulnerability assessment, compliance audits, and 24/7 monitoring.</p><span class="card-tag">SOC & Compliance</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128200;</div><h3>Digital Marketing</h3><p>SEO, SEM, social media management, content strategy, and analytics-driven campaigns.</p><span class="card-tag">Growth Hacking</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128161;</div><h3>IT Consulting</h3><p>Strategic technology roadmaps, digital transformation advisory, and architecture review.</p><span class="card-tag">Strategy</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== OVERLAY: PRODUCTS ===== -->
+    <div class="overlay" id="overlay-products">
+        <div class="overlay-header">
+            <span class="overlay-title">Products</span>
+            <button class="overlay-back" onclick="closeAllOverlays()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Back
+            </button>
+        </div>
+        <div class="overlay-body">
+            <div class="overlay-intro">
+                <h2>Our Products</h2>
+                <p>We build SaaS platforms, mobile apps, and enterprise tools that power businesses across industries.</p>
+            </div>
+            <div class="overlay-grid">
+                <div class="overlay-card"><div class="overlay-card-icon">&#128203;</div><h3>TechZone ERP</h3><p>Full-featured cloud ERP with modules for finance, inventory, HR, procurement, and reporting.</p><span class="card-tag">Enterprise</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128100;</div><h3>TechZone CRM</h3><p>Customer relationship management with sales pipeline, lead scoring, and analytics.</p><span class="card-tag">Sales</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128230;</div><h3>TechZone Commerce</h3><p>Multi-vendor e-commerce platform with payment gateway and order management.</p><span class="card-tag">E-Commerce</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128197;</div><h3>TechZone Scheduler</h3><p>Smart appointment and resource scheduling with calendar sync and reminders.</p><span class="card-tag">SaaS</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128202;</div><h3>TechZone Analytics</h3><p>Real-time business intelligence dashboard with custom reports and KPI tracking.</p><span class="card-tag">Analytics</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128274;</div><h3>TechZone Guard</h3><p>Cybersecurity monitoring with threat detection, incident response, and compliance.</p><span class="card-tag">Security</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== OVERLAY: INDUSTRIES ===== -->
+    <div class="overlay" id="overlay-industries">
+        <div class="overlay-header">
+            <span class="overlay-title">Industries</span>
+            <button class="overlay-back" onclick="closeAllOverlays()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Back
+            </button>
+        </div>
+        <div class="overlay-body">
+            <div class="overlay-intro">
+                <h2>Industries We Serve</h2>
+                <p>We have deep domain expertise across multiple sectors, delivering tailored solutions for unique challenges.</p>
+            </div>
+            <div class="overlay-grid">
+                <div class="overlay-card"><div class="overlay-card-icon">&#127968;</div><h3>Real Estate</h3><p>Property portals, listing platforms, CRM integration, and virtual tour solutions.</p><span class="card-tag">PropTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127973;</div><h3>Banking & Finance</h3><p>Secure fintech solutions, payment systems, loan management, and compliance platforms.</p><span class="card-tag">FinTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128138;</div><h3>Healthcare</h3><p>Telemedicine platforms, EHR systems, patient management, and medical IoT.</p><span class="card-tag">HealthTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127981;</div><h3>Retail & E-Commerce</h3><p>Online stores, POS systems, inventory management, and omnichannel retail.</p><span class="card-tag">RetailTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128666;</div><h3>Transport & Logistics</h3><p>Fleet management, route optimization, shipment tracking, and warehouse automation.</p><span class="card-tag">LogiTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127891;</div><h3>Education</h3><p>LMS platforms, virtual classrooms, student management, and e-learning delivery.</p><span class="card-tag">EduTech</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== OVERLAY: CORPORATE ===== -->
+    <div class="overlay" id="overlay-corporate">
+        <div class="overlay-header">
+            <span class="overlay-title">Corporate</span>
+            <button class="overlay-back" onclick="closeAllOverlays()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Back
+            </button>
+        </div>
+        <div class="overlay-body">
+            <div class="overlay-intro">
+                <h2>About TechZone</h2>
+                <p>TechZone Business Solutions is a leading technology company dedicated to delivering innovative digital solutions.</p>
+            </div>
+            <div class="overlay-grid">
+                <div class="overlay-card"><div class="overlay-card-icon">&#127919;</div><h3>Our Mission</h3><p>To accelerate digital transformation for businesses worldwide through innovative technology.</p><span class="card-tag">Purpose</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128065;</div><h3>Our Vision</h3><p>To be the global leader in digital innovation, empowering every organization to thrive.</p><span class="card-tag">Future</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#129309;</div><h3>Our Values</h3><p>Innovation, integrity, excellence, collaboration, and customer-centricity drive everything we do.</p><span class="card-tag">Culture</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128101;</div><h3>Our Team</h3><p>200+ engineers, designers, and consultants working across 5 global offices.</p><span class="card-tag">People</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127942;</div><h3>Awards & Recognition</h3><p>Winner of multiple industry awards for innovation and client satisfaction.</p><span class="card-tag">Achievements</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128205;</div><h3>Global Presence</h3><p>Offices in Somalia, UAE, UK, USA, and India with delivery centers across 3 continents.</p><span class="card-tag">Locations</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== OVERLAY: CASE STUDIES ===== -->
+    <div class="overlay" id="overlay-casestudies">
+        <div class="overlay-header">
+            <span class="overlay-title">Case Studies</span>
+            <button class="overlay-back" onclick="closeAllOverlays()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Back
+            </button>
+        </div>
+        <div class="overlay-body">
+            <div class="overlay-intro">
+                <h2>Our Work</h2>
+                <p>Explore how we've helped businesses transform operations, grow revenue, and delight customers.</p>
+            </div>
+            <div class="overlay-grid">
+                <div class="overlay-card"><div class="overlay-card-icon">&#127968;</div><h3>Somali Property Hub</h3><p>Real estate portal with 10,000+ listings, virtual tours, and integrated payments. Increased leads by 300%.</p><span class="card-tag">Real Estate</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127973;</div><h3>PaySom Digital Banking</h3><p>Mobile banking platform with real-time transfers and merchant services for 500K+ users.</p><span class="card-tag">FinTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128138;</div><h3>HealthConnect</h3><p>Telehealth platform connecting patients with doctors via video, chat, and e-prescriptions.</p><span class="card-tag">Healthcare</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127981;</div><h3>Mogadishu Market Online</h3><p>Multi-vendor e-commerce marketplace with 500+ sellers and same-day delivery.</p><span class="card-tag">E-Commerce</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128666;</div><h3>FleetTrack Logistics</h3><p>Fleet management with GPS tracking, route optimization, saving 25% in operational costs.</p><span class="card-tag">Logistics</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127891;</div><h3>EduPlatform Somalia</h3><p>LMS with 20,000+ students, live classes, assignment tracking, and certifications.</p><span class="card-tag">Education</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== OVERLAY: BLOG ===== -->
+    <div class="overlay" id="overlay-blog">
+        <div class="overlay-header">
+            <span class="overlay-title">Blog</span>
+            <button class="overlay-back" onclick="closeAllOverlays()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Back
+            </button>
+        </div>
+        <div class="overlay-body">
+            <div class="overlay-intro">
+                <h2>Latest Insights</h2>
+                <p>Stay updated with our latest articles, tech insights, industry trends, and company news.</p>
+            </div>
+            <div class="overlay-grid">
+                <div class="overlay-card"><div class="overlay-card-icon">&#128187;</div><h3>Top 10 Tech Trends in 2026</h3><p>Technologies shaping the future — from AI agents to edge computing and quantum cryptography.</p><span class="card-tag">Trends</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#129302;</div><h3>AI in Business: Practical Guide</h3><p>How SMEs can leverage AI to automate operations, reduce costs, and gain advantage.</p><span class="card-tag">AI</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#9729;</div><h3>Cloud Migration Checklist</h3><p>Step-by-step guide to migrating legacy systems to the cloud with zero downtime.</p><span class="card-tag">Cloud</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128737;</div><h3>Cybersecurity for Startups</h3><p>Essential security practices every startup should implement from day one.</p><span class="card-tag">Security</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128200;</div><h3>Digital Marketing in East Africa</h3><p>Strategies driving growth for businesses in the East African digital marketplace.</p><span class="card-tag">Marketing</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128640;</div><h3>From Idea to MVP in 90 Days</h3><p>Our agile framework for taking your product from concept to market-ready MVP.</p><span class="card-tag">Product</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== OVERLAY: CONSULT ===== -->
+    <div class="overlay" id="overlay-consult">
+        <div class="overlay-header">
+            <span class="overlay-title">Free Consultation</span>
+            <button class="overlay-back" onclick="closeAllOverlays()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                Back
+            </button>
+        </div>
+        <div class="overlay-body">
+            <div class="overlay-intro">
+                <h2>Consult Our Experts</h2>
+                <p>Tell us about your project and our team will get back to you within 24 hours.</p>
+            </div>
+            <div class="consult-form">
+                <div class="form-group"><label>Full Name</label><input type="text" placeholder="Enter your full name"></div>
+                <div class="form-group"><label>Email Address</label><input type="email" placeholder="Enter your email"></div>
+                <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+252 61 XXXXXXX"></div>
+                <div class="form-group"><label>Company Name</label><input type="text" placeholder="Your company name"></div>
+                <div class="form-group"><label>Service Needed</label>
+                    <select>
+                        <option value="">Select a service...</option>
+                        <option>Web Development</option><option>Mobile App Development</option><option>Enterprise Solutions (ERP/CRM)</option>
+                        <option>AI & Automation</option><option>Cloud & DevOps</option><option>Cyber Security</option>
+                        <option>Digital Marketing</option><option>IT Consulting</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Project Description</label><textarea placeholder="Tell us about your project, goals, and timeline..."></textarea></div>
+                <button class="submit-btn" onclick="submitConsult()">Send Message</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ===== OVERLAY SYSTEM ===== */
+        var currentOverlay = null;
+
+        function openOverlay(id) {
+            if (currentOverlay) {
+                var prev = document.getElementById('overlay-' + currentOverlay);
+                prev.classList.remove('active');
+            }
+            var target = document.getElementById('overlay-' + id);
+            target.classList.add('active');
+            currentOverlay = id;
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAllOverlays() {
+            document.querySelectorAll('.overlay.active').forEach(function(ov) {
+                ov.classList.remove('active');
+            });
+            currentOverlay = null;
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && currentOverlay) {
+                closeAllOverlays();
+            }
+        });
+
+        function submitConsult() {
+            alert('Thank you! Your message has been received. Our team will contact you within 24 hours.');
+            closeAllOverlays();
+        }
+
+        /* ===== NAVBAR SCROLL ===== */
+        window.addEventListener('scroll', function() {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        /* ===== MOBILE NAV TOGGLE ===== */
+        document.getElementById('navToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        /* ===== CODE RAIN ===== */
+        var codeBg = document.getElementById('codeBg');
+        var codeSnippets = [
+            'function init() { return true; }',
+            'const app = new Application();',
+            'async fetchData() { await api.get(); }',
+            'class Component extends React {}',
+            'export default connect();',
+            'import { Router } from "express";',
+            'if (status === 200) { resolve(); }',
+            'for (let i = 0; i < n; i++) {}',
+            'try { deploy(); } catch (e) {}',
+            'const data = JSON.parse(response);',
+            'app.use(cors());',
+            'SELECT * FROM users WHERE active;',
+            'docker-compose up -d',
+            'npm run build && deploy',
+            'git push origin main',
+            'console.log("Hello World");',
+        ];
+        function createCodeColumn() {
+            var column = document.createElement('div');
+            column.className = 'code-column';
+            column.style.left = Math.random() * 100 + '%';
+            column.style.animationDuration = (Math.random() * 15 + 10) + 's';
+            column.style.fontSize = (Math.random() * 4 + 10) + 'px';
+            var code = '';
+            for (var i = 0; i < 20; i++) {
+                code += codeSnippets[Math.floor(Math.random() * codeSnippets.length)] + '\n';
+            }
+            column.textContent = code;
+            codeBg.appendChild(column);
+            setTimeout(function() { column.remove(); }, 25000);
+        }
+        setInterval(createCodeColumn, 800);
+        for (var i = 0; i < 15; i++) { setTimeout(createCodeColumn, i * 200); }
+    </script>
+</body>
+</html>
