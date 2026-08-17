@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TECHZONE - Business Solutions</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -14,7 +14,20 @@
             font-family: 'Inter', sans-serif;
             color: #ffffff;
             overflow-x: hidden;
+            transition: direction 0.3s ease;
         }
+        body[dir="rtl"] { font-family: 'Cairo', 'Inter', sans-serif; direction: rtl; }
+        body[dir="rtl"] h1, body[dir="rtl"] h2, body[dir="rtl"] h3 { font-family: 'Cairo', 'Space Grotesk', sans-serif; }
+        body[dir="rtl"] .code-window { text-align: right; direction: ltr; }
+        body[dir="rtl"] .hero { text-align: center; }
+        body[dir="rtl"] .section-header { text-align: center; }
+        body[dir="rtl"] .overlay-intro { text-align: center; }
+        body[dir="rtl"] .overlay-back { flex-direction: row-reverse; }
+        body[dir="rtl"] .nav-links { padding-left: 0; padding-right: 2rem; }
+        body[dir="rtl"] .consult-form { direction: rtl; }
+        body[dir="rtl"] .form-group label { text-align: right; }
+        body[dir="rtl"] .form-group input, body[dir="rtl"] .form-group textarea, body[dir="rtl"] .form-group select { text-align: right; }
+        body[dir="rtl"] .chat-widget { right: auto; left: 2rem; }
 
         /* ===== ANIMATED BG ===== */
         .bg-gradient {
@@ -25,7 +38,6 @@
                 radial-gradient(ellipse 60% 40% at 20% 80%, rgba(59, 130, 246, 0.1), transparent),
                 #050510;
         }
-
         .grid-pattern {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
             background-image:
@@ -33,20 +45,24 @@
                 linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
             background-size: 60px 60px;
         }
-
-        /* floating orbs */
-        .orb {
-            position: fixed; border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none;
-            animation: float 20s ease-in-out infinite;
-        }
-        .orb-1 { width: 500px; height: 500px; background: rgba(99, 102, 241, 0.15); top: -10%; left: -5%; animation-delay: 0s; }
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none; animation: float 20s ease-in-out infinite; }
+        .orb-1 { width: 500px; height: 500px; background: rgba(99, 102, 241, 0.15); top: -10%; left: -5%; }
         .orb-2 { width: 400px; height: 400px; background: rgba(168, 85, 247, 0.1); top: 50%; right: -10%; animation-delay: -7s; }
         .orb-3 { width: 350px; height: 350px; background: rgba(59, 130, 246, 0.1); bottom: -5%; left: 30%; animation-delay: -14s; }
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -30px) scale(1.05); }
-            66% { transform: translate(-20px, 20px) scale(0.95); }
+        @keyframes float { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-30px) scale(1.05)} 66%{transform:translate(-20px,20px) scale(0.95)} }
+
+        /* ===== LANG TOGGLE ===== */
+        .lang-toggle {
+            display: flex; align-items: center; gap: 0; border-radius: 50px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04);
         }
+        .lang-btn {
+            padding: 0.4rem 0.9rem; font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600;
+            color: rgba(255,255,255,0.4); background: transparent; border: none; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .lang-btn.active { background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; border-radius: 50px; }
+        body[dir="rtl"] .lang-btn { font-family: 'Cairo', sans-serif; }
 
         /* ===== NAVBAR ===== */
         .navbar {
@@ -59,38 +75,33 @@
             transition: all 0.3s ease;
         }
         .navbar.scrolled { background: rgba(5, 5, 16, 0.9); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
-
         .nav-logo {
             display: flex; align-items: center; gap: 0.7rem;
-            font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700;
+            font-family: 'Space Grotesk', 'Cairo', sans-serif; font-size: 1.5rem; font-weight: 700;
             color: #ffffff; text-decoration: none; cursor: pointer;
         }
-        .nav-logo-icon { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #6366f1, #a855f7); display: flex; align-items: center; justify-content: center; }
+        .nav-logo-icon { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #6366f1, #a855f7); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .nav-logo-icon svg { width: 22px; height: 22px; fill: #fff; }
-
-        .nav-links { display: flex; align-items: center; gap: 1.8rem; list-style: none; }
+        .nav-links { display: flex; align-items: center; gap: 1.5rem; list-style: none; }
         .nav-links a {
             font-size: 0.82rem; font-weight: 500;
-            color: rgba(255, 255, 255, 0.55);
-            text-decoration: none; letter-spacing: 0.02rem;
-            transition: color 0.3s ease; cursor: pointer;
+            color: rgba(255, 255, 255, 0.55); white-space: nowrap;
+            text-decoration: none; transition: color 0.3s ease; cursor: pointer;
         }
         .nav-links a:hover { color: #ffffff; }
-
-        .nav-phone { font-size: 0.82rem; font-weight: 500; color: rgba(255,255,255,0.55); }
+        .nav-phone { font-size: 0.82rem; font-weight: 500; color: rgba(255,255,255,0.55); white-space: nowrap; }
         .nav-phone span { color: #818cf8; }
-
         .nav-cta {
             padding: 0.55rem 1.4rem;
             background: linear-gradient(135deg, #6366f1, #a855f7);
             color: #ffffff; font-size: 0.8rem; font-weight: 600;
-            border: none; border-radius: 50px; cursor: pointer; text-decoration: none;
+            border: none; border-radius: 50px; cursor: pointer; text-decoration: none; white-space: nowrap;
             transition: all 0.3s ease;
         }
         .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4); }
-
         .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; }
         .nav-toggle span { width: 24px; height: 2px; background: #fff; border-radius: 2px; }
+        .nav-right { display: flex; align-items: center; gap: 1rem; }
 
         /* ===== HERO ===== */
         .hero {
@@ -98,20 +109,17 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; padding: 8rem 2rem 4rem;
         }
-
         .hero-badge {
             display: inline-flex; align-items: center; gap: 0.6rem;
             padding: 0.5rem 1.2rem; border-radius: 50px;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.25);
+            background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.25);
             font-size: 0.82rem; font-weight: 500; color: #a5b4fc;
             margin-bottom: 2rem; animation: fadeInUp 0.8s ease-out both;
         }
         .hero-badge .pulse { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); } 50% { box-shadow: 0 0 0 8px rgba(34,197,94,0); } }
-
+        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.4)} 50%{box-shadow:0 0 0 8px rgba(34,197,94,0)} }
         h1 {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Space Grotesk', 'Cairo', sans-serif;
             font-size: 5rem; font-weight: 700; letter-spacing: -0.03rem;
             line-height: 1.08; margin-bottom: 1.5rem;
             animation: fadeInUp 0.8s ease-out 0.2s both;
@@ -121,23 +129,13 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-size: 200% auto; animation: shimmer 4s ease infinite;
         }
-        @keyframes shimmer { 0% { background-position: 0% center; } 50% { background-position: 100% center; } 100% { background-position: 0% center; } }
-
-        .hero-desc {
-            font-size: 1.1rem; font-weight: 400; color: rgba(255,255,255,0.5);
-            max-width: 580px; line-height: 1.8; margin-bottom: 3rem;
-            animation: fadeInUp 0.8s ease-out 0.4s both;
-        }
-
-        .hero-buttons {
-            display: flex; gap: 1rem; align-items: center;
-            animation: fadeInUp 0.8s ease-out 0.6s both;
-        }
-
+        @keyframes shimmer { 0%{background-position:0% center} 50%{background-position:100% center} 100%{background-position:0% center} }
+        .hero-desc { font-size: 1.1rem; font-weight: 400; color: rgba(255,255,255,0.5); max-width: 580px; line-height: 1.8; margin-bottom: 3rem; animation: fadeInUp 0.8s ease-out 0.4s both; }
+        .hero-buttons { display: flex; gap: 1rem; align-items: center; animation: fadeInUp 0.8s ease-out 0.6s both; }
         .btn-glow {
             padding: 0.9rem 2.2rem; background: linear-gradient(135deg, #6366f1, #a855f7);
             color: #fff; font-size: 0.95rem; font-weight: 600;
-            border: none; border-radius: 12px; cursor: pointer; text-decoration: none;
+            border: none; border-radius: 12px; cursor: pointer; text-decoration: none; white-space: nowrap;
             position: relative; overflow: hidden; transition: all 0.3s ease;
         }
         .btn-glow::before {
@@ -147,28 +145,21 @@
         }
         .btn-glow:hover::before { opacity: 0.6; }
         .btn-glow:hover { transform: translateY(-2px); }
-
         .btn-outline {
             padding: 0.9rem 2.2rem; background: transparent;
             color: rgba(255,255,255,0.8); font-size: 0.95rem; font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; white-space: nowrap;
             cursor: pointer; text-decoration: none; transition: all 0.3s ease;
         }
         .btn-outline:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.03); }
-
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
         .hero-visual {
             margin-top: 4rem; width: 100%; max-width: 900px;
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
             border-radius: 20px; padding: 2rem; animation: fadeInUp 0.8s ease-out 0.8s both;
             backdrop-filter: blur(10px);
         }
-        .code-window {
-            background: rgba(0,0,0,0.4); border-radius: 12px; padding: 1.5rem;
-            font-family: 'Fira Code', 'Courier New', monospace; font-size: 0.85rem;
-            line-height: 1.8; color: rgba(255,255,255,0.6); text-align: left; overflow: hidden;
-        }
+        .code-window { background: rgba(0,0,0,0.4); border-radius: 12px; padding: 1.5rem; font-family: 'Fira Code', 'Courier New', monospace; font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.6); text-align: left; overflow: hidden; }
         .code-window .dots { display: flex; gap: 6px; margin-bottom: 1rem; }
         .code-window .dots span { width: 12px; height: 12px; border-radius: 50%; }
         .code-window .dots span:nth-child(1) { background: #ef4444; }
@@ -181,38 +172,20 @@
         .code-line .comment { color: rgba(255,255,255,0.2); }
         .code-line .bracket { color: rgba(255,255,255,0.3); }
         .typing-cursor { display: inline-block; width: 2px; height: 1em; background: #818cf8; animation: blink 1s infinite; vertical-align: text-bottom; }
-        @keyframes blink { 0%,50% { opacity: 1; } 51%,100% { opacity: 0; } }
+        @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
 
         /* ===== SERVICES ===== */
         .services { position: relative; z-index: 1; padding: 7rem 2rem; }
         .section-header { text-align: center; margin-bottom: 4rem; }
-        .section-tag {
-            display: inline-block; font-size: 0.75rem; font-weight: 700;
-            color: #818cf8; text-transform: uppercase; letter-spacing: 0.2rem;
-            margin-bottom: 1rem; padding: 0.4rem 1rem; border-radius: 50px;
-            background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2);
-        }
-        .section-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2.8rem; font-weight: 700; letter-spacing: -0.02rem; }
+        .section-tag { display: inline-block; font-size: 0.75rem; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.2rem; margin-bottom: 1rem; padding: 0.4rem 1rem; border-radius: 50px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); }
+        .section-header h2 { font-family: 'Space Grotesk', 'Cairo', sans-serif; font-size: 2.8rem; font-weight: 700; letter-spacing: -0.02rem; }
         .section-header p { font-size: 1.05rem; color: rgba(255,255,255,0.45); max-width: 500px; margin: 1rem auto 0; line-height: 1.7; }
-
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.2rem; max-width: 1100px; margin: 0 auto; }
-        .card {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px; padding: 2rem; transition: all 0.4s ease;
-            position: relative; overflow: hidden; cursor: pointer;
-        }
-        .card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, #6366f1, #a855f7, transparent);
-            opacity: 0; transition: opacity 0.4s ease;
-        }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 2rem; transition: all 0.4s ease; position: relative; overflow: hidden; cursor: pointer; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #6366f1, #a855f7, transparent); opacity: 0; transition: opacity 0.4s ease; }
         .card:hover::before { opacity: 1; }
         .card:hover { border-color: rgba(99, 102, 241, 0.3); background: rgba(255,255,255,0.05); transform: translateY(-4px); }
-        .card-icon {
-            width: 48px; height: 48px; border-radius: 12px;
-            background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center;
-            font-size: 1.4rem; margin-bottom: 1.2rem;
-        }
+        .card-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 1.2rem; }
         .card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.6rem; }
         .card p { font-size: 0.9rem; color: rgba(255,255,255,0.45); line-height: 1.7; }
 
@@ -220,21 +193,13 @@
         .stats { position: relative; z-index: 1; padding: 5rem 2rem; }
         .stats-grid { display: flex; justify-content: center; gap: 5rem; flex-wrap: wrap; max-width: 1000px; margin: 0 auto; }
         .stat { text-align: center; }
-        .stat-number { font-family: 'Space Grotesk', sans-serif; font-size: 3.2rem; font-weight: 700; background: linear-gradient(135deg, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-number { font-family: 'Space Grotesk', 'Cairo', sans-serif; font-size: 3.2rem; font-weight: 700; background: linear-gradient(135deg, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .stat-label { font-size: 0.9rem; color: rgba(255,255,255,0.4); margin-top: 0.3rem; }
 
         /* ===== CTA ===== */
-        .cta-section {
-            position: relative; z-index: 1; padding: 6rem 2rem; text-align: center;
-            margin: 2rem auto; max-width: 900px;
-            background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15);
-            border-radius: 24px; overflow: hidden;
-        }
-        .cta-section::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.1), transparent 70%);
-        }
-        .cta-section h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2.4rem; font-weight: 700; margin-bottom: 1rem; position: relative; }
+        .cta-section { position: relative; z-index: 1; padding: 6rem 2rem; text-align: center; margin: 2rem auto; max-width: 900px; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 24px; overflow: hidden; }
+        .cta-section::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.1), transparent 70%); }
+        .cta-section h2 { font-family: 'Space Grotesk', 'Cairo', sans-serif; font-size: 2.4rem; font-weight: 700; margin-bottom: 1rem; position: relative; }
         .cta-section p { font-size: 1.05rem; color: rgba(255,255,255,0.5); max-width: 450px; margin: 0 auto 2rem; line-height: 1.7; position: relative; }
         .cta-section .btn-glow { position: relative; }
 
@@ -242,79 +207,43 @@
         footer { position: relative; z-index: 1; padding: 3rem 2rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); font-size: 0.85rem; }
 
         /* ===== OVERLAYS ===== */
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000;
-            background: #050510; display: none; flex-direction: column;
-        }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #050510; display: none; flex-direction: column; }
         .overlay.active { display: flex; }
-
-        .overlay-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 4rem; border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0;
-            background: rgba(5, 5, 16, 0.8); backdrop-filter: blur(20px);
-        }
-        .overlay-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; }
-        .overlay-back {
-            display: flex; align-items: center; gap: 0.4rem;
-            padding: 0.5rem 1rem; border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);
-            color: #a5b4fc; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500;
-            cursor: pointer; transition: all 0.3s ease;
-        }
+        .overlay-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 4rem; border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; background: rgba(5, 5, 16, 0.8); backdrop-filter: blur(20px); }
+        .overlay-title { font-family: 'Space Grotesk', 'Cairo', sans-serif; font-size: 1.3rem; font-weight: 700; }
+        .overlay-back { display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #a5b4fc; font-family: 'Inter', 'Cairo', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; }
         .overlay-back:hover { background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3); }
         .overlay-back svg { width: 14px; height: 14px; fill: currentColor; }
-
         .overlay-body { flex: 1; overflow-y: auto; padding: 3rem 4rem; }
         .overlay-body::-webkit-scrollbar { width: 5px; }
         .overlay-body::-webkit-scrollbar-track { background: transparent; }
         .overlay-body::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 3px; }
-
         .overlay-intro { max-width: 650px; margin: 0 auto 3rem; text-align: center; }
-        .overlay-intro h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 1rem; }
+        .overlay-intro h2 { font-family: 'Space Grotesk', 'Cairo', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 1rem; }
         .overlay-intro p { font-size: 1rem; color: rgba(255,255,255,0.45); line-height: 1.8; }
-
         .overlay-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; max-width: 1100px; margin: 0 auto; }
-        .overlay-card {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px; padding: 2rem; transition: all 0.3s ease; cursor: pointer;
-        }
+        .overlay-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 2rem; transition: all 0.3s ease; cursor: pointer; }
         .overlay-card:hover { border-color: rgba(99, 102, 241, 0.3); background: rgba(255,255,255,0.05); transform: translateY(-3px); }
         .overlay-card-icon { font-size: 2rem; margin-bottom: 1rem; }
         .overlay-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
         .overlay-card p { font-size: 0.88rem; color: rgba(255,255,255,0.4); line-height: 1.6; }
         .card-tag { display: inline-block; margin-top: 1rem; padding: 0.25rem 0.7rem; background: rgba(99,102,241,0.1); border-radius: 20px; font-size: 0.7rem; font-weight: 600; color: #818cf8; text-transform: uppercase; }
-
         .consult-form { max-width: 550px; margin: 0 auto; }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 0.85rem 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95rem;
-            transition: all 0.3s ease; outline: none;
-        }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-        }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.85rem 1rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #fff; font-family: 'Inter', 'Cairo', sans-serif; font-size: 0.95rem; transition: all 0.3s ease; outline: none; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
         .form-group textarea { min-height: 110px; resize: vertical; }
         .form-group select option { background: #0a0a1a; }
-        .submit-btn {
-            width: 100%; padding: 1rem; background: linear-gradient(135deg, #6366f1, #a855f7);
-            color: #fff; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600;
-            border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease;
-        }
+        .submit-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; font-family: 'Inter', 'Cairo', sans-serif; font-size: 1rem; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; }
         .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(99, 102, 241, 0.35); }
 
         /* ===== CHAT WIDGET ===== */
         .chat-widget { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; align-items: center; gap: 0.7rem; cursor: pointer; }
-        .chat-pill {
-            display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem;
-            background: rgba(10,10,15,0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 50px;
-            font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.8);
-            backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
+        .chat-pill { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem; background: rgba(10,10,15,0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 50px; font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.8); backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); white-space: nowrap; }
         .chat-pill .dot { width: 8px; height: 8px; background: #25D366; border-radius: 50%; animation: dotPulse 1.5s ease-in-out infinite; }
-        @keyframes dotPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .chat-icon { width: 56px; height: 56px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.3); transition: all 0.3s ease; }
+        @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .chat-icon { width: 56px; height: 56px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.3); transition: all 0.3s ease; flex-shrink: 0; }
         .chat-icon:hover { transform: scale(1.08); box-shadow: 0 6px 25px rgba(37,211,102,0.45); }
         .chat-icon svg { width: 28px; height: 28px; fill: #ffffff; }
 
@@ -339,6 +268,7 @@
             .chat-pill { display: none; }
             .cta-section { margin: 1rem; padding: 3rem 1.5rem; }
             .overlay-body { padding: 1.5rem; }
+            .nav-right { gap: 0.5rem; }
         }
     </style>
 </head>
@@ -353,39 +283,43 @@
     <!-- NAVBAR -->
     <nav class="navbar" id="navbar">
         <a href="#" class="nav-logo" onclick="closeAllOverlays(); return false;">
-            <div class="nav-logo-icon">
-                <svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg>
-            </div>
+            <div class="nav-logo-icon"><svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z"/></svg></div>
             techzone
         </a>
         <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
         <ul class="nav-links" id="navLinks">
-            <li><a onclick="openOverlay('services')">Services</a></li>
-            <li><a onclick="openOverlay('products')">Products</a></li>
-            <li><a onclick="openOverlay('industries')">Industries</a></li>
-            <li><a onclick="openOverlay('corporate')">Corporate</a></li>
-            <li><a onclick="openOverlay('casestudies')">Case Studies</a></li>
-            <li><a onclick="openOverlay('blog')">Blog</a></li>
+            <li><a onclick="openOverlay('services')"><span data-en="Services" data-ar="الخدمات">Services</span></a></li>
+            <li><a onclick="openOverlay('products')"><span data-en="Products" data-ar="المنتجات">Products</span></a></li>
+            <li><a onclick="openOverlay('industries')"><span data-en="Industries" data-ar="القطاعات">Industries</span></a></li>
+            <li><a onclick="openOverlay('corporate')"><span data-en="Corporate" data-ar="الشركة">Corporate</span></a></li>
+            <li><a onclick="openOverlay('casestudies')"><span data-en="Case Studies" data-ar="دراسات الحالة">Case Studies</span></a></li>
+            <li><a onclick="openOverlay('blog')"><span data-en="Blog" data-ar="المدونة">Blog</span></a></li>
             <li class="nav-phone"><span>&#9742;</span> +252 62 2146744</li>
-            <li><a onclick="openOverlay('consult')" class="nav-cta">Free Consultation</a></li>
+            <li><a onclick="openOverlay('consult')" class="nav-cta"><span data-en="Free Consultation" data-ar="استشارة مجانية">Free Consultation</span></a></li>
+            <li class="nav-right">
+                <div class="lang-toggle">
+                    <button class="lang-btn active" id="langEn" onclick="switchLang('en')">EN</button>
+                    <button class="lang-btn" id="langAr" onclick="switchLang('ar')">عربي</button>
+                </div>
+            </li>
         </ul>
     </nav>
 
     <!-- HERO -->
     <section class="hero">
-        <div class="hero-badge"><span class="pulse"></span> Available for new projects</div>
-        <h1>We Build<br><span class="gradient-text">Digital Futures</span></h1>
-        <p class="hero-desc">Techzone Business Solutions is a leading technology company dedicated to delivering innovative digital solutions. We empower businesses with cutting-edge software, cloud services, and IT solutions.</p>
+        <div class="hero-badge"><span class="pulse"></span> <span data-en="Available for new projects" data-ar="متاحون لمشاريع جديدة">Available for new projects</span></div>
+        <h1><span data-en="We Build" data-ar="نبني">We Build</span><br><span class="gradient-text" data-en="Digital Futures" data-ar="المستقبل الرقمي">Digital Futures</span></h1>
+        <p class="hero-desc"><span data-en="Techzone Business Solutions is a leading technology company dedicated to delivering innovative digital solutions. We empower businesses with cutting-edge software, cloud services, and IT solutions." data-ar="تك زون بزنس سولوشنز هي شركة تقنية رائدة مكرّسة لتقديم حلول رقمية مبتكرة. نمكّن الشركات من خلال البرمجيات المتطورة وخدمات السحابة وحلول تكنولوجيا المعلومات.">Techzone Business Solutions is a leading technology company dedicated to delivering innovative digital solutions. We empower businesses with cutting-edge software, cloud services, and IT solutions.</span></p>
         <div class="hero-buttons">
-            <a onclick="openOverlay('consult')" class="btn-glow" style="cursor:pointer">Start a Project</a>
-            <a onclick="openOverlay('services')" class="btn-outline" style="cursor:pointer">View Services</a>
+            <a onclick="openOverlay('consult')" class="btn-glow" style="cursor:pointer"><span data-en="Start a Project" data-ar="ابدأ مشروعك">Start a Project</span></a>
+            <a onclick="openOverlay('services')" class="btn-outline" style="cursor:pointer"><span data-en="View Services" data-ar="تصفح الخدمات">View Services</span></a>
         </div>
         <div class="hero-visual">
             <div class="code-window">
                 <div class="dots"><span></span><span></span><span></span></div>
                 <div class="code-line"><span class="comment">// TechZone Digital Solutions</span></div>
                 <div class="code-line"><span class="keyword">const</span> <span class="func">techzone</span> <span class="bracket">=</span> <span class="bracket">{</span></div>
-                <div class="code-line">&nbsp;&nbsp;mission: <span class="string">"Empower businesses with technology"</span>,</div>
+                <div class="code-line">&nbsp;&nbsp;mission: <span class="string" data-en="Empower businesses with technology" data-ar="تمكين الشركات بالتكنولوجيا">"Empower businesses with technology"</span>,</div>
                 <div class="code-line">&nbsp;&nbsp;services: [<span class="string">"Web"</span>, <span class="string">"Mobile"</span>, <span class="string">"Cloud"</span>, <span class="string">"AI"</span>],</div>
                 <div class="code-line">&nbsp;&nbsp;clients: <span class="string">"90+ worldwide"</span>,</div>
                 <div class="code-line">&nbsp;&nbsp;<span class="func">innovate</span>: () =&gt; <span class="string">"always"</span></div>
@@ -397,158 +331,213 @@
     <!-- SERVICES -->
     <section class="services">
         <div class="section-header">
-            <div class="section-tag">What We Do</div>
-            <h2>Our Services</h2>
-            <p>End-to-end technology solutions designed to accelerate your business growth.</p>
+            <div class="section-tag"><span data-en="What We Do" data-ar="ماذا نفعل">What We Do</span></div>
+            <h2><span data-en="Our Services" data-ar="خدماتنا">Our Services</span></h2>
+            <p><span data-en="End-to-end technology solutions designed to accelerate your business growth." data-ar="حلول تقنية شاملة مصممة لتسريع نمو أعمالك.">End-to-end technology solutions designed to accelerate your business growth.</span></p>
         </div>
         <div class="grid">
-            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#60;/&#62;</div><h3>Web Development</h3><p>Modern, responsive websites built with cutting-edge technologies for maximum performance.</p></div>
-            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#128241;</div><h3>Mobile Apps</h3><p>Native and cross-platform mobile applications for iOS and Android.</p></div>
-            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#9881;</div><h3>Enterprise Solutions</h3><p>Scalable ERP, CRM, and custom software to streamline operations.</p></div>
-            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#129302;</div><h3>AI & Automation</h3><p>Intelligent AI integration and process automation for efficiency.</p></div>
-            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#9729;</div><h3>Cloud Services</h3><p>Reliable cloud infrastructure for scalability and high availability.</p></div>
-            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#128737;</div><h3>Cyber Security</h3><p>Industry-grade security to protect your digital assets.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#60;/&#62;</div><h3 data-en="Web Development" data-ar="تطوير المواقع">Web Development</h3><p data-en="Modern, responsive websites built with cutting-edge technologies for maximum performance." data-ar="مواقع حديثة ومتجاوبة مبنية بأحدث التقنيات لأقصى أداء.">Modern, responsive websites built with cutting-edge technologies for maximum performance.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#128241;</div><h3 data-en="Mobile Apps" data-ar="تطبيقات الجوال">Mobile Apps</h3><p data-en="Native and cross-platform mobile applications for iOS and Android." data-ar="تطبيقات جوال أصلية ومتعددة المنصات لنظامي iOS و Android.">Native and cross-platform mobile applications for iOS and Android.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#9881;</div><h3 data-en="Enterprise Solutions" data-ar="حلول المؤسسات">Enterprise Solutions</h3><p data-en="Scalable ERP, CRM, and custom software to streamline operations." data-ar="أنظمة ERP و CRM وبرمجيات مخصصة قابلة للتوسع لتبسيط العمليات.">Scalable ERP, CRM, and custom software to streamline operations.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#129302;</div><h3 data-en="AI & Automation" data-ar="الذكاء الاصطناعي والأتمتة">AI & Automation</h3><p data-en="Intelligent AI integration and process automation for efficiency." data-ar="دمج الذكاء الاصطناعي الذكي وأتمتة العمليات لزيادة الكفاءة.">Intelligent AI integration and process automation for efficiency.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#9729;</div><h3 data-en="Cloud Services" data-ar="الخدمات السحابية">Cloud Services</h3><p data-en="Reliable cloud infrastructure for scalability and high availability." data-ar="بنية تحتية سحابية موثوقة للقابلية التوسع والتوفر العالي.">Reliable cloud infrastructure for scalability and high availability.</p></div>
+            <div class="card" onclick="openOverlay('services')"><div class="card-icon">&#128737;</div><h3 data-en="Cyber Security" data-ar="الأمن السيبراني">Cyber Security</h3><p data-en="Industry-grade security to protect your digital assets." data-ar="أمان على مستوى الصناعة لحماية أصولك الرقمية.">Industry-grade security to protect your digital assets.</p></div>
         </div>
     </section>
 
     <!-- STATS -->
     <section class="stats">
         <div class="stats-grid">
-            <div class="stat"><div class="stat-number">100+</div><div class="stat-label">Projects Delivered</div></div>
-            <div class="stat"><div class="stat-number">90+</div><div class="stat-label">Happy Clients</div></div>
-            <div class="stat"><div class="stat-number">8+</div><div class="stat-label">Years Experience</div></div>
-            <div class="stat"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
+            <div class="stat"><div class="stat-number">100+</div><div class="stat-label"><span data-en="Projects Delivered" data-ar="مشاريع تم تسليمها">Projects Delivered</span></div></div>
+            <div class="stat"><div class="stat-number">90+</div><div class="stat-label"><span data-en="Happy Clients" data-ar="عملاء سعداء">Happy Clients</span></div></div>
+            <div class="stat"><div class="stat-number">8+</div><div class="stat-label"><span data-en="Years Experience" data-ar="سنوات خبرة">Years Experience</span></div></div>
+            <div class="stat"><div class="stat-number">24/7</div><div class="stat-label"><span data-en="Support" data-ar="الدعم">Support</span></div></div>
         </div>
     </section>
 
     <!-- CTA -->
     <section class="cta-section">
-        <h2>Ready to Transform Your Business?</h2>
-        <p>Let's discuss how technology can drive your next phase of growth.</p>
-        <a onclick="openOverlay('consult')" class="btn-glow" style="cursor:pointer; position:relative">Get Free Consultation</a>
+        <h2><span data-en="Ready to Transform Your Business?" data-ar="مستعد لتحويل أعمالك؟">Ready to Transform Your Business?</span></h2>
+        <p><span data-en="Let's discuss how technology can drive your next phase of growth." data-ar="دعنا نناقش كيف يمكن للتكنولوجيا دفع مرحلة نموك التالية.">Let's discuss how technology can drive your next phase of growth.</span></p>
+        <a onclick="openOverlay('consult')" class="btn-glow" style="cursor:pointer; position:relative"><span data-en="Get Free Consultation" data-ar="احصل على استشارة مجانية">Get Free Consultation</span></a>
     </section>
 
     <!-- FOOTER -->
-    <footer><p>&copy; 2026 TechZone Business Solutions. All rights reserved.</p></footer>
+    <footer><p data-en="&copy; 2026 TechZone Business Solutions. All rights reserved." data-ar="&copy; 2026 تك زون بزنس سولوشنز. جميع الحقوق محفوظة.">&copy; 2026 TechZone Business Solutions. All rights reserved.</p></footer>
 
     <!-- CHAT -->
     <div class="chat-widget" onclick="window.open('https://wa.me/252622146744', '_blank')">
-        <div class="chat-pill"><span class="dot"></span>Chat with us</div>
+        <div class="chat-pill"><span class="dot"></span><span data-en="Chat with us" data-ar="تحدث معنا">Chat with us</span></div>
         <div class="chat-icon"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>
     </div>
 
     <!-- OVERLAYS -->
+    <!-- Services -->
     <div class="overlay" id="overlay-services">
-        <div class="overlay-header"><span class="overlay-title">Our Services</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
+        <div class="overlay-header"><span class="overlay-title"><span data-en="Our Services" data-ar="خدماتنا">Our Services</span></span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> <span data-en="Back" data-ar="رجوع">Back</span></button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>End-to-End Digital Solutions</h2><p>From concept to deployment, we deliver comprehensive technology services tailored to your business needs.</p></div>
+            <div class="overlay-intro"><h2 data-en="End-to-End Digital Solutions" data-ar="حلول رقمية شاملة">End-to-End Digital Solutions</h2><p data-en="From concept to deployment, we deliver comprehensive technology services tailored to your business needs." data-ar="من الفكرة إلى التنفيذ، نقدم خدمات تقنية شاملة مصممة خصيصاً لاحتياجات أعمالك.">From concept to deployment, we deliver comprehensive technology services tailored to your business needs.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#60;/&#62;</div><h3>Web Development</h3><p>Custom websites, web apps, and portals built with React, Next.js, Node.js, and modern stacks.</p><span class="card-tag">Frontend & Backend</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128241;</div><h3>Mobile App Development</h3><p>Native iOS/Android and cross-platform apps using Flutter and React Native.</p><span class="card-tag">iOS & Android</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#9881;</div><h3>Enterprise Solutions</h3><p>Custom ERP, CRM, HRMS, and billing systems for large-scale business automation.</p><span class="card-tag">ERP & CRM</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#129302;</div><h3>AI & Machine Learning</h3><p>Intelligent automation, predictive analytics, NLP, and custom AI model integration.</p><span class="card-tag">Machine Learning</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#9729;</div><h3>Cloud & DevOps</h3><p>AWS, Azure, GCP cloud architecture, CI/CD pipelines, Docker, Kubernetes.</p><span class="card-tag">AWS & Azure</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128737;</div><h3>Cyber Security</h3><p>Penetration testing, vulnerability assessment, compliance audits, and 24/7 monitoring.</p><span class="card-tag">SOC & Compliance</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128200;</div><h3>Digital Marketing</h3><p>SEO, SEM, social media management, content strategy, and analytics-driven campaigns.</p><span class="card-tag">Growth</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128161;</div><h3>IT Consulting</h3><p>Strategic technology roadmaps, digital transformation advisory, and architecture review.</p><span class="card-tag">Strategy</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#60;/&#62;</div><h3 data-en="Web Development" data-ar="تطوير المواقع">Web Development</h3><p data-en="Custom websites, web apps, and portals built with React, Next.js, Node.js, and modern stacks." data-ar="مواقع مخصصة وتطبيقات بوابات مبنية بـ React و Next.js و Node.js و أحجام تقنية حديثة.">Custom websites, web apps, and portals built with React, Next.js, Node.js, and modern stacks.</p><span class="card-tag" data-en="Frontend & Backend" data-ar="واجهة أمامية وخلفية">Frontend & Backend</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128241;</div><h3 data-en="Mobile App Development" data-ar="تطوير تطبيقات الجوال">Mobile App Development</h3><p data-en="Native iOS/Android and cross-platform apps using Flutter and React Native." data-ar="تطبيقات أصلية لنظامي iOS و Android وتطبيقات متعددة المنصات باستخدام Flutter و React Native.">Native iOS/Android and cross-platform apps using Flutter and React Native.</p><span class="card-tag" data-en="iOS & Android" data-ar="iOS و Android">iOS & Android</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#9881;</div><h3 data-en="Enterprise Solutions" data-ar="حلول المؤسسات">Enterprise Solutions</h3><p data-en="Custom ERP, CRM, HRMS, and billing systems for large-scale business automation." data-ar="أنظمة ERP و CRM و HRMS وفوترة مخصصة لأتمتة الأعمال على نطاق واسع.">Custom ERP, CRM, HRMS, and billing systems for large-scale business automation.</p><span class="card-tag" data-en="ERP & CRM" data-ar="ERP و CRM">ERP & CRM</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#129302;</div><h3 data-en="AI & Machine Learning" data-ar="الذكاء الاصطناعي والتعلم الآلي">AI & Machine Learning</h3><p data-en="Intelligent automation, predictive analytics, NLP, and custom AI model integration." data-ar="الأتمتة الذكية والتحليلات التنبؤية ومعالجة اللغة الطبيعية ودمج نماذج الذكاء الاصطناعي المخصصة.">Intelligent automation, predictive analytics, NLP, and custom AI model integration.</p><span class="card-tag" data-en="Machine Learning" data-ar="تعلم آلي">Machine Learning</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#9729;</div><h3 data-en="Cloud & DevOps" data-ar="السحابة و DevOps">Cloud & DevOps</h3><p data-en="AWS, Azure, GCP cloud architecture, CI/CD pipelines, Docker, Kubernetes." data-ar="بنية سحابية AWS و Azure و GCP، خطوط CI/CD، Docker، Kubernetes.">AWS, Azure, GCP cloud architecture, CI/CD pipelines, Docker, Kubernetes.</p><span class="card-tag" data-en="AWS & Azure" data-ar="AWS و Azure">AWS & Azure</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128737;</div><h3 data-en="Cyber Security" data-ar="الأمن السيبراني">Cyber Security</h3><p data-en="Penetration testing, vulnerability assessment, compliance audits, and 24/7 monitoring." data-ar="اختبار الاختراق وتقييم الثغرات وتدقيق الامتثال والمراقبة على مدار الساعة.">Penetration testing, vulnerability assessment, compliance audits, and 24/7 monitoring.</p><span class="card-tag" data-en="SOC & Compliance" data-ar="SOC والامتثال">SOC & Compliance</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128200;</div><h3 data-en="Digital Marketing" data-ar="التسويق الرقمي">Digital Marketing</h3><p data-en="SEO, SEM, social media management, content strategy, and analytics-driven campaigns." data-ar="تحسين محركات البحث وإدارة وسائل التواصل الاجتماعي واستراتيجية المحتوى وحملات التحليلات.">SEO, SEM, social media management, content strategy, and analytics-driven campaigns.</p><span class="card-tag" data-en="Growth" data-ar="النمو">Growth</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128161;</div><h3 data-en="IT Consulting" data-ar="استشارات تكنولوجيا المعلومات">IT Consulting</h3><p data-en="Strategic technology roadmaps, digital transformation advisory, and architecture review." data-ar="خاريط طريق استراتيجية للتكنولوجيا واستشارات التحول الرقمي ومراجعة العمليات.">Strategic technology roadmaps, digital transformation advisory, and architecture review.</p><span class="card-tag" data-en="Strategy" data-ar="الاستراتيجية">Strategy</span></div>
             </div>
         </div>
     </div>
 
+    <!-- Products -->
     <div class="overlay" id="overlay-products">
-        <div class="overlay-header"><span class="overlay-title">Products</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
+        <div class="overlay-header"><span class="overlay-title"><span data-en="Products" data-ar="المنتجات">Products</span></span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> <span data-en="Back" data-ar="رجوع">Back</span></button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>Our Products</h2><p>We build SaaS platforms, mobile apps, and enterprise tools that power businesses across industries.</p></div>
+            <div class="overlay-intro"><h2 data-en="Our Products" data-ar="منتجاتنا">Our Products</h2><p data-en="We build SaaS platforms, mobile apps, and enterprise tools that power businesses across industries." data-ar="نبني منصات SaaS وتطبيقات جوال وأدوات مؤسسية تدعم الأعمال عبر جميع القطاعات.">We build SaaS platforms, mobile apps, and enterprise tools that power businesses across industries.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#128203;</div><h3>TechZone ERP</h3><p>Full-featured cloud ERP with finance, inventory, HR, procurement modules.</p><span class="card-tag">Enterprise</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128100;</div><h3>TechZone CRM</h3><p>Sales pipeline, lead scoring, automation, and analytics dashboard.</p><span class="card-tag">Sales</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128230;</div><h3>TechZone Commerce</h3><p>Multi-vendor e-commerce with payment gateway and order management.</p><span class="card-tag">E-Commerce</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128197;</div><h3>TechZone Scheduler</h3><p>Smart appointment scheduling with calendar sync and reminders.</p><span class="card-tag">SaaS</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128202;</div><h3>TechZone Analytics</h3><p>Real-time business intelligence with custom reports and KPI tracking.</p><span class="card-tag">Analytics</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128274;</div><h3>TechZone Guard</h3><p>Cybersecurity monitoring with threat detection and compliance.</p><span class="card-tag">Security</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128203;</div><h3>TechZone ERP</h3><p data-en="Full-featured cloud ERP with finance, inventory, HR, procurement modules." data-ar="نظام ERP سحابي كامل الميزات مع وحدات المالية والمخزون والموارد البشرية والمشتريات.">Full-featured cloud ERP with finance, inventory, HR, procurement modules.</p><span class="card-tag" data-en="Enterprise" data-ar="المؤسسات">Enterprise</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128100;</div><h3>TechZone CRM</h3><p data-en="Sales pipeline, lead scoring, automation, and analytics dashboard." data-ar="قناة المبيعات وتصنيف العملاء المحتملين والأتمتة ولوحة التحليلات.">Sales pipeline, lead scoring, automation, and analytics dashboard.</p><span class="card-tag" data-en="Sales" data-ar="المبيعات">Sales</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128230;</div><h3>TechZone Commerce</h3><p data-en="Multi-vendor e-commerce with payment gateway and order management." data-ar="تجارة إلكترونية متعددة الموردين مع بوابة الدفع وإدارة الطلبات.">Multi-vendor e-commerce with payment gateway and order management.</p><span class="card-tag" data-en="E-Commerce" data-ar="التجارة الإلكترونية">E-Commerce</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128197;</div><h3>TechZone Scheduler</h3><p data-en="Smart appointment scheduling with calendar sync and reminders." data-ar="جدولة مواعيد ذكية مع مزامنة التقويم والتذكيرات.">Smart appointment scheduling with calendar sync and reminders.</p><span class="card-tag">SaaS</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128202;</div><h3>TechZone Analytics</h3><p data-en="Real-time business intelligence with custom reports and KPI tracking." data-ar="ذكاء أعمال في الوقت الحقيقي مع تقارير مخصصة وتتبع مؤشرات الأداء.">Real-time business intelligence with custom reports and KPI tracking.</p><span class="card-tag" data-en="Analytics" data-ar="التحليلات">Analytics</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128274;</div><h3>TechZone Guard</h3><p data-en="Cybersecurity monitoring with threat detection and compliance." data-ar="مراقبة الأمن السيبراني مع كشف التهديدات والامتثال.">Cybersecurity monitoring with threat detection and compliance.</p><span class="card-tag" data-en="Security" data-ar="الأمن">Security</span></div>
             </div>
         </div>
     </div>
 
+    <!-- Industries -->
     <div class="overlay" id="overlay-industries">
-        <div class="overlay-header"><span class="overlay-title">Industries</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
+        <div class="overlay-header"><span class="overlay-title"><span data-en="Industries" data-ar="القطاعات">Industries</span></span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> <span data-en="Back" data-ar="رجوع">Back</span></button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>Industries We Serve</h2><p>Deep domain expertise across multiple sectors with tailored solutions.</p></div>
+            <div class="overlay-intro"><h2 data-en="Industries We Serve" data-ar="القطاعات التي نخدمها">Industries We Serve</h2><p data-en="Deep domain expertise across multiple sectors with tailored solutions." data-ar="خبرة عميقة في مجالات متعددة مع حلول مخصصة لكل قطاع.">Deep domain expertise across multiple sectors with tailored solutions.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#127968;</div><h3>Real Estate</h3><p>Property portals, listing platforms, CRM integration, virtual tours.</p><span class="card-tag">PropTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127973;</div><h3>Banking & Finance</h3><p>Fintech solutions, payment systems, loan management, compliance.</p><span class="card-tag">FinTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128138;</div><h3>Healthcare</h3><p>Telemedicine, EHR systems, patient management, medical IoT.</p><span class="card-tag">HealthTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127981;</div><h3>Retail & E-Commerce</h3><p>Online stores, POS, inventory management, omnichannel retail.</p><span class="card-tag">RetailTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128666;</div><h3>Transport & Logistics</h3><p>Fleet management, route optimization, shipment tracking.</p><span class="card-tag">LogiTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127891;</div><h3>Education</h3><p>LMS, virtual classrooms, student management, e-learning.</p><span class="card-tag">EduTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127968;</div><h3 data-en="Real Estate" data-ar="العقارات">Real Estate</h3><p data-en="Property portals, listing platforms, CRM integration, virtual tours." data-ar="بوابات عقارية ومنصات إعلانات ودمج CRM وجولات افتراضية.">Property portals, listing platforms, CRM integration, virtual tours.</p><span class="card-tag">PropTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127973;</div><h3 data-en="Banking & Finance" data-ar="البنوك والمالية">Banking & Finance</h3><p data-en="Fintech solutions, payment systems, loan management, compliance." data-ar="حلول التكنولوجيا المالية وأنظمة الدفع وإدارة القروض والامتثال.">Fintech solutions, payment systems, loan management, compliance.</p><span class="card-tag">FinTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128138;</div><h3 data-en="Healthcare" data-ar="الرعاية الصحية">Healthcare</h3><p data-en="Telemedicine, EHR systems, patient management, medical IoT." data-ar="الطب عن بُعد وأنظمة السجلات الإلكترونية وإدارة المرضى وإنترنت الأشياء الطبي.">Telemedicine, EHR systems, patient management, medical IoT.</p><span class="card-tag">HealthTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127981;</div><h3 data-en="Retail & E-Commerce" data-ar="التجزئة والتجارة الإلكترونية">Retail & E-Commerce</h3><p data-en="Online stores, POS, inventory management, omnichannel retail." data-ar="متاجر إلكترونية وأنظمة نقاط البيع وإدارة المخزون والتجزئة متعددة القنوات.">Online stores, POS, inventory management, omnichannel retail.</p><span class="card-tag">RetailTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128666;</div><h3 data-en="Transport & Logistics" data-ar="النقل واللوجستيات">Transport & Logistics</h3><p data-en="Fleet management, route optimization, shipment tracking." data-ar="إدارة الأسطول وتحسين المسارات وتتبع الشحنات.">Fleet management, route optimization, shipment tracking.</p><span class="card-tag">LogiTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127891;</div><h3 data-en="Education" data-ar="التعليم">Education</h3><p data-en="LMS, virtual classrooms, student management, e-learning." data-ar="أنظمة إدارة التعلم والصفوف الافتراضية وإدارة الطلاب والتعلم الإلكتروني.">LMS, virtual classrooms, student management, e-learning.</p><span class="card-tag">EduTech</span></div>
             </div>
         </div>
     </div>
 
+    <!-- Corporate -->
     <div class="overlay" id="overlay-corporate">
-        <div class="overlay-header"><span class="overlay-title">Corporate</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
+        <div class="overlay-header"><span class="overlay-title"><span data-en="Corporate" data-ar="الشركة">Corporate</span></span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> <span data-en="Back" data-ar="رجوع">Back</span></button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>About TechZone</h2><p>A leading technology company dedicated to delivering innovative digital solutions worldwide.</p></div>
+            <div class="overlay-intro"><h2 data-en="About TechZone" data-ar="عن تك زون">About TechZone</h2><p data-en="A leading technology company dedicated to delivering innovative digital solutions worldwide." data-ar="شركة تقنية رائدة مكرّسة لتقديم حلول رقمية مبتكرة حول العالم.">A leading technology company dedicated to delivering innovative digital solutions worldwide.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#127919;</div><h3>Our Mission</h3><p>Accelerate digital transformation for businesses through innovative technology.</p><span class="card-tag">Purpose</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128065;</div><h3>Our Vision</h3><p>Global leader in digital innovation, empowering organizations to thrive.</p><span class="card-tag">Future</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#129309;</div><h3>Our Values</h3><p>Innovation, integrity, excellence, collaboration, customer-centricity.</p><span class="card-tag">Culture</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128101;</div><h3>Our Team</h3><p>200+ engineers, designers, and consultants across 5 global offices.</p><span class="card-tag">People</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127942;</div><h3>Awards</h3><p>Multiple industry awards for innovation and client satisfaction.</p><span class="card-tag">Achievements</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128205;</div><h3>Global Presence</h3><p>Offices in Somalia, UAE, UK, USA, and India.</p><span class="card-tag">Locations</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127919;</div><h3 data-en="Our Mission" data-ar="مهمتنا">Our Mission</h3><p data-en="Accelerate digital transformation for businesses through innovative technology." data-ar="تسريع التحول الرقمي للشركات من خلال التكنولوجيا المبتكرة.">Accelerate digital transformation for businesses through innovative technology.</p><span class="card-tag" data-en="Purpose" data-ar="الهدف">Purpose</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128065;</div><h3 data-en="Our Vision" data-ar="رؤيتنا">Our Vision</h3><p data-en="Global leader in digital innovation, empowering organizations to thrive." data-ar="قائد عالمي في الابتكار الرقمي، نمكّن المؤسسات من الازدهار.">Global leader in digital innovation, empowering organizations to thrive.</p><span class="card-tag" data-en="Future" data-ar="المستقبل">Future</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#129309;</div><h3 data-en="Our Values" data-ar="قيمنا">Our Values</h3><p data-en="Innovation, integrity, excellence, collaboration, customer-centricity." data-ar="الابتكار والنزاهة والتميز والتعاون وcentration على العميل.">Innovation, integrity, excellence, collaboration, customer-centricity.</p><span class="card-tag" data-en="Culture" data-ar="الثقافة">Culture</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128101;</div><h3 data-en="Our Team" data-ar="فريقنا">Our Team</h3><p data-en="200+ engineers, designers, and consultants across 5 global offices." data-ar="أكثر من 200 مهندس ومصمم ومستشار في 5 مكاتب عالمية.">200+ engineers, designers, and consultants across 5 global offices.</p><span class="card-tag" data-en="People" data-ar="الموظفون">People</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127942;</div><h3 data-en="Awards" data-ar="الجوائز">Awards</h3><p data-en="Multiple industry awards for innovation and client satisfaction." data-ar="جوائز صناعية عديدة عن الابتكار ورضا العملاء.">Multiple industry awards for innovation and client satisfaction.</p><span class="card-tag" data-en="Achievements" data-ar="الإنجازات">Achievements</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128205;</div><h3 data-en="Global Presence" data-ar="ال présence العالمية">Global Presence</h3><p data-en="Offices in Somalia, UAE, UK, USA, and India." data-ar="مكاتب في الصومال والإمارات وبريطانيا والولايات المتحدة والهند.">Offices in Somalia, UAE, UK, USA, and India.</p><span class="card-tag" data-en="Locations" data-ar="المواقع">Locations</span></div>
             </div>
         </div>
     </div>
 
+    <!-- Case Studies -->
     <div class="overlay" id="overlay-casestudies">
-        <div class="overlay-header"><span class="overlay-title">Case Studies</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
+        <div class="overlay-header"><span class="overlay-title"><span data-en="Case Studies" data-ar="دراسات الحالة">Case Studies</span></span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> <span data-en="Back" data-ar="رجوع">Back</span></button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>Our Work</h2><p>Explore how we've helped businesses transform and grow.</p></div>
+            <div class="overlay-intro"><h2 data-en="Our Work" data-ar="أعمالنا">Our Work</h2><p data-en="Explore how we've helped businesses transform and grow." data-ar="اكتشف كيف ساعدنا الشركات على التحول والنمو.">Explore how we've helped businesses transform and grow.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#127968;</div><h3>Somali Property Hub</h3><p>Real estate portal with 10,000+ listings and integrated payments.</p><span class="card-tag">Real Estate</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127973;</div><h3>PaySom Digital Banking</h3><p>Mobile banking with real-time transfers for 500K+ users.</p><span class="card-tag">FinTech</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128138;</div><h3>HealthConnect</h3><p>Telehealth platform with video, chat, and e-prescriptions.</p><span class="card-tag">Healthcare</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127981;</div><h3>Mogadishu Market Online</h3><p>Multi-vendor marketplace with 500+ sellers.</p><span class="card-tag">E-Commerce</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128666;</div><h3>FleetTrack Logistics</h3><p>Fleet management saving 25% in operational costs.</p><span class="card-tag">Logistics</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#127891;</div><h3>EduPlatform Somalia</h3><p>LMS with 20,000+ students and live classes.</p><span class="card-tag">Education</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127968;</div><h3>Somali Property Hub</h3><p data-en="Real estate portal with 10,000+ listings and integrated payments." data-ar="بوابة عقارية بأكثر من 10,000 إعلان مع مدفوعات متكاملة.">Real estate portal with 10,000+ listings and integrated payments.</p><span class="card-tag" data-en="Real Estate" data-ar="العقارات">Real Estate</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127973;</div><h3>PaySom Digital Banking</h3><p data-en="Mobile banking with real-time transfers for 500K+ users." data-ar="مصرفية جوالية مع تحويلات فورية لأكثر من 500 ألف مستخدم.">Mobile banking with real-time transfers for 500K+ users.</p><span class="card-tag">FinTech</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128138;</div><h3>HealthConnect</h3><p data-en="Telehealth platform with video, chat, and e-prescriptions." data-ar="منصة صحة عن بُعد مع فيديو ومحادثة ووصفات إلكترونية.">Telehealth platform with video, chat, and e-prescriptions.</p><span class="card-tag" data-en="Healthcare" data-ar="الصحة">Healthcare</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127981;</div><h3>Mogadishu Market Online</h3><p data-en="Multi-vendor marketplace with 500+ sellers." data-ar="سوق إلكتروني متعدد الموردين بأكثر من 500 بائع.">Multi-vendor marketplace with 500+ sellers.</p><span class="card-tag" data-en="E-Commerce" data-ar="التجارة الإلكترونية">E-Commerce</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128666;</div><h3>FleetTrack Logistics</h3><p data-en="Fleet management saving 25% in operational costs." data-ar="إدارة أسطول توفر 25% من تكاليف التشغيل.">Fleet management saving 25% in operational costs.</p><span class="card-tag" data-en="Logistics" data-ar="اللوجستيات">Logistics</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#127891;</div><h3>EduPlatform Somalia</h3><p data-en="LMS with 20,000+ students and live classes." data-ar="نظام إدارة تعلم بأكثر من 20,000 طالب وصفوف مباشرة.">LMS with 20,000+ students and live classes.</p><span class="card-tag" data-en="Education" data-ar="التعليم">Education</span></div>
             </div>
         </div>
     </div>
 
+    <!-- Blog -->
     <div class="overlay" id="overlay-blog">
-        <div class="overlay-header"><span class="overlay-title">Blog</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
+        <div class="overlay-header"><span class="overlay-title"><span data-en="Blog" data-ar="المدونة">Blog</span></span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> <span data-en="Back" data-ar="رجوع">Back</span></button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>Latest Insights</h2><p>Tech trends, industry insights, and company news.</p></div>
+            <div class="overlay-intro"><h2 data-en="Latest Insights" data-ar="أحدث الرؤى">Latest Insights</h2><p data-en="Tech trends, industry insights, and company news." data-ar="اتجاهات التقنية ورؤى الصناعة وأخبار الشركة.">Tech trends, industry insights, and company news.</p></div>
             <div class="overlay-grid">
-                <div class="overlay-card"><div class="overlay-card-icon">&#128187;</div><h3>Top 10 Tech Trends 2026</h3><p>AI agents, edge computing, quantum cryptography.</p><span class="card-tag">Trends</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#129302;</div><h3>AI in Business Guide</h3><p>How SMEs leverage AI to automate and reduce costs.</p><span class="card-tag">AI</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#9729;</div><h3>Cloud Migration Checklist</h3><p>Zero-downtime migration to the cloud.</p><span class="card-tag">Cloud</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128737;</div><h3>Cybersecurity for Startups</h3><p>Essential practices from day one.</p><span class="card-tag">Security</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128200;</div><h3>Digital Marketing East Africa</h3><p>Strategies driving growth in the region.</p><span class="card-tag">Marketing</span></div>
-                <div class="overlay-card"><div class="overlay-card-icon">&#128640;</div><h3>Idea to MVP in 90 Days</h3><p>Agile framework for market-ready products.</p><span class="card-tag">Product</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128187;</div><h3 data-en="Top 10 Tech Trends 2026" data-ar="أعلى 10 اتجاهات تقنية 2026">Top 10 Tech Trends 2026</h3><p data-en="AI agents, edge computing, quantum cryptography." data-ar="وكلاء الذكاء الاصطناعي والحوسبة الطرفية والتشفير الكمي.">AI agents, edge computing, quantum cryptography.</p><span class="card-tag" data-en="Trends" data-ar="الاتجاهات">Trends</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#129302;</div><h3 data-en="AI in Business Guide" data-ar="دليل الذكاء الاصطناعي في الأعمال">AI in Business Guide</h3><p data-en="How SMEs leverage AI to automate and reduce costs." data-ar="كيف تستفيد الشركات الصغيرة والمتوسطة من الذكاء الاصطناعي للأتمتة وخفض التكاليف.">How SMEs leverage AI to automate and reduce costs.</p><span class="card-tag" data-en="AI" data-ar="الذكاء الاصطناعي">AI</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#9729;</div><h3 data-en="Cloud Migration Checklist" data-ar="قائمة التحقق للتحول السحابي">Cloud Migration Checklist</h3><p data-en="Zero-downtime migration to the cloud." data-ar="تحول سحابي بدون وقت توقف.">Zero-downtime migration to the cloud.</p><span class="card-tag" data-en="Cloud" data-ar="السحابة">Cloud</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128737;</div><h3 data-en="Cybersecurity for Startups" data-ar="الأمن السيبراني للشركات الناشئة">Cybersecurity for Startups</h3><p data-en="Essential practices from day one." data-ar="ممارسات أساسية من اليوم الأول.">Essential practices from day one.</p><span class="card-tag" data-en="Security" data-ar="الأمن">Security</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128200;</div><h3 data-en="Digital Marketing East Africa" data-ar="الرقمنة التسويقية شرق أفريقيا">Digital Marketing East Africa</h3><p data-en="Strategies driving growth in the region." data-ar="استراتيجيات تدفع النمو في المنطقة.">Strategies driving growth in the region.</p><span class="card-tag" data-en="Marketing" data-ar="التسويق">Marketing</span></div>
+                <div class="overlay-card"><div class="overlay-card-icon">&#128640;</div><h3 data-en="Idea to MVP in 90 Days" data-ar="من الفكرة إلى MVP في 90 يوم">Idea to MVP in 90 Days</h3><p data-en="Agile framework for market-ready products." data-ar="إطار عمل رشيق لمنتجات جاهزة للسوق.">Agile framework for market-ready products.</p><span class="card-tag" data-en="Product" data-ar="المنتج">Product</span></div>
             </div>
         </div>
     </div>
 
+    <!-- Consult -->
     <div class="overlay" id="overlay-consult">
-        <div class="overlay-header"><span class="overlay-title">Free Consultation</span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button></div>
+        <div class="overlay-header"><span class="overlay-title"><span data-en="Free Consultation" data-ar="استشارة مجانية">Free Consultation</span></span><button class="overlay-back" onclick="closeAllOverlays()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> <span data-en="Back" data-ar="رجوع">Back</span></button></div>
         <div class="overlay-body">
-            <div class="overlay-intro"><h2>Consult Our Experts</h2><p>Tell us about your project. We'll respond within 24 hours.</p></div>
+            <div class="overlay-intro"><h2 data-en="Consult Our Experts" data-ar="استشر خبراءنا">Consult Our Experts</h2><p data-en="Tell us about your project. We'll respond within 24 hours." data-ar="أخبرنا عن مشروعك. سنرد خلال 24 ساعة.">Tell us about your project. We'll respond within 24 hours.</p></div>
             <div class="consult-form">
-                <div class="form-group"><label>Full Name</label><input type="text" placeholder="Enter your full name"></div>
-                <div class="form-group"><label>Email Address</label><input type="email" placeholder="Enter your email"></div>
-                <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+252 62 XXXXXXX"></div>
-                <div class="form-group"><label>Company Name</label><input type="text" placeholder="Your company name"></div>
-                <div class="form-group"><label>Service Needed</label>
-                    <select><option value="">Select a service...</option><option>Web Development</option><option>Mobile App Development</option><option>Enterprise Solutions</option><option>AI & Automation</option><option>Cloud & DevOps</option><option>Cyber Security</option><option>Digital Marketing</option><option>IT Consulting</option></select>
+                <div class="form-group"><label data-en="Full Name" data-ar="الاسم الكامل">Full Name</label><input type="text" data-placeholder-en="Enter your full name" data-placeholder-ar="أدخل اسمك الكامل" placeholder="Enter your full name"></div>
+                <div class="form-group"><label data-en="Email Address" data-ar="البريد الإلكتروني">Email Address</label><input type="email" data-placeholder-en="Enter your email" data-placeholder-ar="أدخل بريدك الإلكتروني" placeholder="Enter your email"></div>
+                <div class="form-group"><label data-en="Phone Number" data-ar="رقم الهاتف">Phone Number</label><input type="tel" placeholder="+252 62 XXXXXXX"></div>
+                <div class="form-group"><label data-en="Company Name" data-ar="اسم الشركة">Company Name</label><input type="text" data-placeholder-en="Your company name" data-placeholder-ar="اسم شركتك" placeholder="Your company name"></div>
+                <div class="form-group"><label data-en="Service Needed" data-ar="الخدمة المطلوبة">Service Needed</label>
+                    <select>
+                        <option value="" data-en="Select a service..." data-ar="اختر خدمة...">Select a service...</option>
+                        <option data-en="Web Development" data-ar="تطوير المواقع">Web Development</option>
+                        <option data-en="Mobile App Development" data-ar="تطوير تطبيقات الجوال">Mobile App Development</option>
+                        <option data-en="Enterprise Solutions" data-ar="حلول المؤسسات">Enterprise Solutions</option>
+                        <option data-en="AI & Automation" data-ar="الذكاء الاصطناعي والأتمتة">AI & Automation</option>
+                        <option data-en="Cloud & DevOps" data-ar="السحابة و DevOps">Cloud & DevOps</option>
+                        <option data-en="Cyber Security" data-ar="الأمن السيبراني">Cyber Security</option>
+                        <option data-en="Digital Marketing" data-ar="التسويق الرقمي">Digital Marketing</option>
+                        <option data-en="IT Consulting" data-ar="استشارات تكنولوجيا المعلومات">IT Consulting</option>
+                    </select>
                 </div>
-                <div class="form-group"><label>Project Description</label><textarea placeholder="Tell us about your project..."></textarea></div>
-                <button class="submit-btn" onclick="submitConsult()">Send Message</button>
+                <div class="form-group"><label data-en="Project Description" data-ar="وصف المشروع">Project Description</label><textarea data-placeholder-en="Tell us about your project..." data-placeholder-ar="أخبرنا عن مشروعك..." placeholder="Tell us about your project..."></textarea></div>
+                <button class="submit-btn" onclick="submitConsult()"><span data-en="Send Message" data-ar="إرسال الرسالة">Send Message</span></button>
             </div>
         </div>
     </div>
 
     <script>
+        // ===== BILINGUAL SYSTEM =====
+        var currentLang = 'en';
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.documentElement.setAttribute('lang', lang === 'ar' ? 'ar' : 'en');
+            if (lang === 'ar') {
+                document.body.setAttribute('dir', 'rtl');
+            } else {
+                document.body.removeAttribute('dir');
+            }
+            // Toggle buttons
+            document.getElementById('langEn').classList.toggle('active', lang === 'en');
+            document.getElementById('langAr').classList.toggle('active', lang === 'ar');
+            // Switch all data-en / data-ar elements
+            document.querySelectorAll('[data-' + lang + ']').forEach(function(el) {
+                el.textContent = el.getAttribute('data-' + lang);
+            });
+            // Switch placeholders
+            document.querySelectorAll('[data-placeholder-' + lang + ']').forEach(function(el) {
+                el.setAttribute('placeholder', el.getAttribute('data-placeholder-' + lang));
+            });
+            // Switch select options
+            document.querySelectorAll('select option[data-' + lang + ']').forEach(function(opt) {
+                opt.textContent = opt.getAttribute('data-' + lang);
+            });
+            // Save preference
+            try { localStorage.setItem('tz_lang', lang); } catch(e) {}
+        }
+
+        // Restore saved language
+        (function() {
+            var saved = null;
+            try { saved = localStorage.getItem('tz_lang'); } catch(e) {}
+            if (saved === 'ar' || saved === 'en') switchLang(saved);
+        })();
+
+        // ===== OVERLAY SYSTEM =====
         var currentOverlay = null;
         function openOverlay(id) {
             if (currentOverlay) document.getElementById('overlay-' + currentOverlay).classList.remove('active');
@@ -562,7 +551,10 @@
             document.body.style.overflow = '';
         }
         document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && currentOverlay) closeAllOverlays(); });
-        function submitConsult() { alert('Thank you! Our team will contact you within 24 hours.'); closeAllOverlays(); }
+        function submitConsult() {
+            alert(currentLang === 'ar' ? 'شكراً لك! سنتواصل معك خلال 24 ساعة.' : 'Thank you! Our team will contact you within 24 hours.');
+            closeAllOverlays();
+        }
         window.addEventListener('scroll', function() { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50); });
         document.getElementById('navToggle').addEventListener('click', function() { document.getElementById('navLinks').classList.toggle('active'); });
     </script>
