@@ -1160,14 +1160,6 @@
             }
         }
 
-            // ===== SEO / Khalid / Engineer — HIGHEST PRIORITY =====
-            var seoMatch = q.match(/\b(seo|search\s*engine|google\s*(rank|optimization|search|console)|serp|backlink|keyword|on.page|off.page|local\s*seo|organic|ranking|khalid|mukhtar|engineer|engineers)\b/);
-            var seoMatchAr = q.match(/\b(محرك|بحث|تحسين|خالd|mختار|مهندس)\b/);
-            var seoMatchSo = q.match(/\b(ing\.|ingineer|injineer|khabiiro|khibrad|xirfadle)\b/);
-            if (seoMatch || seoMatchAr || seoMatchSo) {
-                return { text: 'SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744). Maxaan kaloo ka caawiyaa?', suggestions: ['Services', 'Pricing', 'Contact'] };
-            }
-
             // ===== Offline Pattern Matching (Fallback) =====
         function detectLang(text) {
             var t = text.toLowerCase();
@@ -1182,6 +1174,14 @@
             var q = input.toLowerCase().replace(/[^\w\s\u0600-\u06FF]/g, ' ').trim();
             var lang = detectLang(input);
             var end = '\n\nMaxaan kaloo ka caawiyaa?';
+
+            // ===== SEO / Khalid / Engineer — HIGHEST PRIORITY =====
+            var seoMatch = q.match(/\b(seo|search\s*engine|google\s*(rank|optimization|search|console)|serp|backlink|keyword|on.page|off.page|local\s*seo|organic|ranking|khalid|mukhtar|engineer|engineers)\b/);
+            var seoMatchAr = q.match(/\b(محرك|بحث|تحسين|خال|mختار|مهندس)\b/);
+            var seoMatchSo = q.match(/\b(ing\.|ingineer|injineer|khabiiro|khibrad|xirfadle)\b/);
+            if (seoMatch || seoMatchAr || seoMatchSo) {
+                return { text: 'SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744). Maxaan kaloo ka caawiyaa?', suggestions: ['Services', 'Pricing', 'Contact'] };
+            }
 
             if (q.match(/\b(hi|hello|hey|salaam|assalam|marhaba|ahlan|morning|afternoon|evening|sup|yo|howdy|greetings|kaali|subax|galab|habeen)\b/) || /^(hi|hey|yo|sup|hello|salaam|ahlan|kaali)$/i.test(q)) {
                 if (lang === 'so') return { text: 'Kaali! 👋 TechZone baa kuu caawin karta. Maxaad rabtaa inaad wax ka ogaato?' + end, suggestions: ['Adeegyada', 'Qiimaha', 'Xiriir'] };
