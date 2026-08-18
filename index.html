@@ -954,9 +954,10 @@
             'PRODUCTS: TechZone ERP ($2,000+), TechZone CRM ($500+), TechZone Commerce ($1,500+), TechZone Scheduler ($300+), TechZone Analytics ($400+), TechZone Guard ($200/mo)\n\n' +
             'INDUSTRIES: Real Estate, Banking & Finance, Healthcare, Retail & E-Commerce, Transport & Logistics, Education\n\n' +
             'CASE STUDIES: Somali Property Hub (10K+ listings), PaySom Digital Banking (500K+ users), HealthConnect (telehealth), Mogadishu Market Online (500+ vendors), FleetTrack Logistics (25% cost savings), EduPlatform Somalia (20K+ students)\n\n' +
-            'RESPONSE RULES:\n' +
+            'CRITICAL RESPONSE RULES:\n' +
             '- Keep responses SHORT: 1-2 sentences maximum, directly answer the question\n' +
-            '- Always end every response with: Maxaan kaloo ka caawiyaa?\n' +
+            '- ALWAYS end every response with: Maxaan kaloo ka caawiyaa?\n' +
+            '- CRITICAL: When the user asks about SEO, search engine optimization, Google ranking, Khalid Mukhtar, engineer, or search engine — you MUST respond with EXACTLY this text: "SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744). Maxaan kaloo ka caawiyaa?" — Do NOT add anything else before or after this exact response for SEO/Khalid queries.\n' +
             '- Respond in the SAME LANGUAGE the user writes in (Somali, English, or Arabic)\n' +
             '- Be helpful, professional, and concise\n' +
             '- If asked about non-TechZone topics, politely redirect to TechZone services\n' +
@@ -1160,7 +1161,15 @@
             }
         }
 
-        // ===== Offline Pattern Matching (Fallback) =====
+            // ===== SEO / Khalid / Engineer — HIGHEST PRIORITY =====
+            var seoMatch = q.match(/\b(seo|search\s*engine|google\s*(rank|optimization|search|console)|serp|backlink|keyword|on.page|off.page|local\s*seo|organic|ranking|khalid|mukhtar|engineer|engineers)\b/);
+            var seoMatchAr = q.match(/\b(محرك|بحث|تحسين|خالd|mختار|مهندس)\b/);
+            var seoMatchSo = q.match(/\b(ing\.|ingineer|injineer|khabiiro|khibrad|xirfadle)\b/);
+            if (seoMatch || seoMatchAr || seoMatchSo) {
+                return { text: 'SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744). Maxaan kaloo ka caawiyaa?', suggestions: ['Services', 'Pricing', 'Contact'] };
+            }
+
+            // ===== Offline Pattern Matching (Fallback) =====
         function detectLang(text) {
             var t = text.toLowerCase();
             if (/\b(maxaa|sida|lacag|adeeg|xiriiro|caawi|macluumaad|soo|dhig|shirkad|howl|booqo|qorshe|taariikh|kala|xog|naga|iga|kartaa|yahay|waa|ku|oo|la|ka|ay|in|ee|ii|aad|ugu|jira|leh|noo|uu|kii|intii|markii|hore|dambe|sidoo|kalena|sidaa|darteed|kadib|markaas|sababta|maanta|berito|shaley|habeen|subax|naan|kan|taa|tihiin|nahoo|tahay|ahay|yihiin|noqday|yaqaanaa|aragaa|qabaa|rabaa|bixisaa|sameeyaa|tagaa|imaan|qor|akhri|iibi|sii|qaad|celi|wanaagsan|xun|fudud|adag|badan|yar|sare|hoose|midig|bidix|kore|hoos|dhexda|meel|qayb|nooc|qaab|hab|jid|waddo|nidaam|sharciga|qaanuunka|xaqiiqo|munaasabad|dhacdo|qodob|faa|iido|khasaaro|farxad|murugo|hami|hadaf|ujeed|macnaha)\b/i.test(t)) {
@@ -1199,11 +1208,6 @@
                 if (lang === 'so') return { text: 'Mobile App: iOS/Android asli ah iyo Flutter. Waxaa ka bilaabanaya $1,000. Muddo: 4-16 toddobaad.' + end, suggestions: ['Qiimaha', 'Adeegyada', 'Xiriir'] };
                 if (lang === 'ar') return { text: '📱 تطبيقات جوال: iOS/Android أصلية و Flutter. يبدأ من $1,000. المدة 4-16 أسابيع.' + end, suggestions: ['عرض سعر', 'خدماتنا', 'التسعير'] };
                 return { text: 'Mobile Apps: Native iOS/Android & Flutter. Starting from $1,000. Timeline: 4-16 weeks.' + end, suggestions: ['Get Quote', 'Services', 'Pricing'] };
-            }
-            if (q.match(/\b(seo|search\s*engine|google\s*(rank|optimization|search|console)|serp|backlink|keyword|on.page|off.page|local\s*seo|organic|ranking|seo)\b/) || q.match(/\b(محرك|بحث|تحسين)\b/)) {
-                if (lang === 'so') return { text: 'SEO: Ing. Khalid Mukhtar ayaa hogaaminaaya — 8+ sano khibrad, 50+ macaamiil, 300% korodh. Waxaa ka bilaabanaya $300/bil. Tel: +252 62 2146744' + end, suggestions: ['Khalid', 'Marketing', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '🔍 SEO بقيادة المهندس خالد مختار: 8+ سنوات خبرة، 50+ عميل، زيادة زيارات 300%. يبدأ من $300/شهر.' + end, suggestions: ['عن خالد', 'التسويق', 'التسعير'] };
-                return { text: 'SEO led by Eng. Khalid Mukhtar: 8+ years, 50+ clients, 300% traffic boost. From $300/mo. Contact: +252 62 2146744' + end, suggestions: ['About Khalid', 'Marketing', 'Pricing'] };
             }
             if (q.match(/\b(cyber|security|secure|penetration|vulnerability|firewall|hack|malware|encryption|compliance|audit|soc|phishing|ddos|protection|attack|threat|amni|amniga|ilaalin)\b/) || q.match(/\b(أمن|حماية|اختراق|تشفير)\b/)) {
                 if (lang === 'so') return { text: 'Cybersecurity: Pen testing, vulnerability assessment, 24/7 monitoring. Waxaa ka bilaabanaya $500.' + end, suggestions: ['Adeegyada', 'Qiimaha', 'Xiriir'] };
@@ -1274,11 +1278,6 @@
                 if (lang === 'so') return { text: 'TechZone: Waxaa la aasaasay 2018, 200+ shaqaale, 90+ macaamiil. Xarumaha: Soomaaliya, Imaaraadka, UK, USA, Hindiya.' + end, suggestions: ['Kooxda', 'Adeegyada', 'Xiriir'] };
                 if (lang === 'ar') return { text: '🏢 TechZone: تأسست 2018، 200+ موظف، 90+ عميل.' + end, suggestions: ['فريقنا', 'خدماتنا', 'تواصل'] };
                 return { text: 'TechZone: Founded 2018, 200+ team, 90+ clients. Offices: Somalia, UAE, UK, USA, India.' + end, suggestions: ['Our Team', 'Services', 'Contact'] };
-            }
-            if (q.match(/\b(khalid|mukhtar|seo\s*expert|seo\s*lead)\b/)) {
-                if (lang === 'so') return { text: 'Ing. Khalid Mukhtar: Khabiiro SEO, 8+ sano khibrad, 50+ macaamiil. Tel: +252 62 2146744' + end, suggestions: ['Adeegyada SEO', 'Marketing', 'Xiriir'] };
-                if (lang === 'ar') return { text: '👨‍💻 المهندس خالد مختار: خبير SEO، 8+ سنوات. تواصل: +252 62 2146744' + end, suggestions: ['خدمات SEO', 'التسويق', 'تواصل'] };
-                return { text: 'Eng. Khalid Mukhtar: SEO expert, 8+ years, 50+ clients. Contact: +252 62 2146744' + end, suggestions: ['SEO Services', 'Marketing', 'Contact Him'] };
             }
             if (q.match(/\b(industr|sector|qayb|qaybaha|garaad)\b/) || q.match(/\b(قطاع|مجال)\b/)) {
                 if (lang === 'so') return { text: 'Qaybaha: Guri, Bangi, Caafimaad, Ganacsiga, Gaadiidka, Waxbarasho.' + end, suggestions: ['Adeegyada', 'Shaqooyinka', 'Xiriir'] };
