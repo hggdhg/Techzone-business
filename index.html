@@ -365,7 +365,9 @@
         .ai-chat-launcher {
             position: fixed; bottom: 20px; right: 20px; z-index: 99999;
             display: flex; align-items: center; gap: 0.8rem; cursor: pointer;
+            background: none; border: none; padding: 0; outline: none;
         }
+        .ai-chat-launcher:focus { outline: none; }
         .ai-chat-pill {
             display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1.4rem;
             background: rgba(10,10,15,0.95); border: 1px solid rgba(99,102,241,0.4); border-radius: 50px;
@@ -388,6 +390,7 @@
             content: ''; position: absolute; width: 64px; height: 64px; border-radius: 50%;
             background: linear-gradient(135deg, #6366f1, #a855f7);
             animation: aiRing 2s ease-out infinite; opacity: 0;
+            pointer-events: none;
         }
         @keyframes aiRing { 0%{transform:scale(1);opacity:0.4} 100%{transform:scale(1.8);opacity:0} }
         .ai-chat-btn:hover { transform: scale(1.12); box-shadow: 0 8px 35px rgba(99,102,241,0.6); }
@@ -717,7 +720,7 @@
     </div>
 
     <!-- AI CHATBOT -->
-    <button class="ai-chat-launcher" id="chatLauncher" onclick="toggleAiChat()" aria-label="Open AI Chat Assistant">
+    <button class="ai-chat-launcher" id="chatLauncher" type="button" aria-label="Open AI Chat Assistant">
         <div class="ai-chat-pill"><span class="ai-dot"></span><span data-en="Ask AI Assistant" data-ar="اسأل المساعد الذكي">Ask AI Assistant</span></div>
         <div class="ai-chat-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0">
@@ -937,12 +940,9 @@
         // ===== AI CHATBOT (Gemini-Powered) =====
         var chatOpen = false;
         var chatInitialized = false;
-        var GEMINI_API_KEY = '';
+        var GEMINI_API_KEY = 'AIzaSyDw_Rz0nRpT5lVUaV9_iN6VL5c7IqeVkQP6-XB07pRrsrM8RWA';
         var chatHistory = [];
-        var geminiReady = false;
-
-        try { GEMINI_API_KEY = localStorage.getItem('tz_gemini_key') || ''; } catch(e) {}
-        geminiReady = !!GEMINI_API_KEY;
+        var geminiReady = true;
 
         var TECHZONE_SYSTEM_PROMPT = 'You are TechZone AI Assistant — a smart, friendly chatbot for TechZone Business Solutions, a leading tech company in Somalia.\n\n' +
             'KEY FACTS ABOUT TECHZONE:\n' +
@@ -976,7 +976,7 @@
         }
 
         function initChat() {
-            var status = geminiReady ? '🟢 Gemini AI Connected' : '⚡ Offline Mode (type /setkey to enable AI)';
+            var status = '🟢 Gemini AI Connected';
             var greeting;
             var suggestions;
             if (currentLang === 'ar') {
@@ -1105,7 +1105,7 @@
                     GEMINI_API_KEY = key.trim();
                     try { localStorage.setItem('tz_gemini_key', GEMINI_API_KEY); } catch(e) {}
                     geminiReady = true;
-                    addBotMsg('✅ Gemini AI connected! I can now answer any question intelligently.\n\nMaxaan kaloo ka caawiyaa?');
+                    addBotMsg('✅ Gemini AI connected with new key!\n\nMaxaan kaloo ka caawiyaa?');
                     showSuggestions(currentLang === 'ar' ? ['خدماتنا', 'SEO', 'التسعير'] : ['Services', 'SEO', 'Pricing']);
                 } else {
                     addBotMsg('No key entered. You can try again anytime with /setkey.\n\nMaxaan kaloo ka caawiyaa?');
@@ -1113,16 +1113,15 @@
                 return;
             }
             if (lower === '/clearkey' || lower === '/reset') {
-                GEMINI_API_KEY = '';
-                geminiReady = false;
+                GEMINI_API_KEY = 'AIzaSyDw_Rz0nRpT5lVUaV9_iN6VL5c7IqeVkQP6-XB07pRrsrM8RWA';
+                geminiReady = true;
                 chatHistory = [];
-                try { localStorage.removeItem('tz_gemini_key'); } catch(e) {}
-                addBotMsg('🔑 API key removed. Back to offline mode.\n\nMaxaan kaloo ka caawiyaa?');
+                addBotMsg('🔑 Reset to embedded key. Gemini AI is active.\n\nMaxaan kaloo ka caawiyaa?');
                 showSuggestions(currentLang === 'ar' ? ['خدماتنا', 'SEO'] : ['Services', 'SEO']);
                 return;
             }
             if (lower === '/status') {
-                var s = geminiReady ? '✅ Gemini AI is connected and active.' : '⚡ Offline mode. Type /setkey to enable AI.';
+                var s = '✅ Gemini AI is connected and active (embedded key).\n\nModel: gemini-2.0-flash';
                 addBotMsg(s + '\n\nMaxaan kaloo ka caawiyaa?');
                 return;
             }
@@ -1365,6 +1364,18 @@
             if (lang === 'ar') return { text: 'لم أفهم تماماً. جرّب أن تسأل عن: خدماتنا، التسعير، SEO، التواصل معنا.' + end, suggestions: ['خدماتنا', 'التسعير', 'SEO', 'تواصل'] };
             return { text: "I didn't quite understand. Try asking about: our services, pricing, SEO, contact, or about us." + end, suggestions: ['Services', 'Pricing', 'SEO', 'Contact'] };
         }
+
+        // ===== Attach Chat Button Event Listener =====
+        document.addEventListener('DOMContentLoaded', function() {
+            var btn = document.getElementById('chatLauncher');
+            if (btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleAiChat();
+                });
+            }
+        });
     </script>
 </body>
 </html>
