@@ -645,7 +645,7 @@
                 <div class="engineer-status"><span class="pulse-green"></span> <span data-en="Available" data-ar="متاح">Available</span></div>
             </div>
             <div class="engineer-info">
-                <h3 class="engineer-name">Engineer Khalid Mukhtar</h3>
+                <h3 class="engineer-name"><span data-en="Engineer Khalid Mukhtar" data-ar="المهندس خالد مختار">Engineer Khalid Mukhtar</span></h3>
                 <p class="engineer-title" data-en="Senior SEO & Digital Marketing Specialist" data-ar="خبير SEO والتسويق الرقمي Senior">Senior SEO & Digital Marketing Specialist</p>
                 <div class="engineer-tags">
                     <span class="eng-tag">Technical SEO</span>
@@ -712,7 +712,7 @@
     <div class="footer-credit">
         <div class="credit-line">
             <span data-en="Engineered & Designed by" data-ar="تم التصميم والهندسة بواسطة">Engineered & Designed by</span>
-            <a href="https://wa.me/252622146744" target="_blank"> Engineer Khalid Mukhtar</a>
+            <a href="https://wa.me/252622146744" target="_blank"><span data-en="Engineer Khalid Mukhtar" data-ar="المهندس خالد مختار">Engineer Khalid Mukhtar</span></a>
         </div>
         <div class="credit-engineer">
             <span data-en="SEO & Digital Marketing Lead" data-ar="قائد SEO والتسويق الرقمي">SEO & Digital Marketing Lead</span> &bull; TechZone Business Solutions
@@ -1180,6 +1180,7 @@
             var seoMatchAr = q.match(/\b(محرك|بحث|تحسين|خال|mختار|مهندس)\b/);
             var seoMatchSo = q.match(/\b(ing\.|ingineer|injineer|khabiiro|khibrad|xirfadle)\b/);
             if (seoMatch || seoMatchAr || seoMatchSo) {
+                if (lang === 'ar') return { text: 'خدمات SEO بقيادة المهندس خالد مختار (+252 62 2146744). Maxaan kaloo ka caawiyaa?', suggestions: ['الخدمات', 'التسعير', 'تواصل'] };
                 return { text: 'SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744). Maxaan kaloo ka caawiyaa?', suggestions: ['Services', 'Pricing', 'Contact'] };
             }
 
