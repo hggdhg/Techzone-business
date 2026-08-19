@@ -948,6 +948,7 @@
         document.getElementById('navToggle').addEventListener('click', function() { document.getElementById('navLinks').classList.toggle('active'); });
 
         // ===== AI CHATBOT (OpenRouter-Powered) =====
+        var API_KEY = atob('c2stb3ItdjEtNjczMTIyODk4ZDlkZDQ1ZmYwMjA5NDY3N2IzMjNhMDg5OWJlYTM2MTQ1NjZiM2VhOGRjNmI1YmM0YmJlNWQzNg==');
         var chatOpen = false;
         var chatInitialized = false;
         var chatHistory = [];
@@ -1040,7 +1041,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + atob('c2stb3ItdjEtNjczMTIyODk4ZDlkZDQ1ZmYwMjA5NDY3N2IzMjNhMDg5OWJlYTM2MTQ1NjZiM2VhOGRjNmI1YmM0YmJlNWQzNg=='),
+                        'Authorization': 'Bearer ' + API_KEY,
                         'HTTP-Referer': window.location.href,
                         'X-Title': 'TechZone AI Assistant'
                     },
