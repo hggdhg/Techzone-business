@@ -1038,7 +1038,7 @@
                 if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
 
                 var requestBody = {
-                    model: 'google/gemma-4-31b-it:free',
+                    model: 'google/gemini-2.0-flash-exp:free',
                     messages: [
                         { role: 'system', content: SYSTEM_PROMPT }
                     ].concat(chatHistory),
@@ -1115,7 +1115,7 @@
                 return;
             }
             if (lower === '/status') {
-                addBotMsg('✅ OpenRouter AI connected — google/gemma-4-31b-it:free. Maxaan kaloo ka caawiyaa?');
+                addBotMsg('✅ OpenRouter AI connected — google/gemini-2.0-flash-exp:free. Maxaan kaloo ka caawiyaa?');
                 return;
             }
 
