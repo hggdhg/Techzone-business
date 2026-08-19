@@ -494,17 +494,6 @@
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
 
-        .chat-suggestions {
-            display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0 0.5rem 0.5rem;
-        }
-        .chat-sug-btn {
-            padding: 0.35rem 0.75rem; border-radius: 50px; font-size: 0.72rem; font-weight: 500;
-            background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2);
-            color: #a5b4fc; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;
-            font-family: 'Inter', 'Cairo', sans-serif;
-        }
-        .chat-sug-btn:hover { background: rgba(99,102,241,0.2); border-color: rgba(99,102,241,0.4); }
-
         .chat-input-area {
             display: flex; align-items: center; gap: 0.5rem;
             padding: 0.8rem 1rem; border-top: 1px solid rgba(255,255,255,0.06);
@@ -765,7 +754,6 @@
             <button class="chat-close" onclick="toggleAiChat()">&times;</button>
         </div>
         <div class="chat-body" id="chatBody"></div>
-        <div class="chat-suggestions" id="chatSuggestions"></div>
         <div class="chat-input-area">
             <input class="chat-input" id="chatInput" data-placeholder-en="Ask me anything about TechZone..." data-placeholder-ar="اسألني أي شيء عن تك زون..." placeholder="Ask me anything about TechZone..." onkeydown="if(event.key==='Enter')sendAiMsg()">
             <button class="chat-send" onclick="sendAiMsg()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
@@ -966,26 +954,22 @@
         var chatHistory = [];
         var geminiReady = true;
 
-        var TECHZONE_SYSTEM_PROMPT = 'You are TechZone AI Assistant — a smart, friendly, bilingual (Somali & English) chatbot for TechZone Business Solutions, a leading tech company in Somalia. You understand Somali (af-Soomaali), English, and Arabic fluently.\n\n' +
-            'KEY FACTS ABOUT TECHZONE:\n' +
-            '- Founded 2018 | 200+ team | 90+ clients | 100+ projects delivered\n' +
-            '- HQ: Mogadishu, Somalia. Also: Dubai, London, New York, Bangalore\n' +
-            '- Contact: WhatsApp +252 62 2146744 | Email: info@techzone.so | Web: hggdhg.github.io/Techzone-business\n' +
-            '- CEO/Founder: Eng. Khalid Mukhtar — SEO & Digital Marketing Lead, 8+ years experience, 50+ clients ranked #1 on Google, 300% traffic increase. His name in Arabic is المهندس خالد مختار.\n\n' +
-            'SERVICES: Web Development (React, Next.js, Vue.js from $500), Mobile Apps (iOS/Android/Flutter from $1,000), Enterprise Solutions (ERP/CRM from $2,000), AI & Automation (from $400), Cloud & DevOps (AWS, Azure, GCP from $50/mo), Cybersecurity (pen testing, monitoring from $500), Digital Marketing & SEO (from $300/mo), IT Consulting (free first consultation)\n\n' +
-            'PRODUCTS: TechZone ERP ($2,000+), TechZone CRM ($500+), TechZone Commerce ($1,500+), TechZone Scheduler ($300+), TechZone Analytics ($400+), TechZone Guard ($200/mo)\n\n' +
-            'INDUSTRIES: Real Estate, Banking & Finance, Healthcare, Retail & E-Commerce, Transport & Logistics, Education\n\n' +
-            'CASE STUDIES: Somali Property Hub (10K+ listings), PaySom Digital Banking (500K+ users), HealthConnect (telehealth), Mogadishu Market Online (500+ vendors), FleetTrack Logistics (25% cost savings), EduPlatform Somalia (20K+ students)\n\n' +
-            'CRITICAL RESPONSE RULES:\n' +
-            '- Read the FULL user query carefully and understand exactly what they are asking. Give a direct, natural, human-like response specifically tailored to their question.\n' +
-            '- Keep responses SHORT: 1-2 sentences maximum, directly answer the question.\n' +
-            '- ALWAYS end every single response with: Maxaan kaloo ka caawiyaa?\n' +
-            '- CRITICAL: When the user asks about SEO, search engine optimization, Google ranking, Khalid Mukhtar, engineer, or search engine — respond with: "SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744). Maxaan kaloo ka caawiyaa?"\n' +
-            '- Respond in the SAME LANGUAGE the user writes in. If they write in Somali, respond in Somali. If they write in English, respond in English. If they write in Arabic, respond in Arabic.\n' +
-            '- Be helpful, professional, and natural — like a real human assistant.\n' +
-            '- If asked about non-TechZone topics, politely redirect to TechZone services.\n' +
-            '- Never fabricate information — only use the facts provided above.\n' +
-            '- Use emojis sparingly for friendliness.';
+        var TECHZONE_SYSTEM_PROMPT = 'You are TechZone AI. You are a real, intelligent assistant for TechZone Business Solutions — a leading tech company in Somalia. You answer the user\'s specific question naturally in Somali or English (or Arabic if they write in Arabic). Never reply with template options or lists unless specifically asked. Be concise, direct, and human-like.\n\n' +
+            'FACTS:\n' +
+            '- Founded 2018 | 200+ team | 90+ clients | 100+ projects | HQ: Mogadishu, Somalia + Dubai, London, New York, Bangalore\n' +
+            '- Contact: WhatsApp +252 62 2146744 | Email: info@techzone.so\n' +
+            '- CEO/Founder: Eng. Khalid Mukhtar (المهندس خالد مختار) — SEO & Digital Marketing Lead, 8+ years, 50+ clients, 300% traffic boost\n' +
+            '- Services: Web Dev ($500+), Mobile Apps ($1,000+), ERP/CRM ($2,000+), AI ($400+), Cloud ($50/mo), Cybersecurity ($500+), SEO & Marketing ($300/mo), IT Consulting (free)\n' +
+            '- Products: TechZone ERP, CRM, Commerce, Scheduler, Analytics, Guard\n' +
+            '- Industries: Real Estate, Banking, Healthcare, Retail, Transport, Education\n' +
+            '- Case Studies: Somali Property Hub, PaySom Banking, HealthConnect, Mogadishu Market, FleetTrack, EduPlatform\n\n' +
+            'RULES:\n' +
+            '- Read the user\'s exact question. Answer it directly and naturally. Do NOT give template lists or multiple choice.\n' +
+            '- When asked about SEO, Google ranking, search engine, Khalid, or engineer — respond: "SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744)."\n' +
+            '- ALWAYS end EVERY response with: Maxaan kaloo ka caawiyaa?\n' +
+            '- Match the user\'s language: Somali in → Somali out. English in → English out. Arabic in → Arabic out.\n' +
+            '- If you don\'t know something, say so honestly and redirect to WhatsApp +252 62 2146744.\n' +
+            '- Never fabricate. Never give long lists. Be short, specific, and helpful.';
 
         function toggleAiChat() {
             chatOpen = !chatOpen;
@@ -999,18 +983,11 @@
         }
 
         function initChat() {
-            var status = '🟢 Gemini AI Connected';
-            var greeting;
-            var suggestions;
             if (currentLang === 'ar') {
-                greeting = 'مرحباً! 👋 أنا مساعد تك زون الذكي. ' + status;
-                suggestions = ['خدماتنا', 'التسعير', 'SEO', 'تواصل معنا'];
+                addBotMsg('مرحباً! 👋 أنا TechZone AI. اسألني أي شيء. Maxaan kaloo ka caawiyaa?');
             } else {
-                greeting = 'Kaali! 👋 Waxaan ahay TechZone AI Assistant. ' + status;
-                suggestions = ['Adeegyada', 'Qiimaha', 'SEO', 'Xiriir'];
+                addBotMsg('Kaali! 👋 Waxaan ahay TechZone AI. Wax walba i weydiin kartaa. Maxaan kaloo ka caawiyaa?');
             }
-            addBotMsg(greeting);
-            showSuggestions(suggestions);
         }
 
         function addBotMsg(text) {
@@ -1046,24 +1023,11 @@
             if (el) el.remove();
         }
 
-        function showSuggestions(suggestions) {
-            var container = document.getElementById('chatSuggestions');
-            container.innerHTML = '';
-            suggestions.forEach(function(s) {
-                var btn = document.createElement('button');
-                btn.className = 'chat-sug-btn';
-                btn.textContent = s;
-                btn.onclick = function() { handleUserInput(s); };
-                container.appendChild(btn);
-            });
-        }
-
         function sendAiMsg() {
             var input = document.getElementById('chatInput');
             var text = input.value.trim();
             if (!text) return;
             input.value = '';
-            document.getElementById('chatSuggestions').innerHTML = '';
             handleUserInput(text);
         }
 
@@ -1128,10 +1092,9 @@
                     GEMINI_API_KEY = key.trim();
                     try { localStorage.setItem('tz_gemini_key', GEMINI_API_KEY); } catch(e) {}
                     geminiReady = true;
-                    addBotMsg('✅ Gemini AI connected with new key!\n\nMaxaan kaloo ka caawiyaa?');
-                    showSuggestions(currentLang === 'ar' ? ['خدماتنا', 'SEO', 'التسعير'] : ['Services', 'SEO', 'Pricing']);
+                    addBotMsg('✅ Gemini AI connected with new key! Maxaan kaloo ka caawiyaa?');
                 } else {
-                    addBotMsg('No key entered. You can try again anytime with /setkey.\n\nMaxaan kaloo ka caawiyaa?');
+                    addBotMsg('No key entered. You can try again anytime with /setkey. Maxaan kaloo ka caawiyaa?');
                 }
                 return;
             }
@@ -1139,32 +1102,26 @@
                 GEMINI_API_KEY = 'AIzaSyDw_Rz0nRpT5lVUaV9_iN6VL5c7IqeVkQP6-XB07pRrsrM8RWA';
                 geminiReady = true;
                 chatHistory = [];
-                addBotMsg('🔑 Reset to embedded key. Gemini AI is active.\n\nMaxaan kaloo ka caawiyaa?');
-                showSuggestions(currentLang === 'ar' ? ['خدماتنا', 'SEO'] : ['Services', 'SEO']);
+                addBotMsg('🔑 Reset to embedded key. Maxaan kaloo ka caawiyaa?');
                 return;
             }
             if (lower === '/status') {
-                var s = '✅ Gemini AI is connected and active (embedded key).\n\nModel: gemini-2.0-flash';
-                addBotMsg(s + '\n\nMaxaan kaloo ka caawiyaa?');
+                addBotMsg('✅ Gemini AI connected — model: gemini-2.0-flash. Maxaan kaloo ka caawiyaa?');
                 return;
             }
             if (lower === '/clear' || lower === '/new') {
                 chatHistory = [];
-                addBotMsg('🔄 Conversation reset. Fresh start!\n\nMaxaan kaloo ka caawiyaa?');
-                showSuggestions(currentLang === 'ar' ? ['خدماتنا', 'SEO', 'التسعير'] : ['Services', 'SEO', 'Pricing']);
+                addBotMsg('🔄 Conversation reset. Maxaan kaloo ka caawiyaa?');
                 return;
             }
 
             showTyping();
-
             var geminiResponse = await callGemini(text);
             hideTyping();
             if (geminiResponse) {
                 addBotMsg(geminiResponse);
-                showSuggestions(currentLang === 'ar' ? ['خدماتنا', 'SEO', 'التسعير', 'تواصل'] : ['Services', 'SEO', 'Pricing', 'Contact']);
             } else {
-                addBotMsg('Waan ka xumahay, AI-ygu ma shaqaynayo hadda. Fadlan isku day mar kale.\n\nMaxaan kaloo ka caawiyaa?');
-                showSuggestions(currentLang === 'ar' ? ['خدماتنا', 'التسعير'] : ['Services', 'Pricing']);
+                addBotMsg('Waan ka xumahay, AI-ygu ma shaqaynayo hadda. Fadlan isku day mar kale. Maxaan kaloo ka caawiyaa?');
             }
         }
 
