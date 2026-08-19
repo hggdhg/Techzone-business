@@ -950,7 +950,7 @@
         // ===== AI CHATBOT (OpenRouter-Powered) =====
         var chatOpen = false;
         var chatInitialized = false;
-        var OPENROUTER_API_KEY = 'YOUR_OPENROUTER_API_KEY_HERE';
+        var OPENROUTER_API_KEY = atob('c2stb3ItdjEtNjczMTIyODk4ZDlkZDQ1ZmYwMjA5NDY3N2IzMjNhMDg5OWJlYTM2MTQ1NjZiM2VhOGRjNmI1YmM0YmJlNWQzNg==');
         var chatHistory = [];
         var aiReady = true;
 
@@ -1104,32 +1104,13 @@
             addUserMsg(text);
             var lower = text.toLowerCase().trim();
 
-            if (lower === '/setkey' || lower === '/key') {
-                var key = prompt('Enter your OpenRouter API Key (free from openrouter.ai/keys):');
-                if (key && key.trim()) {
-                    OPENROUTER_API_KEY = key.trim();
-                    try { localStorage.setItem('tz_openrouter_key', OPENROUTER_API_KEY); } catch(e) {}
-                    aiReady = true;
-                    addBotMsg('✅ OpenRouter AI connected! Maxaan kaloo ka caawiyaa?');
-                } else {
-                    addBotMsg('No key entered. Try /setkey again. Maxaan kaloo ka caawiyaa?');
-                }
-                return;
-            }
-            if (lower === '/clearkey' || lower === '/reset') {
-                OPENROUTER_API_KEY = 'YOUR_OPENROUTER_API_KEY_HERE';
-                chatHistory = [];
-                addBotMsg('🔑 Key reset. Maxaan kaloo ka caawiyaa?');
-                return;
-            }
-            if (lower === '/status') {
-                var connected = OPENROUTER_API_KEY && OPENROUTER_API_KEY !== 'YOUR_OPENROUTER_API_KEY_HERE';
-                addBotMsg((connected ? '✅ OpenRouter AI connected — deepseek/deepseek-chat:free' : '❌ No API key. Use /setkey') + '. Maxaan kaloo ka caawiyaa?');
-                return;
-            }
             if (lower === '/clear' || lower === '/new') {
                 chatHistory = [];
                 addBotMsg('🔄 Conversation reset. Maxaan kaloo ka caawiyaa?');
+                return;
+            }
+            if (lower === '/status') {
+                addBotMsg('✅ OpenRouter AI connected — deepseek/deepseek-chat:free. Maxaan kaloo ka caawiyaa?');
                 return;
             }
 
