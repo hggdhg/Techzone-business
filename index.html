@@ -947,14 +947,14 @@
         window.addEventListener('scroll', function() { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50); });
         document.getElementById('navToggle').addEventListener('click', function() { document.getElementById('navLinks').classList.toggle('active'); });
 
-        // ===== AI CHATBOT (Gemini-Powered) =====
+        // ===== AI CHATBOT (OpenRouter-Powered) =====
         var chatOpen = false;
         var chatInitialized = false;
-        var GEMINI_API_KEY = 'AIzaSyDw_Rz0nRpT5lVUaV9_iN6VL5c7IqeVkQP6-XB07pRrsrM8RWA';
+        var OPENROUTER_API_KEY = 'YOUR_OPENROUTER_API_KEY_HERE';
         var chatHistory = [];
-        var geminiReady = true;
+        var aiReady = true;
 
-        var TECHZONE_SYSTEM_PROMPT = 'You are TechZone AI. You are a real, intelligent assistant for TechZone Business Solutions — a leading tech company in Somalia. You answer the user\'s specific question naturally in Somali or English (or Arabic if they write in Arabic). Never reply with template options or lists unless specifically asked. Be concise, direct, and human-like.\n\n' +
+        var SYSTEM_PROMPT = 'You are TechZone AI — a high-IQ, intelligent assistant for TechZone Business Solutions, a leading tech company in Somalia. You understand Somali (af-Soomaali) and English fluently. You also understand Arabic.\n\n' +
             'FACTS:\n' +
             '- Founded 2018 | 200+ team | 90+ clients | 100+ projects | HQ: Mogadishu, Somalia + Dubai, London, New York, Bangalore\n' +
             '- Contact: WhatsApp +252 62 2146744 | Email: info@techzone.so\n' +
@@ -964,12 +964,13 @@
             '- Industries: Real Estate, Banking, Healthcare, Retail, Transport, Education\n' +
             '- Case Studies: Somali Property Hub, PaySom Banking, HealthConnect, Mogadishu Market, FleetTrack, EduPlatform\n\n' +
             'RULES:\n' +
-            '- Read the user\'s exact question. Answer it directly and naturally. Do NOT give template lists or multiple choice.\n' +
+            '- Read the user\'s exact question carefully. Answer it directly, naturally, and intelligently. Do NOT give template lists or multiple choice unless asked.\n' +
             '- When asked about SEO, Google ranking, search engine, Khalid, or engineer — respond: "SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744)."\n' +
             '- ALWAYS end EVERY response with: Maxaan kaloo ka caawiyaa?\n' +
             '- Match the user\'s language: Somali in → Somali out. English in → English out. Arabic in → Arabic out.\n' +
+            '- Be smart, concise, and helpful — like a high-IQ human assistant.\n' +
             '- If you don\'t know something, say so honestly and redirect to WhatsApp +252 62 2146744.\n' +
-            '- Never fabricate. Never give long lists. Be short, specific, and helpful.';
+            '- Never fabricate. Never give long lists. Be short, specific, and sharp.';
 
         function toggleAiChat() {
             chatOpen = !chatOpen;
@@ -1031,65 +1032,68 @@
             handleUserInput(text);
         }
 
-        // ===== Gemini API Call =====
-        async function callGemini(userMessage) {
-            if (!GEMINI_API_KEY) {
-                console.warn('Gemini: No API key set');
+        // ===== OpenRouter API Call =====
+        async function callOpenRouter(userMessage) {
+            if (!OPENROUTER_API_KEY || OPENROUTER_API_KEY === 'YOUR_OPENROUTER_API_KEY_HERE') {
+                console.warn('OpenRouter: No API key set');
                 return null;
             }
             try {
-                chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
+                chatHistory.push({ role: 'user', content: userMessage });
                 if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
 
                 var requestBody = {
-                    contents: chatHistory,
-                    systemInstruction: { parts: [{ text: TECHZONE_SYSTEM_PROMPT }] },
-                    generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 1024,
-                        topP: 0.95
-                    }
+                    model: 'deepseek/deepseek-chat:free',
+                    messages: [
+                        { role: 'system', content: SYSTEM_PROMPT }
+                    ].concat(chatHistory),
+                    max_tokens: 1024,
+                    temperature: 0.7
                 };
 
-                var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY;
-                var response = await fetch(url, {
+                var response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + OPENROUTER_API_KEY,
+                        'HTTP-Referer': window.location.href,
+                        'X-Title': 'TechZone AI Assistant'
+                    },
                     body: JSON.stringify(requestBody)
                 });
 
                 if (!response.ok) {
                     var errBody = await response.text();
-                    console.error('Gemini API HTTP error:', response.status, response.statusText, errBody);
+                    console.error('OpenRouter HTTP error:', response.status, response.statusText, errBody);
                     chatHistory.pop();
                     return null;
                 }
 
                 var data = await response.json();
-                console.log('Gemini response:', data);
+                console.log('OpenRouter response:', data);
 
                 if (data.error) {
-                    console.error('Gemini API error in response:', data.error);
+                    console.error('OpenRouter API error:', data.error);
                     chatHistory.pop();
                     return null;
                 }
 
-                var botText = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
+                var botText = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
 
                 if (botText) {
                     botText = botText.trim();
                     if (botText.indexOf('Maxaan kaloo ka caawiyaa?') === -1) {
                         botText = botText + '\n\nMaxaan kaloo ka caawiyaa?';
                     }
-                    chatHistory.push({ role: 'model', parts: [{ text: botText }] });
+                    chatHistory.push({ role: 'assistant', content: botText });
                     return botText;
                 }
 
-                console.warn('Gemini returned no text candidates:', data);
+                console.warn('OpenRouter returned no content:', data);
                 chatHistory.pop();
                 return null;
             } catch(e) {
-                console.error('Gemini fetch failed:', e.name, e.message, e);
+                console.error('OpenRouter fetch failed:', e.name, e.message, e);
                 if (chatHistory.length && chatHistory[chatHistory.length-1].role === 'user') chatHistory.pop();
                 return null;
             }
@@ -1100,28 +1104,27 @@
             addUserMsg(text);
             var lower = text.toLowerCase().trim();
 
-            // Chat commands
             if (lower === '/setkey' || lower === '/key') {
-                var key = prompt('Enter your Gemini API Key (free from aistudio.google.com):');
+                var key = prompt('Enter your OpenRouter API Key (free from openrouter.ai/keys):');
                 if (key && key.trim()) {
-                    GEMINI_API_KEY = key.trim();
-                    try { localStorage.setItem('tz_gemini_key', GEMINI_API_KEY); } catch(e) {}
-                    geminiReady = true;
-                    addBotMsg('✅ Gemini AI connected with new key! Maxaan kaloo ka caawiyaa?');
+                    OPENROUTER_API_KEY = key.trim();
+                    try { localStorage.setItem('tz_openrouter_key', OPENROUTER_API_KEY); } catch(e) {}
+                    aiReady = true;
+                    addBotMsg('✅ OpenRouter AI connected! Maxaan kaloo ka caawiyaa?');
                 } else {
-                    addBotMsg('No key entered. You can try again anytime with /setkey. Maxaan kaloo ka caawiyaa?');
+                    addBotMsg('No key entered. Try /setkey again. Maxaan kaloo ka caawiyaa?');
                 }
                 return;
             }
             if (lower === '/clearkey' || lower === '/reset') {
-                GEMINI_API_KEY = 'AIzaSyDw_Rz0nRpT5lVUaV9_iN6VL5c7IqeVkQP6-XB07pRrsrM8RWA';
-                geminiReady = true;
+                OPENROUTER_API_KEY = 'YOUR_OPENROUTER_API_KEY_HERE';
                 chatHistory = [];
-                addBotMsg('🔑 Reset to embedded key. Maxaan kaloo ka caawiyaa?');
+                addBotMsg('🔑 Key reset. Maxaan kaloo ka caawiyaa?');
                 return;
             }
             if (lower === '/status') {
-                addBotMsg('✅ Gemini AI connected — model: gemini-2.0-flash. Maxaan kaloo ka caawiyaa?');
+                var connected = OPENROUTER_API_KEY && OPENROUTER_API_KEY !== 'YOUR_OPENROUTER_API_KEY_HERE';
+                addBotMsg((connected ? '✅ OpenRouter AI connected — deepseek/deepseek-chat:free' : '❌ No API key. Use /setkey') + '. Maxaan kaloo ka caawiyaa?');
                 return;
             }
             if (lower === '/clear' || lower === '/new') {
@@ -1131,10 +1134,10 @@
             }
 
             showTyping();
-            var geminiResponse = await callGemini(text);
+            var aiResponse = await callOpenRouter(text);
             hideTyping();
-            if (geminiResponse) {
-                addBotMsg(geminiResponse);
+            if (aiResponse) {
+                addBotMsg(aiResponse);
             } else {
                 addBotMsg('Waan ka xumahay, AI-ygu ma shaqaynayo hadda. Fadlan isku day mar kale. Maxaan kaloo ka caawiyaa?');
             }
