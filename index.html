@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -966,25 +966,26 @@
         var chatHistory = [];
         var geminiReady = true;
 
-        var TECHZONE_SYSTEM_PROMPT = 'You are TechZone AI Assistant — a smart, friendly chatbot for TechZone Business Solutions, a leading tech company in Somalia.\n\n' +
+        var TECHZONE_SYSTEM_PROMPT = 'You are TechZone AI Assistant — a smart, friendly, bilingual (Somali & English) chatbot for TechZone Business Solutions, a leading tech company in Somalia. You understand Somali (af-Soomaali), English, and Arabic fluently.\n\n' +
             'KEY FACTS ABOUT TECHZONE:\n' +
             '- Founded 2018 | 200+ team | 90+ clients | 100+ projects delivered\n' +
             '- HQ: Mogadishu, Somalia. Also: Dubai, London, New York, Bangalore\n' +
             '- Contact: WhatsApp +252 62 2146744 | Email: info@techzone.so | Web: hggdhg.github.io/Techzone-business\n' +
-            '- CEO/Founder: Eng. Khalid Mukhtar — SEO & Digital Marketing Lead, 8+ years experience, 50+ clients ranked #1 on Google, 300% traffic increase\n\n' +
+            '- CEO/Founder: Eng. Khalid Mukhtar — SEO & Digital Marketing Lead, 8+ years experience, 50+ clients ranked #1 on Google, 300% traffic increase. His name in Arabic is المهندس خالد مختار.\n\n' +
             'SERVICES: Web Development (React, Next.js, Vue.js from $500), Mobile Apps (iOS/Android/Flutter from $1,000), Enterprise Solutions (ERP/CRM from $2,000), AI & Automation (from $400), Cloud & DevOps (AWS, Azure, GCP from $50/mo), Cybersecurity (pen testing, monitoring from $500), Digital Marketing & SEO (from $300/mo), IT Consulting (free first consultation)\n\n' +
             'PRODUCTS: TechZone ERP ($2,000+), TechZone CRM ($500+), TechZone Commerce ($1,500+), TechZone Scheduler ($300+), TechZone Analytics ($400+), TechZone Guard ($200/mo)\n\n' +
             'INDUSTRIES: Real Estate, Banking & Finance, Healthcare, Retail & E-Commerce, Transport & Logistics, Education\n\n' +
             'CASE STUDIES: Somali Property Hub (10K+ listings), PaySom Digital Banking (500K+ users), HealthConnect (telehealth), Mogadishu Market Online (500+ vendors), FleetTrack Logistics (25% cost savings), EduPlatform Somalia (20K+ students)\n\n' +
             'CRITICAL RESPONSE RULES:\n' +
-            '- Keep responses SHORT: 1-2 sentences maximum, directly answer the question\n' +
-            '- ALWAYS end every response with: Maxaan kaloo ka caawiyaa?\n' +
-            '- CRITICAL: When the user asks about SEO, search engine optimization, Google ranking, Khalid Mukhtar, engineer, or search engine — you MUST respond with EXACTLY this text: "SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744). Maxaan kaloo ka caawiyaa?" — Do NOT add anything else before or after this exact response for SEO/Khalid queries.\n' +
-            '- Respond in the SAME LANGUAGE the user writes in (Somali, English, or Arabic)\n' +
-            '- Be helpful, professional, and concise\n' +
-            '- If asked about non-TechZone topics, politely redirect to TechZone services\n' +
-            '- Never fabricate information — only use the facts above\n' +
-            '- Use emojis sparingly for friendliness';
+            '- Read the FULL user query carefully and understand exactly what they are asking. Give a direct, natural, human-like response specifically tailored to their question.\n' +
+            '- Keep responses SHORT: 1-2 sentences maximum, directly answer the question.\n' +
+            '- ALWAYS end every single response with: Maxaan kaloo ka caawiyaa?\n' +
+            '- CRITICAL: When the user asks about SEO, search engine optimization, Google ranking, Khalid Mukhtar, engineer, or search engine — respond with: "SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744). Maxaan kaloo ka caawiyaa?"\n' +
+            '- Respond in the SAME LANGUAGE the user writes in. If they write in Somali, respond in Somali. If they write in English, respond in English. If they write in Arabic, respond in Arabic.\n' +
+            '- Be helpful, professional, and natural — like a real human assistant.\n' +
+            '- If asked about non-TechZone topics, politely redirect to TechZone services.\n' +
+            '- Never fabricate information — only use the facts provided above.\n' +
+            '- Use emojis sparingly for friendliness.';
 
         function toggleAiChat() {
             chatOpen = !chatOpen;
@@ -1155,237 +1156,16 @@
             }
 
             showTyping();
-            var delay = 500 + Math.random() * 700;
 
-            // Try Gemini API first
-            if (geminiReady) {
-                var geminiResponse = await callGemini(text);
-                setTimeout(function() {
-                    hideTyping();
-                    if (geminiResponse) {
-                        addBotMsg(geminiResponse);
-                        showSuggestions(currentLang === 'ar' ? ['خدماتنا', 'SEO', 'التسعير', 'تواصل'] : ['Services', 'SEO', 'Pricing', 'Contact']);
-                    } else {
-                        var fallback = getAiResponse(text);
-                        addBotMsg(fallback.text);
-                        if (fallback.suggestions) showSuggestions(fallback.suggestions);
-                    }
-                }, delay);
+            var geminiResponse = await callGemini(text);
+            hideTyping();
+            if (geminiResponse) {
+                addBotMsg(geminiResponse);
+                showSuggestions(currentLang === 'ar' ? ['خدماتنا', 'SEO', 'التسعير', 'تواصل'] : ['Services', 'SEO', 'Pricing', 'Contact']);
             } else {
-                // Offline pattern matching
-                setTimeout(function() {
-                    hideTyping();
-                    var response = getAiResponse(text);
-                    addBotMsg(response.text);
-                    if (response.suggestions) showSuggestions(response.suggestions);
-                }, delay);
+                addBotMsg('Waan ka xumahay, AI-ygu ma shaqaynayo hadda. Fadlan isku day mar kale.\n\nMaxaan kaloo ka caawiyaa?');
+                showSuggestions(currentLang === 'ar' ? ['خدماتنا', 'التسعير'] : ['Services', 'Pricing']);
             }
-        }
-
-            // ===== Offline Pattern Matching (Fallback) =====
-        function detectLang(text) {
-            var t = text.toLowerCase();
-            if (/\b(maxaa|sida|lacag|adeeg|xiriiro|caawi|macluumaad|soo|dhig|shirkad|howl|booqo|qorshe|taariikh|kala|xog|naga|iga|kartaa|yahay|waa|ku|oo|la|ka|ay|in|ee|ii|aad|ugu|jira|leh|noo|uu|kii|intii|markii|hore|dambe|sidoo|kalena|sidaa|darteed|kadib|markaas|sababta|maanta|berito|shaley|habeen|subax|naan|kan|taa|tihiin|nahoo|tahay|ahay|yihiin|noqday|yaqaanaa|aragaa|qabaa|rabaa|bixisaa|sameeyaa|tagaa|imaan|qor|akhri|iibi|sii|qaad|celi|wanaagsan|xun|fudud|adag|badan|yar|sare|hoose|midig|bidix|kore|hoos|dhexda|meel|qayb|nooc|qaab|hab|jid|waddo|nidaam|sharciga|qaanuunka|xaqiiqo|munaasabad|dhacdo|qodob|faa|iido|khasaaro|farxad|murugo|hami|hadaf|ujeed|macnaha)\b/i.test(t)) {
-                return 'so';
-            }
-            if (/[\u0600-\u06FF]/.test(t)) return 'ar';
-            return 'en';
-        }
-
-        function getAiResponse(input) {
-            var q = input.toLowerCase().replace(/[^\w\s\u0600-\u06FF]/g, ' ').trim();
-            var lang = detectLang(input);
-            var end = '\n\nMaxaan kaloo ka caawiyaa?';
-
-            // ===== SEO / Khalid / Engineer — HIGHEST PRIORITY =====
-            var seoMatch = q.match(/\b(seo|search\s*engine|google\s*(rank|optimization|search|console)|serp|backlink|keyword|on.page|off.page|local\s*seo|organic|ranking|khalid|mukhtar|engineer|engineers)\b/);
-            var seoMatchAr = q.match(/\b(محرك|بحث|تحسين|خال|mختار|مهندس)\b/);
-            var seoMatchSo = q.match(/\b(ing\.|ingineer|injineer|khabiiro|khibrad|xirfadle)\b/);
-            if (seoMatch || seoMatchAr || seoMatchSo) {
-                if (lang === 'ar') return { text: 'خدمات SEO بقيادة المهندس خالد مختار (+252 62 2146744). Maxaan kaloo ka caawiyaa?', suggestions: ['الخدمات', 'التسعير', 'تواصل'] };
-                return { text: 'SEO Services are led by Engineer Khalid Mukhtar (+252 62 2146744). Maxaan kaloo ka caawiyaa?', suggestions: ['Services', 'Pricing', 'Contact'] };
-            }
-
-            if (q.match(/\b(hi|hello|hey|salaam|assalam|marhaba|ahlan|morning|afternoon|evening|sup|yo|howdy|greetings|kaali|subax|galab|habeen)\b/) || /^(hi|hey|yo|sup|hello|salaam|ahlan|kaali)$/i.test(q)) {
-                if (lang === 'so') return { text: 'Kaali! 👋 TechZone baa kuu caawin karta. Maxaad rabtaa inaad wax ka ogaato?' + end, suggestions: ['Adeegyada', 'Qiimaha', 'Xiriir'] };
-                if (lang === 'ar') return { text: 'أهلاً! 👋 كيف أساعدك؟' + end, suggestions: ['خدماتنا', 'التسعير', 'تواصل'] };
-                return { text: 'Hello! 👋 How can I help you?' + end, suggestions: ['Services', 'Pricing', 'Contact'] };
-            }
-            if (q.match(/\b(thank|thanks|shukran|jazakallah|appreciate|grateful|mahadsanid|mahadsantahay)\b/)) {
-                if (lang === 'so') return { text: 'Mahadsanid! 😊' + end, suggestions: ['Adeegyada', 'Qiimaha'] };
-                if (lang === 'ar') return { text: 'العفو! 😊' + end, suggestions: ['خدماتنا', 'التسعير'] };
-                return { text: "You're welcome! 😊" + end, suggestions: ['Services', 'Pricing'] };
-            }
-            if (q.match(/\b(service|services|what do you|offer|provide|work|doing|do you|adeeg|adeegyada|khidmad|waxaad|qabataan|sameeyaan)\b/) || q.match(/\b(خدم|عمل|ماذا تفعل|ماذا تقدم)\b/)) {
-                if (lang === 'so') return { text: 'Waxaan bixinaa: Website, App Mobile, Cloud, AI, Cybersecurity, SEO, Marketing, iyo ERP/CRM.' + end, suggestions: ['Website', 'Mobile App', 'SEO', 'Qiimaha'] };
-                if (lang === 'ar') return { text: 'نقدم: تطوير مواقع، تطبيقات جوال، سحابة، AI، أمن سيبراني، SEO، تسويق رقمي، وحلول مؤسسات.' + end, suggestions: ['تطوير مواقع', 'تطبيقات جوال', 'SEO', 'التسعير'] };
-                return { text: 'We offer: Web dev, mobile apps, cloud, AI, cybersecurity, SEO, digital marketing, and enterprise solutions.' + end, suggestions: ['Web Dev', 'Mobile Apps', 'SEO', 'Pricing'] };
-            }
-            if (q.match(/\b(web|website|websites|web\s*dev|site|landing|portal|html|wordpress|shopify|degel|degelka|bog|bogag|boggaga)\b/) || q.match(/\b(موقع|مواقع|تطوير موقع)\b/)) {
-                if (lang === 'so') return { text: 'Website: React, Next.js, Vue.js. Waxaa ka bilaabanaya $500. Muddo: 2-8 toddobaad.' + end, suggestions: ['Qiimaha', 'Mobile App', 'Xiriir'] };
-                if (lang === 'ar') return { text: '🌐 تطوير مواقع: React, Next.js, Vue.js. يبدأ من $500. المدة 2-8 أسابيع.' + end, suggestions: ['عرض سعر', 'تطبيقات جوال', 'التسعير'] };
-                return { text: 'Web Dev: React, Next.js, Vue.js. Starting from $500. Timeline: 2-8 weeks.' + end, suggestions: ['Free Quote', 'Mobile Apps', 'Pricing'] };
-            }
-            if (q.match(/\b(mobile|app|apps|android|ios|iphone|flutter|react\s*native|play\s*store|app\s*store|swift|kotlin|arji|arjiga|appka|apli)\b/) || q.match(/\b(جوال|تطبيق|تطبيقات)\b/)) {
-                if (lang === 'so') return { text: 'Mobile App: iOS/Android asli ah iyo Flutter. Waxaa ka bilaabanaya $1,000. Muddo: 4-16 toddobaad.' + end, suggestions: ['Qiimaha', 'Adeegyada', 'Xiriir'] };
-                if (lang === 'ar') return { text: '📱 تطبيقات جوال: iOS/Android أصلية و Flutter. يبدأ من $1,000. المدة 4-16 أسابيع.' + end, suggestions: ['عرض سعر', 'خدماتنا', 'التسعير'] };
-                return { text: 'Mobile Apps: Native iOS/Android & Flutter. Starting from $1,000. Timeline: 4-16 weeks.' + end, suggestions: ['Get Quote', 'Services', 'Pricing'] };
-            }
-            if (q.match(/\b(cyber|security|secure|penetration|vulnerability|firewall|hack|malware|encryption|compliance|audit|soc|phishing|ddos|protection|attack|threat|amni|amniga|ilaalin)\b/) || q.match(/\b(أمن|حماية|اختراق|تشفير)\b/)) {
-                if (lang === 'so') return { text: 'Cybersecurity: Pen testing, vulnerability assessment, 24/7 monitoring. Waxaa ka bilaabanaya $500.' + end, suggestions: ['Adeegyada', 'Qiimaha', 'Xiriir'] };
-                if (lang === 'ar') return { text: '🔒 أمن سيبراني: اختبار اختراق، تقييم ثغرات، مراقبة 24/7. يبدأ من $500.' + end, suggestions: ['خدماتنا', 'التسعير', 'تواصل'] };
-                return { text: 'Cybersecurity: Pen testing, vulnerability assessment, 24/7 monitoring, compliance audits. From $500.' + end, suggestions: ['Services', 'Pricing', 'Contact'] };
-            }
-            if (q.match(/\b(cloud|aws|azure|gcp|hosting|server|docker|kubernetes|ci\/cd|devops|deploy|vm|saas|serverless|storage|cdn|daraaad|serfer|cloudka)\b/) || q.match(/\b(سحاب|استضافة|خادم)\b/)) {
-                if (lang === 'so') return { text: 'Cloud: AWS, Azure, GCP, Docker, K8s. 99.9% uptime. Waxaa ka bilaabanaya $50/bil.' + end, suggestions: ['Adeegyada', 'Qiimaha', 'Xiriir'] };
-                if (lang === 'ar') return { text: '☁️ سحابة: AWS, Azure, GCP, Docker, Kubernetes. uptime 99.9%. يبدأ من $50/شهر.' + end, suggestions: ['خدماتنا', 'التسعير', 'تواصل'] };
-                return { text: 'Cloud: AWS, Azure, GCP, Docker, K8s. 99.9% uptime. From $50/month.' + end, suggestions: ['Services', 'Pricing', 'Contact'] };
-            }
-            if (q.match(/\b(ai|artificial\s*intelligence|machine\s*learning|ml|chatbot|bot|automation|automate|robot|nlp|predictive|llm|gpt|openai|robotka|bots)\b/) || q.match(/\b(ذكاء|اصطناعي|أتمتة|روبوت)\b/)) {
-                if (lang === 'so') return { text: 'AI: Chatbots, automation, data analytics, NLP — sida caawaan! Waxaa ka bilaabanaya $400.' + end, suggestions: ['Chatbot', 'Adeegyada', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '🤖 ذكاء اصطناعي: روبوتات محادثة، أتمتة، تحليل بيانات. يبدأ من $400.' + end, suggestions: ['روبوت محادثة', 'خدماتنا', 'التسعير'] };
-                return { text: 'AI: Chatbots, process automation, data analytics, NLP. Like this assistant! From $400.' + end, suggestions: ['Chatbot', 'Services', 'Pricing'] };
-            }
-            if (q.match(/\b(product|products|saas|platform|software|tool|tools|alabka|alabyada|shayga|shayaal)\b/) || q.match(/\b(منتج|منتجات|برمج)\b/)) {
-                if (lang === 'so') return { text: 'Alaabada: ERP ($2,000+), CRM ($500+), Commerce ($1,500+), Scheduler ($300+), Analytics ($400+), Guard ($200/bil).' + end, suggestions: ['ERP', 'CRM', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '📦 منتجاتنا: ERP ($2,000+), CRM ($500+), Commerce ($1,500+), Scheduler ($300+), Analytics ($400+), Guard ($200/شهر).' + end, suggestions: ['ERP', 'CRM', 'التسعير'] };
-                return { text: 'Products: ERP ($2,000+), CRM ($500+), Commerce ($1,500+), Scheduler ($300+), Analytics ($400+), Guard ($200/mo).' + end, suggestions: ['ERP', 'CRM', 'Pricing'] };
-            }
-            if (q.match(/\b(erp|enterprise\s*resource|inventory|procurement|hr\s*module|accounting|supply\s*chain|nidaam|nidaamka)\b/)) {
-                if (lang === 'so') return { text: 'ERP: Xisaabaadka, alaabta, shaqaalaha, iibka. Waxaa ka bilaabanaya $2,000.' + end, suggestions: ['CRM', 'Alaabada', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '🏢 ERP: محاسبة، مخزون، موارد بشرية، مشتريات. يبدأ من $2,000.' + end, suggestions: ['CRM', 'المنتجات', 'التسعير'] };
-                return { text: 'ERP: Finance, inventory, HR, procurement. From $2,000 including setup & training.' + end, suggestions: ['CRM', 'Products', 'Pricing'] };
-            }
-            if (q.match(/\b(crm|customer\s*relationship|lead|sales\s*pipeline|lead\s*scoring)\b/)) {
-                if (lang === 'so') return { text: 'CRM: Xidhiidhka macaamiisha, iibka, automation. Waxaa ka bilaabanaya $500.' + end, suggestions: ['ERP', 'Alaabada', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '👥 CRM: قنوات مبيعات، تصنيف عملاء، أتمتة. يبدأ من $500.' + end, suggestions: ['ERP', 'المنتجات', 'التسعير'] };
-                return { text: 'CRM: Sales pipeline, lead scoring, automation, WhatsApp integration. From $500.' + end, suggestions: ['ERP', 'Products', 'Pricing'] };
-            }
-            if (q.match(/\b(commerce|e.commerce|ecommerce|online\s*store|shopping|cart|checkout|marketplace|store|shop|multi.vendor|suuq|dukaan)\b/)) {
-                if (lang === 'so') return { text: 'Commerce: Dukaan online, gate lacag bixinta. Waxaa ka bilaabanaya $1,500.' + end, suggestions: ['ERP', 'CRM', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '🛒 Commerce: متجر إلكتروني، بوابة دفع. يبدأ من $1,500.' + end, suggestions: ['ERP', 'CRM', 'التسعير'] };
-                return { text: 'Commerce: Online store, payment gateway, order management. From $1,500.' + end, suggestions: ['ERP', 'CRM', 'Pricing'] };
-            }
-            if (q.match(/\b(scheduler|appointment|booking|calendar|schedule|reminder|reservation)\b/)) {
-                if (lang === 'so') return { text: 'Scheduler: Ballaarinta, xasuusin. Waxaa ka bilaabanaya $300.' + end, suggestions: ['Alaabada', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '📅 Scheduler: حجز مواعيد، تذكيرات. يبدأ من $300.' + end, suggestions: ['المنتجات', 'التسعير'] };
-                return { text: 'Scheduler: Appointment booking, calendar sync, reminders. From $300.' + end, suggestions: ['Products', 'Pricing'] };
-            }
-            if (q.match(/\b(analytics|dashboard|kpi|metric|tracking|report|insight|falanqayn)\b/)) {
-                if (lang === 'so') return { text: 'Analytics: Dashboard, warbixin, KPI tracking. Waxaa ka bilaabanaya $400.' + end, suggestions: ['ERP', 'CRM', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '📊 Analytics: لوحات تحكم، تقارير مخصصة. يبدأ من $400.' + end, suggestions: ['ERP', 'CRM', 'التسعير'] };
-                return { text: 'Analytics: Dashboards, custom reports, KPI tracking. From $400.' + end, suggestions: ['ERP', 'CRM', 'Pricing'] };
-            }
-            if (q.match(/\b(marketing|digital\s*marketing|social\s*media|content\s*strategy|campaign|advertis|brand|suuqgeynta|olole)\b/) || q.match(/\b(تسويق|إعلان|حملة)\b/)) {
-                if (lang === 'so') return { text: 'Marketing: SEO, social media, ololayaal. Waxaa ka bilaabanaya $300/bil.' + end, suggestions: ['SEO', 'Adeegyada', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '📊 تسويق رقمي: SEO، سوشيال ميديا. يبدأ من $300/شهر.' + end, suggestions: ['SEO', 'الخدمات', 'التسعير'] };
-                return { text: 'Digital Marketing: SEO, social media, ad campaigns. From $300/month.' + end, suggestions: ['SEO', 'Services', 'Pricing'] };
-            }
-            if (q.match(/\b(price|pricing|cost|how\s*much|budget|qiimo|qiimaha|lacag|qaali|bixi)\b/) || q.match(/\b(ثمن|سعر|كم|تسعير)\b/)) {
-                if (lang === 'so') return { text: 'Qiimaha: Website $500+ | App $1,000+ | ERP $2,000+ | SEO $300/bil | Cloud $50/bil. La-tasho bilaash ah!' + end, suggestions: ['La-tasho Bilaash', 'Adeegyada', 'Xiriir'] };
-                if (lang === 'ar') return { text: '💰 الأسعار: مواقع $500+ | تطبيقات $1,000+ | ERP $2,000+ | SEO $300/شهر. استشارة مجانية!' + end, suggestions: ['استشارة مجانية', 'خدماتنا', 'تواصل'] };
-                return { text: 'Pricing: Web $500+ | Apps $1,000+ | ERP $2,000+ | SEO $300/mo. Free consultation!' + end, suggestions: ['Free Consultation', 'Services', 'Contact'] };
-            }
-            if (q.match(/\b(contact|reach|call|phone|email|xiriir|xiriirka|telefoon|fariin)\b/) || q.match(/\b(تواصل|اتصل|هاتف|بريد)\b/)) {
-                if (lang === 'so') return { text: 'WhatsApp: +252 62 2146744 | Email: info@techzone.so | Muqdisho, Soomaaliya' + end, suggestions: ['WhatsApp', 'La-tasho Bilaash'] };
-                if (lang === 'ar') return { text: '📞 واتساب: +252 62 2146744 | بريد: info@techzone.so | مقديشو، الصومال' + end, suggestions: ['واتساب', 'استشارة مجانية'] };
-                return { text: 'WhatsApp: +252 62 2146744 | Email: info@techzone.so | Mogadishu, Somalia' + end, suggestions: ['WhatsApp', 'Free Consultation'] };
-            }
-            if (q.match(/\b(whatsapp|wa\.me)\b/) || q.match(/واتساب/)) {
-                if (lang === 'so') return { text: 'WhatsApp toos ah: wa.me/252622146744' + end, suggestions: ['Adeegyada', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '📱 واتساب المباشر: wa.me/252622146744' + end, suggestions: ['خدماتنا', 'التسعير'] };
-                return { text: 'Direct WhatsApp: wa.me/252622146744' + end, suggestions: ['Services', 'Pricing'] };
-            }
-            if (q.match(/\b(about|who\s*(are|is|do)|tell.*about|company|shirkad|shirkada|kumaa|waa\sei)\b/) || q.match(/\b(من\s*انتم|عن\s*الشركة)\b/)) {
-                if (lang === 'so') return { text: 'TechZone: Waxaa la aasaasay 2018, 200+ shaqaale, 90+ macaamiil. Xarumaha: Soomaaliya, Imaaraadka, UK, USA, Hindiya.' + end, suggestions: ['Kooxda', 'Adeegyada', 'Xiriir'] };
-                if (lang === 'ar') return { text: '🏢 TechZone: تأسست 2018، 200+ موظف، 90+ عميل.' + end, suggestions: ['فريقنا', 'خدماتنا', 'تواصل'] };
-                return { text: 'TechZone: Founded 2018, 200+ team, 90+ clients. Offices: Somalia, UAE, UK, USA, India.' + end, suggestions: ['Our Team', 'Services', 'Contact'] };
-            }
-            if (q.match(/\b(industr|sector|qayb|qaybaha|garaad)\b/) || q.match(/\b(قطاع|مجال)\b/)) {
-                if (lang === 'so') return { text: 'Qaybaha: Guri, Bangi, Caafimaad, Ganacsiga, Gaadiidka, Waxbarasho.' + end, suggestions: ['Adeegyada', 'Shaqooyinka', 'Xiriir'] };
-                if (lang === 'ar') return { text: '🏭 نخدم: العقارات، البنوك، الصحة، النقل، التعليم.' + end, suggestions: ['خدماتنا', 'تواصل'] };
-                return { text: 'Industries: Real estate, banking, healthcare, retail, transport, education.' + end, suggestions: ['Services', 'Contact'] };
-            }
-            if (q.match(/\b(real\s*estate|property|guri|guriga|dhul)\b/)) {
-                if (lang === 'so') return { text: 'Guri: Bogag guryaha, CRM. Sida Somali Property Hub. Waxaa ka bilaabanaya $2,000.' + end, suggestions: ['Shaqooyinka', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '🏠 عقارات: بوابات عقارية. مثل Somali Property Hub.' + end, suggestions: ['دراسات الحالة', 'خدماتنا'] };
-                return { text: 'Real Estate: Property portals, CRM, virtual tours. Like Somali Property Hub. From $2,000.' + end, suggestions: ['Case Studies', 'Services'] };
-            }
-            if (q.match(/\b(bank|banking|finance|fintech|bangi|dhaqaale)\b/)) {
-                if (lang === 'so') return { text: 'Bangi: Barnaamijyada mobilada, nidaamyada lacag. Sida PaySom (500K+).' + end, suggestions: ['PaySom', 'Adeegyada'] };
-                if (lang === 'ar') return { text: '🏦 بنوك: تطبيقات مصرفية. مثل PaySom.' + end, suggestions: ['PaySom', 'خدماتنا'] };
-                return { text: 'Banking: Mobile banking apps, payment systems. Like PaySom (500K+ users).' + end, suggestions: ['PaySom', 'Services'] };
-            }
-            if (q.match(/\b(health|healthcare|medical|caafimaad|dhakhtar)\b/)) {
-                if (lang === 'so') return { text: 'Caafimaad: Telemedicine, EHR. Sida HealthConnect.' + end, suggestions: ['HealthConnect', 'Adeegyada'] };
-                if (lang === 'ar') return { text: '🏥 صحة: طب عن بُعد. مثل HealthConnect.' + end, suggestions: ['HealthConnect', 'خدماتنا'] };
-                return { text: 'Healthcare: Telemedicine, EHR, patient management. Like HealthConnect.' + end, suggestions: ['HealthConnect', 'Services'] };
-            }
-            if (q.match(/\b(education|edu|school|student|lms|waxbarasho|arday|dugsi)\b/)) {
-                if (lang === 'so') return { text: 'Waxbarasho: LMS, ardayda. Sida EduPlatform (20K+ arday). Waxaa ka bilaabanaya $1,000.' + end, suggestions: ['EduPlatform', 'Adeegyada'] };
-                if (lang === 'ar') return { text: '🎓 تعليم: LMS. مثل EduPlatform.' + end, suggestions: ['EduPlatform', 'خدماتنا'] };
-                return { text: 'Education: LMS, virtual classrooms. Like EduPlatform (20K+ students). From $1,000.' + end, suggestions: ['EduPlatform', 'Services'] };
-            }
-            if (q.match(/\b(logistics|transport|fleet|gaadiid)\b/)) {
-                if (lang === 'so') return { text: 'Gaadiidka: Maamulida gaadiidka. Sida FleetTrack (25% yarayn). Waxaa ka bilaabanaya $1,500.' + end, suggestions: ['FleetTrack', 'Adeegyada'] };
-                if (lang === 'ar') return { text: '🚚 لوجستيات: إدارة أساطيل. مثل FleetTrack.' + end, suggestions: ['FleetTrack', 'خدماتنا'] };
-                return { text: 'Logistics: Fleet management, route optimization. Like FleetTrack (25% savings). From $1,500.' + end, suggestions: ['FleetTrack', 'Services'] };
-            }
-            if (q.match(/\b(team|koox|kooxda|shaqaale)\b/) || q.match(/\b(فريق|موظف)\b/)) {
-                if (lang === 'so') return { text: '200+ xirfadle: injineerada, naqshadeeyayaasha, SEO-yaasha. 5 xarumood.' + end, suggestions: ['Khalid', 'Adeegyada', 'Xiriir'] };
-                if (lang === 'ar') return { text: '👥 200+ متخصص في 5 مكاتب عالمية.' + end, suggestions: ['خالد', 'خدماتنا', 'تواصل'] };
-                return { text: '200+ specialists across 5 global offices.' + end, suggestions: ['Khalid', 'Services', 'Contact'] };
-            }
-            if (q.match(/\b(case\s*study|shaqooyinka|mashruuc|portfolio)\b/) || q.match(/\b(دراسة|مشاريع)\b/)) {
-                if (lang === 'so') return { text: 'Shaqooyinkeenna: Somali Property Hub, PaySom, HealthConnect, FleetTrack, EduPlatform.' + end, suggestions: ['Adeegyada', 'Xiriir'] };
-                if (lang === 'ar') return { text: '📊 أعمالنا: Somali Property Hub، PaySom، HealthConnect، FleetTrack، EduPlatform.' + end, suggestions: ['خدماتنا', 'تواصل'] };
-                return { text: 'Our Work: Somali Property Hub, PaySom, HealthConnect, FleetTrack, EduPlatform.' + end, suggestions: ['Services', 'Contact'] };
-            }
-            if (q.match(/\b(value|mission|vision|hadaf|hadafka|aragti)\b/) || q.match(/\b(قيمنا|رسالتنا|رؤيتنا)\b/)) {
-                if (lang === 'so') return { text: 'Hadafkeenna: Xoojinta ganacsiga teknolojiyada. Qiimaha: Hal-abuur, kalsooni, tayada.' + end, suggestions: ['Kooxda', 'Adeegyada'] };
-                if (lang === 'ar') return { text: '✨ مهمتنا: تمكين الشركات بالتكنولوجيا.' + end, suggestions: ['فريقنا', 'خدماتنا'] };
-                return { text: 'Mission: Empower businesses with tech. Vision: Global leader in digital innovation.' + end, suggestions: ['Our Team', 'Services'] };
-            }
-            if (q.match(/\b(location|where|mogadishu|somalia|meel|xarunta|muqdisho)\b/) || q.match(/\b(مقديشو|الصومال)\b/)) {
-                if (lang === 'so') return { text: 'Muqdisho (Xarunta) 🇸🇴 | Dubai 🇦🇪 | London 🇬🇧 | New York 🇺🇸 | Bangalore 🇮🇳' + end, suggestions: ['Xiriir', 'Kooxda'] };
-                if (lang === 'ar') return { text: '📍 مقديشو (HQ) 🇸🇴 | دبي 🇦🇪 | لندن 🇬🇧 | نيويورك 🇺🇸 | بنغالور 🇮🇳' + end, suggestions: ['تواصل', 'فريقنا'] };
-                return { text: '📍 Mogadishu (HQ) 🇸🇴 | Dubai 🇦🇪 | London 🇬🇧 | New York 🇺🇸 | Bangalore 🇮🇳' + end, suggestions: ['Contact Us', 'Our Team'] };
-            }
-            if (q.match(/\b(technology|tech\s*stack|react|next\.?js|python|django|laravel|teknoloji|softweer)\b/)) {
-                if (lang === 'so') return { text: 'Waxaan isticmaalnaa: React, Next.js, Vue.js, Flutter, Node.js, Python, Django, Laravel, AWS, Azure.' + end, suggestions: ['Adeegyada', 'Alaabada'] };
-                if (lang === 'ar') return { text: '⚡ نستخدم: React, Next.js, Vue.js, Flutter, Node.js, Python, AWS, Azure.' + end, suggestions: ['خدماتنا', 'المنتجات'] };
-                return { text: 'We use: React, Next.js, Vue.js, Flutter, Node.js, Python, Django, Laravel, AWS, Azure.' + end, suggestions: ['Services', 'Products'] };
-            }
-            if (q.match(/\b(consult|consulting|la-tasho|talo|istiraatiijiyad)\b/)) {
-                if (lang === 'so') return { text: 'La-tasho: Roadmap teknolojiyada, casriyaynta digitalka. La-tasho hore waa bilaash!' + end, suggestions: ['Adeegyada', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '💡 استشارات: تحول رقمي. استشارة أولية مجانية!' + end, suggestions: ['خدماتنا', 'التسعير'] };
-                return { text: 'Consulting: Tech roadmaps, digital transformation. First consultation FREE!' + end, suggestions: ['Services', 'Pricing'] };
-            }
-            if (q.match(/\b(how\s*(does|do|it|work|process)|sida|hab|tallaabo)\b/)) {
-                if (lang === 'so') return { text: 'Habka: 1️⃣ La-tasho bilaash → 2️⃣ Qiimo → 3️⃣ Naqshad → 4️⃣ Dev → 5️⃣ Tijaabo → 6️⃣ Daahfurid → 7️⃣ Taageero.' + end, suggestions: ['Qiimo Bilaash', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '📋 خطواتنا: استشارة مجانية → تصميم → تطوير → اختبار → إطلاق → دعم.' + end, suggestions: ['عرض سعر مجاني', 'التسعير'] };
-                return { text: 'Process: Free consult → Quote → Design → Dev → Test → Launch → Support.' + end, suggestions: ['Free Quote', 'Pricing'] };
-            }
-            if (q.match(/\b(time|timeline|deadline|muddo|waqti|bil|sano)\b/)) {
-                if (lang === 'so') return { text: 'Muddada: Website 2-8 toddobaad | App 4-16 toddobaad | SEO: natiijo 3-6 bilood.' + end, suggestions: ['Adeegyada', 'Qiimaha'] };
-                if (lang === 'ar') return { text: '⏰ المدة: مواقع 2-8 أسابيع | تطبيقات 4-16 أسابيع.' + end, suggestions: ['خدماتنا', 'التسعير'] };
-                return { text: 'Timeline: Web 2-8 weeks | Apps 4-16 weeks | SEO results in 3-6 months.' + end, suggestions: ['Services', 'Pricing'] };
-            }
-            if (q.match(/\b(pay|payment|bixi|bixinta|kaar)\b/)) {
-                if (lang === 'so') return { text: 'Bixinta: Bangiga, PayPal, Stripe. 50% hore + 50% marka la diro.' + end, suggestions: ['Qiimaha', 'Xiriir'] };
-                if (lang === 'ar') return { text: '💳 الدفع: تحويل بنكي، PayPal، Stripe. 50% مقدم + 50% عند التسليم.' + end, suggestions: ['التسعير', 'تواصل'] };
-                return { text: 'Payment: Bank transfer, PayPal, Stripe. 50% upfront + 50% on delivery.' + end, suggestions: ['Pricing', 'Contact'] };
-            }
-            if (q.match(/\b(support|help|taageero|caawimaad)\b/)) {
-                if (lang === 'so') return { text: 'Taageero: 24/7 WhatsApp, dayactur bilaha ah. SLA ah.' + end, suggestions: ['Adeegyada', 'Xiriir'] };
-                if (lang === 'ar') return { text: '🔧 الدعم: 24/7 عبر واتساب، صيانة شهرية.' + end, suggestions: ['خدماتنا', 'تواصل'] };
-                return { text: 'Support: 24/7 via WhatsApp, monthly maintenance. SLA guarantee.' + end, suggestions: ['Services', 'Contact'] };
-            }
-
-            // Default
-            if (lang === 'so') return { text: 'Ma fahmin si fiican. Isku day inaad wax ka weydiiso: adeegyada, qiimaha, SEO, xiriirka, ama shirkadda.' + end, suggestions: ['Adeegyada', 'Qiimaha', 'SEO', 'Xiriir'] };
-            if (lang === 'ar') return { text: 'لم أفهم تماماً. جرّب أن تسأل عن: خدماتنا، التسعير، SEO، التواصل معنا.' + end, suggestions: ['خدماتنا', 'التسعير', 'SEO', 'تواصل'] };
-            return { text: "I didn't quite understand. Try asking about: our services, pricing, SEO, contact, or about us." + end, suggestions: ['Services', 'Pricing', 'SEO', 'Contact'] };
         }
 
         // ===== Attach Chat Button Event Listener =====
