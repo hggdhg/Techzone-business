@@ -1037,6 +1037,17 @@
                 chatHistory.push({ role: 'user', content: userMessage });
                 if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
 
+                var requestBody = {
+                    model: 'google/gemini-2.0-flash-lite-preview-02-05:free',
+                    messages: [
+                        { role: 'system', content: SYSTEM_PROMPT }
+                    ].concat(chatHistory),
+                    max_tokens: 1024,
+                    temperature: 0.7
+                };
+
+                console.log('OpenRouter REQUEST:', JSON.stringify(requestBody, null, 2));
+
                 var response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                     method: 'POST',
                     headers: {
@@ -1045,27 +1056,29 @@
                         'HTTP-Referer': window.location.href,
                         'X-Title': 'TechZone AI Assistant'
                     },
-                    body: JSON.stringify({
-                        model: 'meta-llama/llama-3.3-70b-instruct:free',
-                        messages: [
-                            { role: 'system', content: SYSTEM_PROMPT }
-                        ].concat(chatHistory),
-                        max_tokens: 1024,
-                        temperature: 0.7
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
+                var rawText = await response.text();
+                console.log('OpenRouter RESPONSE [' + response.status + ']:', rawText);
+
                 if (!response.ok) {
-                    var errBody = await response.text();
-                    console.error('OpenRouter HTTP error:', response.status, errBody);
+                    console.error('OpenRouter HTTP ERROR:', response.status, response.statusText, rawText);
                     chatHistory.pop();
                     return null;
                 }
 
-                var data = await response.json();
+                var data;
+                try {
+                    data = JSON.parse(rawText);
+                } catch(parseErr) {
+                    console.error('OpenRouter JSON PARSE ERROR:', parseErr, 'Raw:', rawText);
+                    chatHistory.pop();
+                    return null;
+                }
 
                 if (data.error) {
-                    console.error('OpenRouter API error:', data.error);
+                    console.error('OpenRouter API ERROR object:', JSON.stringify(data.error));
                     chatHistory.pop();
                     return null;
                 }
@@ -1081,10 +1094,11 @@
                     return botText;
                 }
 
+                console.warn('OpenRouter NO CONTENT in response:', JSON.stringify(data));
                 chatHistory.pop();
                 return null;
             } catch(e) {
-                console.error('OpenRouter fetch failed:', e);
+                console.error('OpenRouter FETCH FAILED:', e.name, e.message, e.stack, e);
                 if (chatHistory.length && chatHistory[chatHistory.length-1].role === 'user') chatHistory.pop();
                 return null;
             }
@@ -1101,7 +1115,7 @@
                 return;
             }
             if (lower === '/status') {
-                addBotMsg('✅ OpenRouter AI connected — meta-llama/llama-3.3-70b-instruct:free. Maxaan kaloo ka caawiyaa?');
+                addBotMsg('✅ OpenRouter AI connected — google/gemini-2.0-flash-lite. Maxaan kaloo ka caawiyaa?');
                 return;
             }
 
