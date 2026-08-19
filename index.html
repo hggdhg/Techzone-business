@@ -1033,48 +1033,63 @@
 
         // ===== Gemini API Call =====
         async function callGemini(userMessage) {
-            if (!GEMINI_API_KEY) return null;
+            if (!GEMINI_API_KEY) {
+                console.warn('Gemini: No API key set');
+                return null;
+            }
             try {
                 chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
                 if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
 
                 var requestBody = {
                     contents: chatHistory,
-                    systemInstruction: { parts: [{ text: TECHZONE_SYSTEM_PROMPT }] },
+                    systemInstruction: { role: 'user', parts: [{ text: TECHZONE_SYSTEM_PROMPT }] },
                     generationConfig: {
                         temperature: 0.7,
-                        maxOutputTokens: 200,
-                        topP: 0.9
+                        maxOutputTokens: 1024,
+                        topP: 0.95
                     }
                 };
 
-                var response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY, {
+                var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY;
+                var response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(requestBody)
                 });
 
                 if (!response.ok) {
-                    console.error('Gemini API error:', response.status);
+                    var errBody = await response.text();
+                    console.error('Gemini API HTTP error:', response.status, response.statusText, errBody);
                     chatHistory.pop();
                     return null;
                 }
 
                 var data = await response.json();
+                console.log('Gemini response:', data);
+
+                if (data.error) {
+                    console.error('Gemini API error in response:', data.error);
+                    chatHistory.pop();
+                    return null;
+                }
+
                 var botText = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
 
                 if (botText) {
                     botText = botText.trim();
-                    if (botText.indexOf('Maxaan kaloo ka caawiyaa?') === -1 && botText.indexOf('Maxaan kaloo ka caawiyaa?') === -1) {
+                    if (botText.indexOf('Maxaan kaloo ka caawiyaa?') === -1) {
                         botText = botText + '\n\nMaxaan kaloo ka caawiyaa?';
                     }
                     chatHistory.push({ role: 'model', parts: [{ text: botText }] });
                     return botText;
                 }
+
+                console.warn('Gemini returned no text candidates:', data);
                 chatHistory.pop();
                 return null;
             } catch(e) {
-                console.error('Gemini API failed:', e);
+                console.error('Gemini fetch failed:', e.name, e.message, e);
                 if (chatHistory.length && chatHistory[chatHistory.length-1].role === 'user') chatHistory.pop();
                 return null;
             }
