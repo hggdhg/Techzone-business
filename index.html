@@ -1043,7 +1043,7 @@
 
                 var requestBody = {
                     contents: chatHistory,
-                    systemInstruction: { role: 'user', parts: [{ text: TECHZONE_SYSTEM_PROMPT }] },
+                    systemInstruction: { parts: [{ text: TECHZONE_SYSTEM_PROMPT }] },
                     generationConfig: {
                         temperature: 0.7,
                         maxOutputTokens: 1024,
