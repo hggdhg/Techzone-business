@@ -1033,54 +1033,41 @@
 
         // ===== OpenRouter API Call =====
         async function callOpenRouter(userMessage) {
+            var FALLBACK_RESPONSES = [
+                'Waan ka xumahay, hadda wax aan ka jawaabayaa. Fadlan isku day mar kale goor dambe. Maxaan kaloo ka caawiyaa?',
+                'AI-ygu hadda ma shaqaynayo. Fadlan ku soo celi WhatsApp: +252 62 2146744. Maxaan kaloo ka caawiyaa?',
+                'Connection khatar ah. Fadlan hubi internet-ka oo mar kale isku day. Maxaan kaloo ka caawiyaa?',
+                'Waxaan halkan u joogaa inaan kaa caawiyo! Laakiin teknolojiyadu way qaldantaa mararka qaar. Maxaa lagaa caawin karaa?'
+            ];
+
+            chatHistory.push({ role: 'user', content: userMessage });
+            if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+
             try {
-                chatHistory.push({ role: 'user', content: userMessage });
-                if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
-
-                var requestBody = {
-                    model: 'google/gemini-2.0-flash-exp:free',
-                    messages: [
-                        { role: 'system', content: SYSTEM_PROMPT }
-                    ].concat(chatHistory),
-                    max_tokens: 1024,
-                    temperature: 0.7
-                };
-
-                console.log('OpenRouter REQUEST:', JSON.stringify(requestBody, null, 2));
-
                 var response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + API_KEY,
                         'HTTP-Referer': window.location.href,
-                        'X-Title': 'TechZone AI Assistant'
+                        'X-Title': 'TechZone AI'
                     },
-                    body: JSON.stringify(requestBody)
+                    body: JSON.stringify({
+                        model: 'mistralai/mistral-7b-instruct:free',
+                        messages: [
+                            { role: 'system', content: SYSTEM_PROMPT }
+                        ].concat(chatHistory),
+                        max_tokens: 512,
+                        temperature: 0.7
+                    })
                 });
 
-                var rawText = await response.text();
-                console.log('OpenRouter RESPONSE [' + response.status + ']:', rawText);
-
-                if (!response.ok) {
-                    console.error('OpenRouter HTTP ERROR:', response.status, response.statusText, rawText);
-                    chatHistory.pop();
-                    return null;
-                }
-
-                var data;
-                try {
-                    data = JSON.parse(rawText);
-                } catch(parseErr) {
-                    console.error('OpenRouter JSON PARSE ERROR:', parseErr, 'Raw:', rawText);
-                    chatHistory.pop();
-                    return null;
-                }
+                var data = await response.json();
 
                 if (data.error) {
-                    console.error('OpenRouter API ERROR object:', JSON.stringify(data.error));
+                    console.error('OpenRouter error:', data.error);
                     chatHistory.pop();
-                    return null;
+                    return FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
                 }
 
                 var botText = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
@@ -1094,13 +1081,12 @@
                     return botText;
                 }
 
-                console.warn('OpenRouter NO CONTENT in response:', JSON.stringify(data));
                 chatHistory.pop();
-                return null;
+                return FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
             } catch(e) {
-                console.error('OpenRouter FETCH FAILED:', e.name, e.message, e.stack, e);
+                console.error('OpenRouter fetch failed:', e);
                 if (chatHistory.length && chatHistory[chatHistory.length-1].role === 'user') chatHistory.pop();
-                return null;
+                return FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
             }
         }
 
@@ -1115,18 +1101,14 @@
                 return;
             }
             if (lower === '/status') {
-                addBotMsg('✅ OpenRouter AI connected — google/gemini-2.0-flash-exp:free. Maxaan kaloo ka caawiyaa?');
+                addBotMsg('✅ OpenRouter AI connected — mistralai/mistral-7b-instruct:free. Maxaan kaloo ka caawiyaa?');
                 return;
             }
 
             showTyping();
             var aiResponse = await callOpenRouter(text);
             hideTyping();
-            if (aiResponse) {
-                addBotMsg(aiResponse);
-            } else {
-                addBotMsg('Waan ka xumahay, AI-ygu ma shaqaynayo hadda. Fadlan isku day mar kale. Maxaan kaloo ka caawiyaa?');
-            }
+            addBotMsg(aiResponse);
         }
 
         // ===== Attach Chat Button Event Listener =====
